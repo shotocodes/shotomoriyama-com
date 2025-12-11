@@ -1,0 +1,14 @@
+{
+  "tailwindCSS.experimental.configFile": "tailwind.config.ts",
+  "tailwindCSS.classAttributes": [
+    "class",
+    "className",
+    ".*Classes.*"
+  ],
+  "css.lint.unknownAtRules": "ignore",
+  "cSpell.words": [
+    "Chiang",
+    "lerp",
+    "SHOTOMORIYAMA"
+  ]
+}

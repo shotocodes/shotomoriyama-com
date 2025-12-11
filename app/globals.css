@@ -1,0 +1,273 @@
+@import "tailwindcss";
+@import "tailwindcss/utilities";
+
+/* ライトモード カラー定義 */
+:root {
+  --background: #f5f5f5;
+  --foreground: #1a1a1a;
+
+  /* メインカラー */
+  --color-primary: #1a1a1a;
+  --color-accent: #0066FF;
+
+  /* アクセントカラー */
+  --color-accent-red: #FF6B6B;
+  --color-accent-teal: #4ECDC4;
+  --color-accent-yellow: #FFE66D;
+  --color-accent-purple: #A8DADC;
+
+  /* 背景 */
+  --color-background: #f5f5f5;
+  --color-background-alt: #ffffff;
+
+  /* テキスト */
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #6B7280;
+  --color-text-muted: #9CA3AF;
+
+  /* ボーダー */
+  --color-border: #E5E7EB;
+
+  /* サークルカラー（ライトモード） */
+  --circle-small-bg: #000000;
+  --circle-small-icon: #ffffff;
+  --circle-small-text: #cccccc;
+  --circle-large-bg: #ffffff;
+  --circle-large-border: #000000;
+  --circle-large-text: #000000;
+  --circle-large-text-secondary: #333333;
+  --circle-large-dot: #000000;
+  --circle-large-shadow: 0 20px 80px rgba(0, 0, 0, 0.3), 0 10px 40px rgba(0, 0, 0, 0.2); /* 追加 */
+
+  /* ボタンカラー */
+  --button-bg: #000000;
+  --button-text: #000000;
+  --button-border: #000000;
+}
+
+/* ダークモード カラー定義 */
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ffffff;
+
+  /* メインカラー */
+  --color-primary: #ffffff;
+  --color-accent: #3B82F6;
+
+  /* アクセントカラー (少し暗めに調整) */
+  --color-accent-red: #EF4444;
+  --color-accent-teal: #14B8A6;
+  --color-accent-yellow: #F59E0B;
+  --color-accent-purple: #8B5CF6;
+
+  /* 背景 */
+  --color-background: #0a0a0a;
+  --color-background-alt: #1a1a1a;
+
+  /* テキスト */
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #D1D5DB;
+  --color-text-muted: #9CA3AF;
+
+  /* ボーダー */
+  --color-border: #374151;
+
+   /* サークルカラー（ダークモード） */
+  --circle-small-bg: #ffffff;
+  --circle-small-icon: #000000;
+  --circle-small-text: #666666;
+  --circle-large-bg: #000000;
+  --circle-large-border: #ffffff;
+  --circle-large-text: #ffffff;
+  --circle-large-text-secondary: #e5e7eb;
+  --circle-large-dot: #ffffff;
+  --circle-large-shadow: 0 0 80px rgba(255, 255, 255, 0.4), 0 25px 50px rgba(0, 0, 0, 0.8); /* 追加 - 白く光る! */
+
+  /* ボタンカラー */
+  --button-bg: #ffffff;
+  --button-text: #ffffff;
+  --button-border: #ffffff;
+}
+
+@theme inline {
+  /* 基本カラー */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--color-primary);
+  --color-accent: var(--color-accent);
+
+  /* アクセントカラー */
+  --color-accent-red: var(--color-accent-red);
+  --color-accent-teal: var(--color-accent-teal);
+  --color-accent-yellow: var(--color-accent-yellow);
+  --color-accent-purple: var(--color-accent-purple);
+
+  /* 背景 */
+  --color-background-alt: var(--color-background-alt);
+
+  /* テキスト */
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-muted: var(--color-text-muted);
+
+  /* ボーダー */
+  --color-border: var(--color-border);
+
+  /* フォント */
+  --font-sans: "Noto Sans JP", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* 基本スタイル */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-feature-settings: "palt";
+  letter-spacing: 0.02em;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* スムーススクロール */
+html {
+  scroll-behavior: smooth;
+}
+
+/* セクション間の余白 */
+section {
+  scroll-margin-top: 80px;
+}
+
+/* コンテナを確実に中央揃え */
+.container {
+  width: 100%;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  max-width: 1280px;
+}
+
+/* アニメーション用 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* グラデーション背景クラス */
+.gradient-bg {
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-primary) 100%);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* カスタムスクロールバー */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-background-alt);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-accent);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}
+
+/* セレクション */
+::selection {
+  background: var(--color-accent);
+  color: white;
+}
+
+::-moz-selection {
+  background: var(--color-accent);
+  color: white;
+}
+
+/* ダークモードでの影の調整 */
+.dark .shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(255, 255, 255, 0.1), 0 4px 6px -2px rgba(255, 255, 255, 0.05);
+}
+
+.dark .shadow-xl {
+  box-shadow: 0 20px 25px -5px rgba(255, 255, 255, 0.1), 0 10px 10px -5px rgba(255, 255, 255, 0.04);
+}
+
+.dark .shadow-2xl {
+  box-shadow: 0 25px 50px -12px rgba(255, 255, 255, 0.25);
+}
+
+/* React DatePicker カスタマイズ */
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker {
+  font-family: inherit;
+  border: 2px solid var(--border);
+  border-radius: 0.5rem;
+  background-color: var(--background);
+}
+
+.react-datepicker__header {
+  background-color: var(--background-alt);
+  border-bottom: 2px solid var(--border);
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.react-datepicker__current-month,
+.react-datepicker__day-name {
+  color: var(--primary);
+}
+
+.react-datepicker__day {
+  color: var(--primary);
+}
+
+.react-datepicker__day:hover {
+  background-color: rgba(85, 98, 112, 0.2);
+}
+
+.react-datepicker__day--selected {
+  background-color: #556270 !important;
+  color: white !important;
+}
+
+.react-datepicker__day--keyboard-selected {
+  background-color: rgba(85, 98, 112, 0.5);
+}
+
+.react-datepicker__day--disabled {
+  color: var(--text-secondary);
+  opacity: 0.5;
+}
