@@ -1,10 +1,11 @@
+// next.config.ts
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  eslint: {
-    // 本番ビルド時に ESLint エラーで落ちないようにする
-    ignoreDuringBuilds: true,
-  },
+  // eslint 設定を削除
+  // eslint: {
+  //   ignoreDuringBuilds: true,
+  // },
 };
 
 export default nextConfig;
