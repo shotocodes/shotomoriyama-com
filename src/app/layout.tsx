@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 const notoSansJP = Noto_Sans_JP({
   variable: "--font-sans",
@@ -9,6 +10,7 @@ const notoSansJP = Noto_Sans_JP({
   weight: ["400", "500", "700", "900"],
   display: "swap",
 });
+
 
 export const metadata: Metadata = {
   title: "森山翔登 | Web制作・デザイン",
@@ -46,6 +48,10 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+
+  verification: {
+    google: 'aPa-i0_-zAKOylxUJ133uEKWtGmJS7CQBUae_uFqE1c',
+  },
 };
 
 export default function RootLayout({
@@ -58,6 +64,7 @@ export default function RootLayout({
       <body className={`${notoSansJP.variable} antialiased`}>
         <ThemeProvider>
           {children}
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
         </ThemeProvider>
       </body>
     </html>
