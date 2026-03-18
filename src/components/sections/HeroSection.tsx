@@ -2,7 +2,6 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { useTheme } from 'next-themes';
 import * as THREE from 'three';
@@ -400,8 +399,10 @@ useEffect(() => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 1 }}
               >
-                <Link
-                  href="#contact"
+                <button
+                  onClick={() => {
+                    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
                   className="inline-block bg-gradient-to-r from-[#0066FF] to-[#A8DADC] dark:from-[#3B82F6] dark:to-[#8B5CF6] text-white font-semibold rounded-full hover:shadow-2xl hover:scale-105 transition-all duration-300 text-base sm:text-lg px-12 sm:px-20 py-3 sm:py-4 group"
                   style={{
                     boxShadow: '0 10px 40px rgba(59, 130, 246, 0.3)',
@@ -412,7 +413,7 @@ useEffect(() => {
                   <span className="inline-block group-hover:scale-110 transition-transform">
                     CONTACT
                   </span>
-                </Link>
+                </button>
               </motion.div>
 
               <motion.div

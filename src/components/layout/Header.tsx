@@ -44,7 +44,7 @@ export default function Header() {
 
   // モバイルメニューが開いているときはスクロール禁止
   useEffect(() => {
-    document.body.style.overflow = isMobileMenuOpen ? 'hidden' : 'unset';
+    document.body.style.overflow = isMobileMenuOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = 'unset'; };
   }, [isMobileMenuOpen]);
 
