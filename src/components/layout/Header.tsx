@@ -52,12 +52,12 @@ export default function Header() {
   const isDark = currentTheme === 'dark';
 
   const navItems = [
-    { label: 'SERVICE', href: '/#service', color: '#0066FF',  Icon: Briefcase },
-    { label: 'WORKS',   href: '/#works',   color: '#4ECDC4',  Icon: Palette  },
-    { label: 'SUPPORT', href: '/#support', color: '#FF8C42',  Icon: LifeBuoy },
-    { label: 'BLOG',    href: '/#blog',    color: '#9333EA',  Icon: BookOpen },
-    { label: 'ABOUT',   href: '/#about',   color: '#10B981',  Icon: User     },
-    { label: 'CONTACT', href: '/#contact', color: '#FF6B6B',  Icon: Mail     },
+    { label: 'SERVICE', href: '/#service', mobileHref: '/service', color: '#0066FF',  Icon: Briefcase },
+    { label: 'WORKS', href: '/#works', mobileHref: '/works', color: '#4ECDC4', Icon: Palette },
+    { label: 'SUPPORT', href: '/#support', mobileHref: '/support', color: '#FF8C42',  Icon: LifeBuoy },
+    { label: 'BLOG',    href: '/#blog',    mobileHref: '/blog',    color: '#9333EA',  Icon: BookOpen },
+    { label: 'ABOUT',   href: '/#about',   mobileHref: '/about',   color: '#10B981',  Icon: User     },
+    { label: 'CONTACT', href: '/#contact', mobileHref: '/contact', color: '#FF6B6B',  Icon: Mail     },
   ];
 
   // ============================================================
@@ -310,7 +310,7 @@ export default function Header() {
                       transition={{ duration: 0.3, delay: index * 0.05 }}
                     >
                       <Link
-                        href={item.href}
+                        href={item.mobileHref}
                         className="flex items-center gap-4 transition-colors"
                         style={{
                           padding: '0.875rem 1.5rem',

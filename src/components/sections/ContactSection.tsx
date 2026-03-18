@@ -296,7 +296,7 @@ export default function ContactSection() {
   return (
     <>
       {/* ========== モバイル表示 ========== */}
-      <div className="lg:hidden">
+      <div className="lg:hidden" id="contact">
         <MobileContact />
       </div>
 
