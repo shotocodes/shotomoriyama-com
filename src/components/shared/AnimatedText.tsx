@@ -54,7 +54,7 @@ export default function AnimatedText({
             <span
               key={index}
               style={{
-                color: item.isLastChar && accentColor ? accentColor : undefined,
+                color: item.isLastChar && accentColor ? accentColor : 'inherit',
               }}
             >
               {item.char}

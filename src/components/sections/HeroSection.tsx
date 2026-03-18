@@ -30,137 +30,156 @@ export default function HeroSection() {
     return () => clearTimeout(timer);
   }, []);
 
-  useEffect(() => {
-    if (!canvasRef.current || !mounted) return;
+useEffect(() => {
+  if (!canvasRef.current || !mounted) return;
 
-    const currentTheme = theme === 'system' ? systemTheme : theme;
-    const isDark = currentTheme === 'dark';
+  const currentTheme = theme === 'system' ? systemTheme : theme;
+  const isDark = currentTheme === 'dark';
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
-    const renderer = new THREE.WebGLRenderer({
-      canvas: canvasRef.current,
-      alpha: true,
-      antialias: true,
-    });
+  // ✅ モバイル判定
+  const isMobile = window.innerWidth < 768;
+  const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    camera.position.z = 5;
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+  );
+  const renderer = new THREE.WebGLRenderer({
+    canvas: canvasRef.current,
+    alpha: true,
+    antialias: true, // ✅ アンチエイリアス ON（見た目重視）
+  });
 
-    const gridSize = 50;
-    const gridDivisions = 60;
-    const geometry = new THREE.PlaneGeometry(gridSize, gridSize, gridDivisions, gridDivisions);
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  camera.position.z = 5;
 
-    const colors = [];
-    let color1, color2, color3, color4;
+  const gridSize = 50;
+  // ✅ 見た目を維持できる頂点数に調整
+  const gridDivisions = isMobile ? 45 : isTablet ? 50 : 60;
 
-    if (isDark) {
-      color1 = new THREE.Color('#3B82F6');
-      color2 = new THREE.Color('#8B5CF6');
-      color3 = new THREE.Color('#EF4444');
-      color4 = new THREE.Color('#F59E0B');
+  const geometry = new THREE.PlaneGeometry(gridSize, gridSize, gridDivisions, gridDivisions);
+
+  const colors = [];
+  let color1, color2, color3, color4;
+
+  if (isDark) {
+    color1 = new THREE.Color('#3B82F6');
+    color2 = new THREE.Color('#8B5CF6');
+    color3 = new THREE.Color('#EF4444');
+    color4 = new THREE.Color('#F59E0B');
+  } else {
+    color1 = new THREE.Color('#0066FF');
+    color2 = new THREE.Color('#A8DADC');
+    color3 = new THREE.Color('#FF6B6B');
+    color4 = new THREE.Color('#FFE66D');
+  }
+
+  const positions = geometry.attributes.position;
+  for (let i = 0; i < positions.count; i++) {
+    const x = positions.getX(i);
+    const y = positions.getY(i);
+
+    const mixAmount = (x / gridSize + 0.5);
+    const mixAmountY = (y / gridSize + 0.5);
+    const color = new THREE.Color();
+
+    if (mixAmount < 0.33) {
+      color.lerpColors(color1, color2, mixAmount * 3);
+    } else if (mixAmount < 0.66) {
+      color.lerpColors(color2, color3, (mixAmount - 0.33) * 3);
     } else {
-      color1 = new THREE.Color('#0066FF');
-      color2 = new THREE.Color('#A8DADC');
-      color3 = new THREE.Color('#FF6B6B');
-      color4 = new THREE.Color('#FFE66D');
+      color.lerpColors(color3, color4, (mixAmount - 0.66) * 3);
     }
 
+    color.lerp(color4, mixAmountY * 0.2);
+    colors.push(color.r, color.g, color.b);
+  }
+
+  geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+  const material = new THREE.MeshBasicMaterial({
+    vertexColors: true,
+    wireframe: true,
+    transparent: true,
+    opacity: isDark ? 0.8 : 0.7,
+  });
+
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.rotation.x = -Math.PI / 3;
+  scene.add(mesh);
+
+  const mouse = { x: 0, y: 0 };
+
+  const handleMouseMove = (event: MouseEvent) => {
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  };
+
+  document.addEventListener('mousemove', handleMouseMove);
+
+  const clock = new THREE.Clock();
+  let animationId: number;
+
+  // ✅ FPS 制限のみ（モバイルのみ）
+  const targetFPS = isMobile ? 30 : 60;
+  const frameInterval = 1000 / targetFPS;
+  let lastFrameTime = 0;
+
+  const animate = (currentTime: number) => {
+    animationId = requestAnimationFrame(animate);
+
+    // ✅ FPS 制限
+    const deltaTime = currentTime - lastFrameTime;
+    if (deltaTime < frameInterval) return;
+    lastFrameTime = currentTime - (deltaTime % frameInterval);
+
+    const elapsedTime = clock.getElapsedTime();
+
     const positions = geometry.attributes.position;
+
+    // ✅ 全頂点を更新（間引きなし）
     for (let i = 0; i < positions.count; i++) {
       const x = positions.getX(i);
       const y = positions.getY(i);
 
-      const mixAmount = (x / gridSize + 0.5);
-      const mixAmountY = (y / gridSize + 0.5);
-      const color = new THREE.Color();
+      const distance = Math.sqrt(
+        Math.pow(x - mouse.x * 10, 2) + Math.pow(y - mouse.y * 10, 2)
+      );
+      const mouseWave = Math.sin(distance * 0.5 - elapsedTime * 2) * 1.2;
 
-      if (mixAmount < 0.33) {
-        color.lerpColors(color1, color2, mixAmount * 3);
-      } else if (mixAmount < 0.66) {
-        color.lerpColors(color2, color3, (mixAmount - 0.33) * 3);
-      } else {
-        color.lerpColors(color3, color4, (mixAmount - 0.66) * 3);
-      }
+      const wave2 = Math.sin(x * 0.3 + elapsedTime) * 0.5;
+      const wave3 = Math.cos(y * 0.3 + elapsedTime * 0.7) * 0.5;
 
-      color.lerp(color4, mixAmountY * 0.2);
-      colors.push(color.r, color.g, color.b);
+      positions.setZ(i, mouseWave + wave2 + wave3);
     }
+    positions.needsUpdate = true;
 
-    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+    mesh.rotation.z = Math.sin(elapsedTime * 0.2) * 0.1;
 
-    const material = new THREE.MeshBasicMaterial({
-      vertexColors: true,
-      wireframe: true,
-      transparent: true,
-      opacity: isDark ? 0.8 : 0.7,
-    });
+    renderer.render(scene, camera);
+  };
+  animate(0);
 
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.rotation.x = -Math.PI / 3;
-    scene.add(mesh);
+  const handleResize = () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  };
+  window.addEventListener('resize', handleResize);
 
-    const mouse = { x: 0, y: 0 };
-
-    const handleMouseMove = (event: MouseEvent) => {
-      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-
-    const clock = new THREE.Clock();
-    let animationId: number;
-
-    const animate = () => {
-      const elapsedTime = clock.getElapsedTime();
-
-      const positions = geometry.attributes.position;
-      for (let i = 0; i < positions.count; i++) {
-        const x = positions.getX(i);
-        const y = positions.getY(i);
-
-        const distance = Math.sqrt(
-          Math.pow(x - mouse.x * 10, 2) + Math.pow(y - mouse.y * 10, 2)
-        );
-        const mouseWave = Math.sin(distance * 0.5 - elapsedTime * 2) * 1.2;
-
-        const wave2 = Math.sin(x * 0.3 + elapsedTime) * 0.5;
-        const wave3 = Math.cos(y * 0.3 + elapsedTime * 0.7) * 0.5;
-
-        positions.setZ(i, mouseWave + wave2 + wave3);
-      }
-      positions.needsUpdate = true;
-
-      mesh.rotation.z = Math.sin(elapsedTime * 0.2) * 0.1;
-
-      renderer.render(scene, camera);
-      animationId = requestAnimationFrame(animate);
-    };
-    animate();
-
-    const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    };
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('resize', handleResize);
-      cancelAnimationFrame(animationId);
-      geometry.dispose();
-      material.dispose();
-      renderer.dispose();
-    };
-  }, [theme, systemTheme, mounted]);
+  return () => {
+    document.removeEventListener('mousemove', handleMouseMove);
+    window.removeEventListener('resize', handleResize);
+    cancelAnimationFrame(animationId);
+    geometry.dispose();
+    material.dispose();
+    renderer.dispose();
+  };
+}, [theme, systemTheme, mounted]);
 
   // Tilted horizontal ellipse with heartbeat
   const TiltedEllipse = () => (

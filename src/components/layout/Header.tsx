@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Briefcase, Palette, BookOpen, LifeBuoy, User, Mail } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import ThemeToggle from '@/components/ui/ThemeToggle';
@@ -42,50 +42,27 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // 現在のテーマを判定
+  // モバイルメニューが開いているときはスクロール禁止
+  useEffect(() => {
+    document.body.style.overflow = isMobileMenuOpen ? 'hidden' : 'unset';
+    return () => { document.body.style.overflow = 'unset'; };
+  }, [isMobileMenuOpen]);
+
   const currentTheme = theme === 'system' ? systemTheme : theme;
   const isDark = currentTheme === 'dark';
 
   const navItems = [
-    {
-      label: 'SERVICE',
-      href: '/#service',
-      color: '#0066FF',
-      Icon: Briefcase,
-    },
-    {
-      label: 'WORKS',
-      href: '/#works',
-      color: '#4ECDC4',
-      Icon: Palette,
-    },
-    {
-      label: 'SUPPORT',
-      href: '/#support',
-      color: '#FF8C42',
-      Icon: LifeBuoy,
-    },
-    {
-      label: 'BLOG',
-      href: '/#blog',
-      color: '#9333EA',
-      Icon: BookOpen,
-    },
-    {
-      label: 'ABOUT',
-      href: '/#about',
-      color: '#10B981',
-      Icon: User,
-    },
-    {
-      label: 'CONTACT',
-      href: '/#contact',
-      color: '#556270',
-      Icon: Mail,
-    },
+    { label: 'SERVICE', href: '/#service', color: '#0066FF',  Icon: Briefcase },
+    { label: 'WORKS',   href: '/#works',   color: '#4ECDC4',  Icon: Palette  },
+    { label: 'SUPPORT', href: '/#support', color: '#FF8C42',  Icon: LifeBuoy },
+    { label: 'BLOG',    href: '/#blog',    color: '#9333EA',  Icon: BookOpen },
+    { label: 'ABOUT',   href: '/#about',   color: '#10B981',  Icon: User     },
+    { label: 'CONTACT', href: '/#contact', color: '#FF6B6B',  Icon: Mail     },
   ];
 
-  // SVG circular text component
+  // ============================================================
+  // PC用: 円形テキストコンポーネント（そのまま維持）
+  // ============================================================
   interface CircularTextProps {
     text: string;
     radius: number;
@@ -119,9 +96,7 @@ export default function Header() {
                 ${isActive ? 'fill-accent' : 'fill-text-secondary'}
                 ${isHovered ? 'fill-primary' : ''}
               `}
-              style={{
-                opacity: isHovered ? 1 : 0.8,
-              }}
+              style={{ opacity: isHovered ? 1 : 0.8 }}
             >
               {character}
             </text>
@@ -132,211 +107,262 @@ export default function Header() {
   };
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-background/90 backdrop-blur-lg shadow-lg'
-          : 'bg-transparent'
-      }`}
-    >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo + Text */}
-          <Link
-            href="/"
-            className="flex items-center gap-3 z-10 group"
-          >
-            {/* ロゴ画像 - テーマで切り替え - マウント後のみ表示 */}
-            {mounted && (
-              <motion.div
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                transition={{ type: 'spring', stiffness: 300 }}
-                className="relative w-8 h-8 sm:w-10 sm:h-10"
-              >
-                <Image
-                  src={isDark ? '/logo-w.png' : '/logo-b.png'}
-                  alt="M Logo"
-                  width={40}
-                  height={40}
-                  className="w-full h-full object-contain"
-                  priority
-                />
-              </motion.div>
-            )}
+    <>
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          isScrolled
+            ? 'bg-background/90 backdrop-blur-lg shadow-lg'
+            : 'bg-transparent'
+        }`}
+      >
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-20">
 
-            {/* プレースホルダー（マウント前） */}
-            {!mounted && (
-              <div className="relative w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse" />
-            )}
-
-            {/* テキスト */}
-            <span className="text-lg sm:text-xl font-bold text-primary group-hover:text-accent transition-colors">
-              SHOTOMORIYAMA.JP
-            </span>
-          </Link>
-
-          {/* Desktop Navigation - Circular Text */}
-          <nav className="hidden lg:flex items-center gap-2">
-            {navItems.map((item, index) => {
-              const isActive = activeSection === item.href.slice(1);
-              const isHovered = hoveredIndex === index;
-              const Icon = item.Icon;
-
-              return (
+            {/* ロゴ */}
+            <Link href="/" className="flex items-center gap-3 z-10 group">
+              {mounted ? (
                 <motion.div
-                  key={item.href}
-                  className="relative"
-                  onHoverStart={() => setHoveredIndex(index)}
-                  onHoverEnd={() => setHoveredIndex(null)}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  transition={{ type: 'spring', stiffness: 300 }}
+                  className="relative w-8 h-8 sm:w-10 sm:h-10"
                 >
-                  <Link
-                    href={item.href}
-                    aria-current={isActive ? 'page' : undefined}
-                    className="block relative"
-                  >
-                    {/* Circular text animation container */}
-                    <motion.div
-                      className="relative w-20 h-20 flex items-center justify-center"
-                      animate={{
-                        rotate: isHovered ? 360 : 0,
-                      }}
-                      transition={{
-                        duration: isHovered ? 2 : 0,
-                        ease: "linear",
-                        repeat: isHovered ? Infinity : 0,
-                      }}
-                    >
-                      <CircularText
-                        text={item.label}
-                        radius={28}
-                        color={item.color}
-                        isActive={isActive}
-                        isHovered={isHovered}
-                      />
-                    </motion.div>
+                  <Image
+                    src={isDark ? '/logo-w.png' : '/logo-b.png'}
+                    alt="M Logo"
+                    width={40}
+                    height={40}
+                    className="w-full h-full object-contain"
+                    priority
+                  />
+                </motion.div>
+              ) : (
+                <div className="relative w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse" />
+              )}
+              <span className="text-lg sm:text-xl font-bold text-primary group-hover:text-accent transition-colors">
+                SHOTOMORIYAMA.JP
+              </span>
+            </Link>
 
-                    {/* Center icon - Monochrome Lucide Icons */}
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            {/* PC ナビゲーション（円形テキスト・そのまま維持） */}
+            <nav className="hidden lg:flex items-center gap-2">
+              {navItems.map((item, index) => {
+                const isActive = activeSection === item.href.slice(2);
+                const isHovered = hoveredIndex === index;
+                const Icon = item.Icon;
+
+                return (
+                  <motion.div
+                    key={item.href}
+                    className="relative"
+                    onHoverStart={() => setHoveredIndex(index)}
+                    onHoverEnd={() => setHoveredIndex(null)}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Link href={item.href} aria-current={isActive ? 'page' : undefined} className="block relative">
+                      {/* 円形テキスト */}
                       <motion.div
-                        className={`
-                          w-8 h-8 rounded-full flex items-center justify-center
-                          transition-all duration-300
-                          ${isActive ? 'scale-110' : 'scale-100'}
-                        `}
-                        style={{
-                          background: isActive || isHovered
-                            ? item.color
-                            : 'var(--color-background-alt)',
-                          border: `2px solid ${item.color}`,
-                          boxShadow: isActive || isHovered
-                            ? `0 0 20px ${item.color}80`
-                            : 'none',
-                        }}
-                        animate={{
-                          boxShadow: isActive
-                            ? [
-                                `0 0 20px ${item.color}80`,
-                                `0 0 30px ${item.color}60`,
-                                `0 0 20px ${item.color}80`,
-                              ]
-                            : 'none',
-                        }}
+                        className="relative w-20 h-20 flex items-center justify-center"
+                        animate={{ rotate: isHovered ? 360 : 0 }}
                         transition={{
-                          duration: 2,
-                          repeat: isActive ? Infinity : 0,
+                          duration: isHovered ? 2 : 0,
+                          ease: 'linear',
+                          repeat: isHovered ? Infinity : 0,
                         }}
                       >
-                        <Icon
-                          size={16}
-                          className={`
-                            transition-colors duration-300
-                            ${isActive || isHovered ? 'text-white' : 'text-primary'}
-                          `}
-                          strokeWidth={2.5}
+                        <CircularText
+                          text={item.label}
+                          radius={28}
+                          color={item.color}
+                          isActive={isActive}
+                          isHovered={isHovered}
                         />
                       </motion.div>
-                    </div>
 
-                    {/* Glow effect */}
-                    {(isActive || isHovered) && (
-                      <motion.div
-                        className="absolute inset-0 rounded-full -z-10"
-                        style={{
-                          background: `radial-gradient(circle, ${item.color}20 0%, transparent 70%)`,
-                        }}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1.5 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                      />
-                    )}
-                  </Link>
-                </motion.div>
-              );
-            })}
+                      {/* 中央アイコン */}
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <motion.div
+                          className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${isActive ? 'scale-110' : 'scale-100'}`}
+                          style={{
+                            background: isActive || isHovered ? item.color : 'var(--color-background-alt)',
+                            border: `2px solid ${item.color}`,
+                            boxShadow: isActive || isHovered ? `0 0 20px ${item.color}80` : 'none',
+                          }}
+                          animate={{
+                            boxShadow: isActive
+                              ? [`0 0 20px ${item.color}80`, `0 0 30px ${item.color}60`, `0 0 20px ${item.color}80`]
+                              : 'none',
+                          }}
+                          transition={{ duration: 2, repeat: isActive ? Infinity : 0 }}
+                        >
+                          <Icon
+                            size={16}
+                            className={`transition-colors duration-300 ${isActive || isHovered ? 'text-white' : 'text-primary'}`}
+                            strokeWidth={2.5}
+                          />
+                        </motion.div>
+                      </div>
 
-            {/* Theme Toggle */}
-            <div className="ml-2">
+                      {/* グロウ */}
+                      {(isActive || isHovered) && (
+                        <motion.div
+                          className="absolute inset-0 rounded-full -z-10"
+                          style={{ background: `radial-gradient(circle, ${item.color}20 0%, transparent 70%)` }}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1.5 }}
+                          exit={{ opacity: 0, scale: 0.8 }}
+                        />
+                      )}
+                    </Link>
+                  </motion.div>
+                );
+              })}
+
+              <div className="ml-2">
+                <ThemeToggle />
+              </div>
+            </nav>
+
+            {/* モバイル: ThemeToggle + ハンバーガー */}
+            <div className="lg:hidden flex items-center gap-3">
               <ThemeToggle />
+
+              <button
+                className="relative flex flex-col items-center justify-center w-11 h-11 gap-1.5"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                aria-label="メニューを開閉する"
+                aria-expanded={isMobileMenuOpen}
+              >
+                <motion.span
+                  className="block w-6 h-0.5 bg-primary origin-center"
+                  animate={isMobileMenuOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                />
+                <motion.span
+                  className="block w-6 h-0.5 bg-primary"
+                  animate={isMobileMenuOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }}
+                  transition={{ duration: 0.3 }}
+                />
+                <motion.span
+                  className="block w-6 h-0.5 bg-primary origin-center"
+                  animate={isMobileMenuOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                />
+              </button>
             </div>
-          </nav>
 
-          {/* Mobile Menu Button + Theme Toggle */}
-          <div className="lg:hidden flex items-center gap-4">
-            <ThemeToggle />
-
-            <button
-              className="flex flex-col items-center justify-center w-10 h-10 space-y-1.5"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-label="Toggle menu"
-            >
-              <span
-                className={`block w-6 h-0.5 bg-primary transition-transform ${
-                  isMobileMenuOpen ? 'rotate-45 translate-y-2' : ''
-                }`}
-              />
-              <span
-                className={`block w-6 h-0.5 bg-primary transition-opacity ${
-                  isMobileMenuOpen ? 'opacity-0' : ''
-                }`}
-              />
-              <span
-                className={`block w-6 h-0.5 bg-primary transition-transform ${
-                  isMobileMenuOpen ? '-rotate-45 -translate-y-2' : ''
-                }`}
-              />
-            </button>
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          exit={{ opacity: 0, height: 0 }}
-          className="lg:hidden bg-background/95 backdrop-blur-lg border-t border-border"
-        >
-          <nav className="container mx-auto px-4 py-4 flex flex-col space-y-2">
-            {navItems.map((item) => {
-              const Icon = item.Icon;
-              return (
+      {/* ========== モバイルメニュー ========== */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <>
+            {/* オーバーレイ */}
+            <motion.div
+              className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+
+            {/* メニューパネル */}
+            <motion.div
+              className="fixed top-0 right-0 h-full w-72 bg-background z-50 lg:hidden shadow-2xl"
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            >
+              {/* パネルヘッダー */}
+              <div
+                className="flex items-center justify-between border-b border-color-border"
+                style={{ padding: '1.25rem 1.5rem', height: '80px' }}
+              >
+                <span className="text-lg font-bold text-primary">MENU</span>
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center justify-center w-10 h-10 text-text-secondary hover:text-primary transition-colors"
+                  aria-label="メニューを閉じる"
+                >
+                  <motion.span
+                    className="text-2xl font-light"
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    ×
+                  </motion.span>
+                </button>
+              </div>
+
+              {/* ナビリンク */}
+              <nav style={{ padding: '1rem 0' }}>
+                {navItems.map((item, index) => {
+                  const Icon = item.Icon;
+                  const isActive = activeSection === item.href.slice(2);
+
+                  return (
+                    <motion.div
+                      key={item.href}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: index * 0.05 }}
+                    >
+                      <Link
+                        href={item.href}
+                        className="flex items-center gap-4 transition-colors"
+                        style={{
+                          padding: '0.875rem 1.5rem',
+                          borderLeft: isActive ? `3px solid ${item.color}` : '3px solid transparent',
+                          backgroundColor: isActive ? `${item.color}10` : 'transparent',
+                          color: isActive ? item.color : 'var(--color-text-secondary)'
+                        }}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {/* カラーアイコン */}
+                        <div
+                          className="flex items-center justify-center rounded-full flex-shrink-0"
+                          style={{
+                            width: '2.25rem',
+                            height: '2.25rem',
+                            backgroundColor: `${item.color}20`,
+                          }}
+                        >
+                          <Icon size={18} style={{ color: item.color }} strokeWidth={2} />
+                        </div>
+
+                        <span className="text-base font-bold">
+                          {item.label}
+                        </span>
+                      </Link>
+                    </motion.div>
+                  );
+                })}
+              </nav>
+
+              {/* パネルフッター: 問い合わせへのショートカット */}
+              <div
+                className="absolute bottom-0 left-0 right-0 border-t border-color-border"
+                style={{ padding: '1.25rem 1.5rem' }}
+              >
                 <Link
-                  key={item.href}
-                  href={item.href}
-                  className="text-base font-medium text-text-secondary hover:text-accent transition-colors py-2 px-4 rounded-lg hover:bg-background-alt flex items-center gap-3"
+                  href="/contact"
+                  className="flex items-center justify-center gap-2 w-full font-bold border-2 text-[#FF6B6B] transition-all"
+                  style={{
+                    padding: '0.875rem',
+                    borderColor: '#FF6B6B',
+                  }}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Icon size={20} />
-                  {item.label}
+                  <Mail size={18} />
+                  <span>お問い合わせ</span>
                 </Link>
-              );
-            })}
-          </nav>
-        </motion.div>
-      )}
-    </header>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </>
   );
 }

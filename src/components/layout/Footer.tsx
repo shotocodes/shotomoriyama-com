@@ -1,24 +1,40 @@
 // src/components/layout/Footer.tsx
 'use client';
 
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
-import { Github, Twitter, Mail, ArrowRight, Calculator, MessageCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import AnimatedButton from '@/components/ui/AnimatedButton';
+import {
+  Calculator,
+  MessageCircle,
+  ArrowRight,
+  Twitter,
+  Github,
+  Linkedin,
+  Mail,
+  Instagram
+} from 'lucide-react';
 
-export default function Footer() {
-  const currentYear = new Date().getFullYear();
-  const { theme, systemTheme } = useTheme();
+interface FooterProps {
+  ctaText?: string;
+  ctaSubText?: string;
+}
+
+export default function Footer({
+  ctaText = "あなたのアイデアを形にします",
+  ctaSubText = "お気軽にご相談ください。最適なソリューションを提案します"
+}: FooterProps) {
+  const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const currentTheme = theme === 'system' ? systemTheme : theme;
-  const isDark = currentTheme === 'dark';
+  const isDark = mounted && theme === 'dark';
 
   const menuLinks = [
     { href: '/#service', label: 'Service' },
@@ -30,44 +46,32 @@ export default function Footer() {
   ];
 
   const pageLinks = [
-    { href: '/order', label: 'かんたん見積もり' },
+    { href: '/estimate', label: 'かんたん見積もり' },
     { href: '/contact', label: 'お問い合わせ' },
     { href: '/service', label: 'サービス詳細' },
     { href: '/support', label: 'サポート情報' },
     { href: '/works', label: '制作実績' },
     { href: '/blog', label: 'ブログ' },
-    { href: '/how-to-order', label: 'ご依頼の流れ' },
+    { href: '/order', label: 'ご依頼の流れ' },
   ];
 
   const socialLinks = [
-    {
-      icon: Github,
-      label: 'GitHub',
-      href: 'https://github.com/shotocodes',
-      color: '#333'
-    },
-    {
-      icon: Twitter,
-      label: 'X (Twitter)',
-      href: 'https://twitter.com/SOAR_C72',
-      color: '#1DA1F2'
-    },
-    {
-      icon: Mail,
-      label: 'Email',
-      href: 'mailto:0sdm0.moriyama@gmail.com',
-      color: '#EA4335'
-    },
+    { name: 'Twitter',   icon: Twitter,   href: 'https://twitter.com/sh0t0x72',             color: '#1DA1F2' },
+    { name: 'Instagram', icon: Instagram, href: 'https://instagram.com/sh0t0x72',            color: '#E4405F' },
+    { name: 'GitHub',    icon: Github,    href: 'https://github.com/shotocodes',             color: isDark ? '#aaa' : '#181717' },
+    { name: 'LinkedIn',  icon: Linkedin,  href: 'https://linkedin.com/in/shotomoriyama',     color: '#0A66C2' },
+    { name: 'Email',     icon: Mail,      href: 'mailto:0sdm0.moriyama@gmail.com',           color: '#EA4335' },
   ];
 
   return (
-    <footer className="bg-background-alt text-primary border-t-2 border-border">
-      {/* CTA Section */}
-      <div
-        className="border-b-2 border-border"
+    <footer className="bg-background-alt border-t border-color-border">
+
+      {/* ========== CTA Section ========== */}
+      <section
+        className="border-b-2 border-color-border"
         style={{
           padding: '4rem 0',
-          background: 'linear-gradient(135deg, rgba(0, 102, 255, 0.05), rgba(168, 218, 220, 0.05))'
+          background: isDark ? '#25282a' : '#dde5ed'
         }}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -79,262 +83,200 @@ export default function Footer() {
             className="text-center"
             style={{ maxWidth: '48rem', margin: '0 auto' }}
           >
-            <h3
-              className="text-2xl lg:text-3xl font-bold text-primary"
+            <h2
+              className="text-xl lg:text-3xl font-bold text-primary"
               style={{ marginBottom: '1rem' }}
             >
-              まずはお気軽にご相談ください
-            </h3>
+              {ctaText}
+            </h2>
             <p
-              className="text-text-secondary"
-              style={{ marginBottom: '2rem' }}
+              className="text-sm lg:text-base text-text-secondary"
+              style={{ marginBottom: '2rem', lineHeight: '1.8' }}
             >
-              お見積もりは無料です。お気軽にお問い合わせください。
+              {ctaSubText}
             </p>
 
+            {/* CTAボタン: モバイルは縦並び、PCは横並び */}
             <div
               className="flex flex-col sm:flex-row justify-center"
-              style={{ gap: '1rem' }}
+              style={{ gap: '1.25rem' }}
             >
-              <Link href="/order">
-                <button
-                  className="inline-flex items-center rounded-lg font-bold text-white transition-all hover:opacity-90 shadow-lg"
-                  style={{
-                    backgroundImage: 'linear-gradient(to right, #0066FF, #A8DADC)',
-                    padding: '1rem 2rem',
-                    gap: '0.5rem'
-                  }}
-                >
-                  <Calculator size={20} />
-                  <span>かんたん見積もり</span>
-                </button>
-              </Link>
-
-              <Link href="/contact">
-                <button
-                  className="inline-flex items-center rounded-lg font-bold border-2 transition-all hover:scale-105"
-                  style={{
-                    borderColor: '#0066FF',
-                    color: '#0066FF',
-                    padding: '1rem 2rem',
-                    gap: '0.5rem'
-                  }}
-                >
-                  <MessageCircle size={20} />
-                  <span>お問い合わせ</span>
-                </button>
-              </Link>
+              <AnimatedButton href="/estimate" icon={Calculator}>
+                かんたん見積もり
+              </AnimatedButton>
+              <AnimatedButton href="/contact" icon={MessageCircle}>
+                お問い合わせ
+              </AnimatedButton>
             </div>
           </motion.div>
         </div>
-      </div>
+      </section>
 
-      {/* Main Footer Content */}
-      <div style={{ padding: '3rem 0' }}>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Brand */}
-          <div
-            className="text-center lg:text-left"
-            style={{ marginBottom: '3rem' }}
-          >
-            <Link
-              href="/"
-              className="inline-flex items-center group"
-              style={{
-                gap: '0.75rem',
-                marginBottom: '1rem'
-              }}
-            >
-              {/* ロゴ画像 - テーマで切り替え */}
+      {/* ========== Main Footer ========== */}
+      <div
+        className="container mx-auto px-4 sm:px-6 lg:px-8"
+        style={{ paddingTop: '3rem', paddingBottom: '3rem' }}
+      >
+        <div
+          className="grid grid-cols-2 lg:grid-cols-4"
+          style={{ gap: '2rem', marginBottom: '2.5rem' }}
+        >
+
+          {/* ブランド（モバイルで2列full幅） */}
+          <div className="col-span-2 lg:col-span-1">
+            <Link href="/" className="inline-block" style={{ marginBottom: '1rem' }}>
               {mounted && (
-                <motion.div
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  transition={{ type: 'spring', stiffness: 300 }}
-                  className="relative"
-                  style={{ width: '2.5rem', height: '2.5rem' }}
-                >
-                  <Image
-                    src={isDark ? '/logo-w.png' : '/logo-b.png'}
-                    alt="M Logo"
-                    width={40}
-                    height={40}
-                    className="w-full h-full object-contain"
-                    priority
-                  />
-                </motion.div>
-              )}
-
-              {/* プレースホルダー（マウント前） */}
-              {!mounted && (
-                <div
-                  className="rounded-full animate-pulse"
-                  style={{
-                    width: '2.5rem',
-                    height: '2.5rem',
-                    backgroundColor: 'var(--border)'
-                  }}
+                <Image
+                  src={isDark ? '/logo-w.png' : '/logo-b.png'}
+                  alt="SHOTOMORIYAMA.JP"
+                  width={160}
+                  height={36}
+                  className="transition-transform hover:rotate-3"
+                  priority
                 />
               )}
-
-              {/* テキスト */}
-              <span className="text-2xl lg:text-3xl font-bold text-primary group-hover:opacity-80 transition-opacity">
-                SHOTOMORIYAMA.JP
-              </span>
             </Link>
-
             <p
-              className="text-text-secondary"
-              style={{
-                maxWidth: '28rem',
-                margin: '0 auto'
-              }}
+              className="text-text-secondary text-sm"
+              style={{ lineHeight: '1.7' }}
             >
-              小さな想いも、丁寧なものづくりで、
+              Work Smarter, Live Freely
               <br />
-              大きな未来に変わる。
+              デジタルで未来を創造する
             </p>
           </div>
 
-          {/* Links Grid */}
-          <div
-            className="grid grid-cols-1 md:grid-cols-3"
-            style={{
-              gap: '2rem',
-              marginBottom: '3rem'
-            }}
-          >
-            {/* Menu */}
-            <div>
-              <h4
-                className="text-lg font-bold text-primary border-b-2 border-border inline-block"
-                style={{
-                  marginBottom: '1rem',
-                  paddingBottom: '0.5rem'
-                }}
-              >
-                Menu
-              </h4>
-              <ul style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                {menuLinks.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="text-text-secondary hover:text-primary transition-colors inline-flex items-center group"
-                      style={{ gap: '0.5rem' }}
-                    >
-                      <ArrowRight size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                      <span>{link.label}</span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+          {/* Menu */}
+          <div>
+            <h3
+              className="text-base font-bold text-primary border-b-2 border-color-border inline-block"
+              style={{ marginBottom: '1rem', paddingBottom: '0.5rem' }}
+            >
+              Menu
+            </h3>
+            <ul style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              {menuLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-text-secondary hover:text-primary transition-colors inline-flex items-center group text-sm"
+                    style={{ gap: '0.4rem' }}
+                  >
+                    <ArrowRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                    <span>{link.label}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Pages */}
+          <div>
+            <h3
+              className="text-base font-bold text-primary border-b-2 border-color-border inline-block"
+              style={{ marginBottom: '1rem', paddingBottom: '0.5rem' }}
+            >
+              Pages
+            </h3>
+            <ul style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              {pageLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-text-secondary hover:text-primary transition-colors inline-flex items-center group text-sm"
+                    style={{ gap: '0.4rem' }}
+                  >
+                    <ArrowRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                    <span>{link.label}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Connect */}
+          <div>
+            <h3
+              className="text-base font-bold text-primary border-b-2 border-color-border inline-block"
+              style={{ marginBottom: '1rem', paddingBottom: '0.5rem' }}
+            >
+              Connect
+            </h3>
+
+            {/* SNSアイコン */}
+            <div style={{ display: 'flex', gap: '0.625rem', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
+              {socialLinks.map((social, index) => {
+                const Icon = social.icon;
+                return (
+                  <motion.a
+                    key={index}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-full border-2 border-color-border flex items-center justify-center text-text-secondary"
+                    style={{ width: '2.5rem', height: '2.5rem', flexShrink: 0 }}
+                    whileHover={{
+                      scale: 1.15,
+                      borderColor: social.color,
+                      backgroundColor: social.color,
+                      color: '#ffffff'
+                    }}
+                    transition={{ duration: 0.2 }}
+                    title={social.name}
+                  >
+                    <Icon size={16} />
+                  </motion.a>
+                );
+              })}
             </div>
 
-            {/* Pages */}
-            <div>
-              <h4
-                className="text-lg font-bold text-primary border-b-2 border-border inline-block"
-                style={{
-                  marginBottom: '1rem',
-                  paddingBottom: '0.5rem'
-                }}
+            {/* 簡易連絡先 */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+              <a
+                href="https://line.me/ti/p/shoto0720"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-text-secondary hover:text-primary transition-colors"
               >
-                Pages
-              </h4>
-              <ul style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                {pageLinks.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="text-text-secondary hover:text-primary transition-colors inline-flex items-center group"
-                      style={{ gap: '0.5rem' }}
-                    >
-                      <ArrowRight size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                      <span>{link.label}</span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Connect */}
-            <div>
-              <h4
-                className="text-lg font-bold text-primary border-b-2 border-border inline-block"
-                style={{
-                  marginBottom: '1rem',
-                  paddingBottom: '0.5rem'
-                }}
+                LINE: @shoto0720
+              </a>
+              <a
+                href="mailto:0sdm0.moriyama@gmail.com"
+                className="text-sm text-text-secondary hover:text-primary transition-colors"
               >
-                Connect
-              </h4>
-              <ul style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                {socialLinks.map((social) => {
-                  const Icon = social.icon;
-                  return (
-                    <li key={social.href}>
-                      <a
-                        href={social.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center text-text-secondary hover:text-primary transition-all group"
-                        style={{ gap: '0.75rem' }}
-                      >
-                        <div
-                          className="rounded-full flex items-center justify-center transition-all group-hover:scale-110"
-                          style={{
-                            width: '2.5rem',
-                            height: '2.5rem',
-                            backgroundColor: `${social.color}20`
-                          }}
-                        >
-                          <Icon size={20} style={{ color: social.color }} />
-                        </div>
-                        <span className="font-medium">{social.label}</span>
-                      </a>
-                    </li>
-                  );
-                })}
-              </ul>
+                0sdm0.moriyama@gmail.com
+              </a>
             </div>
           </div>
 
-          {/* Divider */}
-          <div
-            className="border-t-2 border-border"
-            style={{ paddingTop: '2rem' }}
-          >
-            <div
-              className="flex flex-col md:flex-row justify-between items-center"
-              style={{ gap: '1rem' }}
-            >
-              {/* Copyright */}
-              <p className="text-sm text-text-secondary">
-                © {currentYear} Shoto Moriyama. All rights reserved.
-              </p>
+        </div>
+      </div>
 
-              {/* Additional Links */}
-              <div
-                className="flex"
-                style={{ gap: '1.5rem' }}
-              >
-                <Link
-                  href="/privacy"
-                  className="text-sm text-text-secondary hover:text-primary transition-colors"
-                >
-                  プライバシーポリシー
-                </Link>
-                <Link
-                  href="/terms"
-                  className="text-sm text-text-secondary hover:text-primary transition-colors"
-                >
-                  利用規約
-                </Link>
-              </div>
+      {/* ========== Copyright ========== */}
+      <div
+        className="border-t border-color-border"
+        style={{ padding: '1.5rem 0' }}
+      >
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div
+            className="flex flex-col sm:flex-row justify-between items-center text-text-secondary"
+            style={{ gap: '0.75rem' }}
+          >
+            <p className="text-xs sm:text-sm">
+              © 2025 SHOTOMORIYAMA.JP All rights reserved.
+            </p>
+            <div className="flex" style={{ gap: '1.25rem' }}>
+              <Link href="/privacy" className="text-xs sm:text-sm hover:text-primary transition-colors">
+                Privacy Policy
+              </Link>
+              <Link href="/terms" className="text-xs sm:text-sm hover:text-primary transition-colors">
+                Terms of Service
+              </Link>
             </div>
           </div>
         </div>
       </div>
+
     </footer>
   );
 }
