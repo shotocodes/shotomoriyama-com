@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "ja_JP",
-    url: "https://shotomoriyama.jp",
+    url: "https://shotomoriyama.com",
     siteName: "森山翔登 | Web制作・デザイン",
     title: "森山翔登 | Web制作・デザイン",
     description: "フリーランスとして、企業様や個人事業主様のWebサイト制作・デザインを承っております。",
