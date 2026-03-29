@@ -53,6 +53,7 @@ export default function Footer({
     { href: '/works', label: '制作実績' },
     { href: '/blog', label: 'ブログ' },
     { href: '/order', label: 'ご依頼の流れ' },
+    { href: '/links', label: 'リンク一覧' },
   ];
 
   const socialLinks = [
