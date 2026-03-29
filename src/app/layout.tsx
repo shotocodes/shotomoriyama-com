@@ -15,6 +15,11 @@ const notoSansJP = Noto_Sans_JP({
 export const metadata: Metadata = {
   metadataBase: new URL('https://shotomoriyama.com'),
   title: "森山翔登 | Web制作・デザイン",
+  icons: {
+  icon: '/favicon.ico',
+  shortcut: '/favicon.png',
+  apple: '/apple-touch-icon.png',
+ },
   description: "フリーランスとして、企業様や個人事業主様のWebサイト制作・デザインを承っております。一から丁寧に、想いを形に。",
   keywords: ["Web制作", "ホームページ制作", "デザイン", "フリーランス", "森山翔登"],
   authors: [{ name: "森山翔登" }],

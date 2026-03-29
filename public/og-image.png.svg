@@ -1,0 +1,70 @@
+<svg width="100%" viewBox="0 0 680 370" xmlns="http://www.w3.org/2000/svg">
+  <rect width="680" height="357" fill="#0a0a0a" style="fill:rgb(10, 10, 10);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- グリッド背景 -->
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+    </pattern>
+  <mask id="imagine-text-gaps-9tn1mx" maskUnits="userSpaceOnUse"><rect x="0" y="0" width="680" height="370" fill="white"/><rect x="76" y="110.02703094482422" width="199.99124145507812" height="58.778743743896484" fill="black" rx="2"/><rect x="76" y="169.47193908691406" width="157.47572326660156" height="25.250375747680664" fill="black" rx="2"/><rect x="76" y="225.72201538085938" width="130.16751861572266" height="19.58359432220459" fill="black" rx="2"/><rect x="76" y="248.1942596435547" width="358.2401123046875" height="19.111377716064453" fill="black" rx="2"/><rect x="105.26512908935547" y="289.5553894042969" width="39.46973991394043" height="16.27799415588379" fill="black" rx="2"/><rect x="206.47853088378906" y="289.5553894042969" width="33.04678153991699" height="16.27799415588379" fill="black" rx="2"/><rect x="301.42010498046875" y="289.5553894042969" width="39.15983772277832" height="16.27799415588379" fill="black" rx="2"/><rect x="76" y="324.1942443847656" width="114.47323608398438" height="19.111377716064453" fill="black" rx="2"/></mask></defs>
+  <rect width="680" height="357" fill="url(#grid)" style="stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- グラデーションライン（左上から） -->
+  <line x1="0" y1="0" x2="340" y2="357" stroke="url(#gl1)" stroke-width="1" opacity="0.3" mask="url(#imagine-text-gaps-9tn1mx)" style="fill:rgb(0, 0, 0);color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.3;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <line x1="80" y1="0" x2="420" y2="357" stroke="url(#gl1)" stroke-width="0.5" opacity="0.15" mask="url(#imagine-text-gaps-9tn1mx)" style="fill:rgb(0, 0, 0);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.15;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <defs>
+    <linearGradient id="gl1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0066FF"/>
+      <stop offset="50%" stop-color="#A8DADC"/>
+      <stop offset="100%" stop-color="#FF6B6B"/>
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0066FF"/>
+      <stop offset="50%" stop-color="#A8DADC"/>
+      <stop offset="100%" stop-color="#FF6B6B"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 右上の装飾円 -->
+  <circle cx="580" cy="80" r="120" fill="none" stroke="rgba(0,102,255,0.2)" stroke-width="1" style="fill:none;stroke:rgba(0, 102, 255, 0.2);color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <circle cx="580" cy="80" r="90" fill="none" stroke="rgba(168,218,220,0.15)" stroke-width="0.5" stroke-dasharray="6 6" style="fill:none;stroke:rgba(168, 218, 220, 0.15);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-dasharray:6px, 6px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <circle cx="580" cy="80" r="60" fill="none" stroke="rgba(255,107,107,0.1)" stroke-width="0.5" style="fill:none;stroke:rgba(255, 107, 107, 0.1);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <circle cx="580" cy="80" r="4" fill="#0066FF" opacity="0.8" style="fill:rgb(0, 102, 255);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.8;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- 左下の装飾 -->
+  <circle cx="80" cy="300" r="60" fill="none" stroke="rgba(255,107,107,0.15)" stroke-width="0.5" style="fill:none;stroke:rgba(255, 107, 107, 0.15);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <circle cx="80" cy="300" r="30" fill="none" stroke="rgba(0,102,255,0.1)" stroke-width="0.5" stroke-dasharray="4 4" style="fill:none;stroke:rgba(0, 102, 255, 0.1);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-dasharray:4px, 4px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- アクセントライン -->
+  <rect x="60" y="100" width="3" height="60" fill="url(#gl1)" rx="1.5" style="stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- メインテキスト -->
+  <text x="80" y="155" font-family="sans-serif" font-size="48" font-weight="700" fill="white" opacity="0.95" style="fill:rgb(255, 255, 255);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.95;font-family:sans-serif;font-size:48px;font-weight:700;text-anchor:start;dominant-baseline:auto">森山翔登</text>
+  <text x="80" y="188" font-family="sans-serif" font-size="18" font-weight="400" fill="rgba(255,255,255,0.5)" letter-spacing="2" style="fill:rgba(255, 255, 255, 0.5);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:sans-serif;font-size:18px;font-weight:400;text-anchor:start;dominant-baseline:auto">Shoto Moriyama</text>
+
+  <!-- キャッチコピー -->
+  <text x="80" y="240" font-family="sans-serif" font-size="14" font-weight="400" fill="rgba(255,255,255,0.7)" style="fill:rgba(255, 255, 255, 0.7);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:sans-serif;font-size:14px;font-weight:400;text-anchor:start;dominant-baseline:auto">Web制作・デザイン</text>
+  <text x="80" y="262" font-family="sans-serif" font-size="13" font-weight="400" fill="rgba(255,255,255,0.4)" style="fill:rgba(255, 255, 255, 0.4);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:sans-serif;font-size:13px;font-weight:400;text-anchor:start;dominant-baseline:auto">小さな想いも、丁寧なものづくりで、大きな未来に変わる。</text>
+
+  <!-- タグ -->
+  <rect x="80" y="285" width="90" height="24" rx="4" fill="rgba(0,102,255,0.2)" stroke="rgba(0,102,255,0.4)" stroke-width="0.5" style="fill:rgba(0, 102, 255, 0.2);stroke:rgba(0, 102, 255, 0.4);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <text x="125" y="301" font-family="sans-serif" font-size="11" fill="#60a5fa" text-anchor="middle" style="fill:rgb(96, 165, 250);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:sans-serif;font-size:11px;font-weight:400;text-anchor:middle;dominant-baseline:auto">Next.js</text>
+
+  <rect x="178" y="285" width="90" height="24" rx="4" fill="rgba(168,218,220,0.15)" stroke="rgba(168,218,220,0.3)" stroke-width="0.5" style="fill:rgba(168, 218, 220, 0.15);stroke:rgba(168, 218, 220, 0.3);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <text x="223" y="301" font-family="sans-serif" font-size="11" fill="#A8DADC" text-anchor="middle" style="fill:rgb(168, 218, 220);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:sans-serif;font-size:11px;font-weight:400;text-anchor:middle;dominant-baseline:auto">React</text>
+
+  <rect x="276" y="285" width="90" height="24" rx="4" fill="rgba(255,107,107,0.15)" stroke="rgba(255,107,107,0.3)" stroke-width="0.5" style="fill:rgba(255, 107, 107, 0.15);stroke:rgba(255, 107, 107, 0.3);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <text x="321" y="301" font-family="sans-serif" font-size="11" fill="#FF6B6B" text-anchor="middle" style="fill:rgb(255, 107, 107);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:sans-serif;font-size:11px;font-weight:400;text-anchor:middle;dominant-baseline:auto">Design</text>
+
+  <!-- URL -->
+  <text x="80" y="338" font-family="sans-serif" font-size="13" fill="rgba(255,255,255,0.3)" style="fill:rgba(255, 255, 255, 0.3);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:sans-serif;font-size:13px;font-weight:400;text-anchor:start;dominant-baseline:auto">shotomoriyama.com</text>
+
+  <!-- 右側グラフィック - 波形ライン -->
+  <g opacity="0.4" style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.4;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
+    <path d="M 420 140 Q 450 120 480 140 Q 510 160 540 140 Q 570 120 600 140 Q 630 160 660 140" fill="none" stroke="#0066FF" stroke-width="1.5" style="fill:none;stroke:rgb(0, 102, 255);color:rgb(255, 255, 255);stroke-width:1.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+    <path d="M 420 160 Q 450 140 480 160 Q 510 180 540 160 Q 570 140 600 160 Q 630 180 660 160" fill="none" stroke="#A8DADC" stroke-width="1" style="fill:none;stroke:rgb(168, 218, 220);color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+    <path d="M 420 180 Q 450 160 480 180 Q 510 200 540 180 Q 570 160 600 180 Q 630 200 660 180" fill="none" stroke="#FF6B6B" stroke-width="0.5" style="fill:none;stroke:rgb(255, 107, 107);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+    <path d="M 420 200 Q 450 180 480 200 Q 510 220 540 200 Q 570 180 600 200 Q 630 220 660 200" fill="none" stroke="#0066FF" stroke-width="0.5" opacity="0.5" style="fill:none;stroke:rgb(0, 102, 255);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.5;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+    <path d="M 420 220 Q 450 200 480 220 Q 510 240 540 220 Q 570 200 600 220 Q 630 240 660 220" fill="none" stroke="#A8DADC" stroke-width="0.5" opacity="0.5" style="fill:none;stroke:rgb(168, 218, 220);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.5;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  </g>
+</svg>
