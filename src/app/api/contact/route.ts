@@ -85,7 +85,7 @@ export async function POST(request: Request) {
 
           <hr style="margin: 30px 0;">
           <p style="color: #666; font-size: 12px;">
-            このメールは shotomoriyama.jp のお問い合わせフォームから送信されました。
+        このメールは shotomoriyama.com のお問い合わせフォームから送信されました。
           </p>
         </div>
       `,
