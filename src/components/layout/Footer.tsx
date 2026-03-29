@@ -7,11 +7,11 @@ import Image from 'next/image';
 import { useTheme } from 'next-themes';
 import { useState, useEffect } from 'react';
 import AnimatedButton from '@/components/ui/AnimatedButton';
+import { XIcon } from '@/components/icons/XIcon';
 import {
   Calculator,
   MessageCircle,
   ArrowRight,
-  Twitter,
   Github,
   Linkedin,
   Mail,
@@ -57,7 +57,7 @@ export default function Footer({
   ];
 
   const socialLinks = [
-    { name: 'Twitter',   icon: Twitter,   href: 'https://twitter.com/sh0t0x72',             color: '#1DA1F2' },
+    { name: 'X',    icon: XIcon,    href: 'https://x.com/ShotoMoriyama',             color: isDark ? '#aaa' : '#181717' },
     { name: 'Instagram', icon: Instagram, href: 'https://instagram.com/sh0t0x72',            color: '#E4405F' },
     { name: 'GitHub',    icon: Github,    href: 'https://github.com/shotocodes',             color: isDark ? '#aaa' : '#181717' },
     { name: 'LinkedIn',  icon: Linkedin,  href: 'https://linkedin.com/in/shotomoriyama',     color: '#0A66C2' },

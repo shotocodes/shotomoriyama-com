@@ -1,20 +1,8 @@
 // src/data/aboutData.ts
-import {
-  Globe,
-  Code2,
-  FileText,
-  Zap,
-  Award,
-  Target,
-  Github,
-  Twitter,
-  Linkedin,
-  Heart,
-  Users,
-  Lightbulb
-} from 'lucide-react';
+import { Globe, Code2, FileText, Zap, Award, Target, Github, Linkedin, Heart, Users, Lightbulb } from 'lucide-react';
 
 import { LineIcon } from '@/components/icons/LineIcon';
+import { XIcon } from '@/components/icons/XIcon';
 
 // プロジェクトデータ
 export const projects = [
@@ -51,8 +39,8 @@ export const socialLinks = [
     color: '#333'
   },
   {
-    icon: Twitter,
-    label: 'X (Twitter)',
+    icon: XIcon,
+    label: 'X',
     url: 'https://x.com/ShotoMoriyama',
     color: '#1DA1F2'
   },
