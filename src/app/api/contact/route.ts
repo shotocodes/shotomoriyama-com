@@ -47,7 +47,7 @@ export async function POST(request: Request) {
     }
 
     const data = await resend.emails.send({
-      from: 'noreply@shotomoriyama.jp', // ✅ 独自ドメインに変更
+      from: 'noreply@shotomoriyama.com', // ✅ 独自ドメインに変更
       to: '0sdm0.moriyama@gmail.com',
       replyTo: email,
       subject: `【お問い合わせ】${sanitize(name)}様より`, // ✅ サニタイズ
