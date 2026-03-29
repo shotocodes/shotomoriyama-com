@@ -1,0 +1,249 @@
+---
+title: 'このポートフォリオサイトの技術スタックを全部公開する'
+category: '技術'
+categoryId: 'tech'
+categoryColor: '#9333EA'
+date: '2026-03-29'
+readTime: '12分'
+excerpt: 'Next.js・Framer Motion・MDXなど、このサイトで使っている技術を全部公開。なぜその技術を選んだか、実装で工夫した点も解説します。'
+---
+
+<ResetSteps />
+
+## なぜ技術スタックを公開するのか
+
+ポートフォリオサイトを作るとき、「どんな技術を使えばいいか」で悩む人は多いと思います。
+
+私自身、このサイトを作るときにいくつかの選択肢で迷いました。
+この記事では、実際に採用した技術とその理由を全部公開します。
+
+同じような構成でサイトを作りたい方の参考になれば嬉しいです。
+
+---
+
+## 全体のアーキテクチャ
+
+まずは全体像から。
+
+<InfoBox title="技術スタック一覧">
+**フロントエンド**
+- Next.js 15（App Router）
+- TypeScript
+- Tailwind CSS
+- Framer Motion
+
+**コンテンツ管理**
+- MDX（ブログ記事）
+- TSX（サポート記事）
+
+**バックエンド**
+- Next.js API Routes
+- Resend（メール送信）
+
+**インフラ**
+- Vercel（ホスティング）
+- Cloudflare（ドメイン管理）
+</InfoBox>
+
+---
+
+## 1. Next.js を選んだ理由
+
+フレームワークの選択肢はいくつかありました。
+
+- Astro → 静的サイトに強いが、インタラクションが複雑になると辛い
+- Remix → 良いが、エコシステムがまだ小さい
+- **Next.js → App Routerが成熟してきて、今が一番使いやすい**
+
+<InfoBox title="App Router を使った理由">
+Pages Router と App Router で迷いましたが、App Router を選択。
+
+理由は「Server Components」が使えること。
+ブログ記事の取得など、サーバー側で完結する処理を
+クライアントに送らずに済むので、パフォーマンスが向上します。
+
+```tsx
+// ブログ記事の取得はサーバー側で完結
+export default async function BlogPage() {
+  const posts = getAllPostsMetadata(); // サーバーで実行
+  return <BlogContent posts={posts} />;
+}
+```
+</InfoBox>
+
+---
+
+## 2. Tailwind CSS × インラインスタイルの使い分け
+
+このサイトでは Tailwind CSS とインラインスタイルを意図的に使い分けています。
+
+<StepCard title="Tailwind を使う場面">
+- レスポンシブ対応（`lg:hidden`、`md:grid-cols-2` など）
+- 色・タイポグラフィなどデザイントークン
+- ホバー・トランジションなど状態管理
+</StepCard>
+
+<StepCard title="インラインスタイルを使う場面">
+- 動的な値（アニメーションの色、計算が必要な値）
+- マージン・パディングの細かい調整
+- Framer Motion と組み合わせる値
+</StepCard>
+
+最初は全部 Tailwind で統一しようとしていましたが、
+動的な値の扱いが複雑になったので途中から使い分けるようにしました。
+
+---
+
+## 3. Framer Motion でアニメーションを実装
+
+このサイトで一番こだわった部分がアニメーションです。
+
+<InfoBox title="使っているアニメーションの種類">
+**スクロール連動アニメーション**
+`useScrollProgress` カスタムフックで ScrollProgress（0〜1）を取得し、
+各セクションのアニメーションに使用。
+
+**ページ遷移**
+`AnimatePresence` でページ切り替え時のフェードアニメーション。
+
+**インタラクション**
+`whileHover`・`whileTap` でボタンのマイクロインタラクション。
+
+**レイアウトアニメーション**
+`layoutId` でカード展開時のモーフィングアニメーション。
+ServiceSection の円形カードで使用。
+</InfoBox>
+
+実装で一番難しかったのが、スクロール連動アニメーションです。
+`sticky` + `height: 300vh` の組み合わせでスクロール量を計算し、
+その値をアニメーションに反映させる実装は何度も修正しました。
+
+---
+
+## 4. MDX でブログを管理する
+
+ブログ記事は MDX（Markdown + JSX）で管理しています。
+
+<InfoBox title="MDX を選んだ理由">
+- Markdown の書きやすさを保ちながら、JSX コンポーネントも使える
+- CMS 不要でファイルベースで管理できる
+- Git で記事のバージョン管理ができる
+- TypeScript との相性が良い
+</InfoBox>
+
+<StepCard title="記事のフロントマター">
+```yaml
+---
+title: '記事タイトル'
+category: 'カテゴリ名'
+categoryId: 'tech'
+categoryColor: '#9333EA'
+date: '2026-03-29'
+readTime: '10分'
+excerpt: '記事の概要'
+---
+```
+
+このメタデータを `gray-matter` で取得して、
+一覧ページの表示に使っています。
+</StepCard>
+
+---
+
+## 5. サポート記事は TSX で管理
+
+ブログは MDX ですが、サポート記事は TSX ファイルで管理しています。
+
+理由は「デザインの自由度」です。
+
+<HighlightBox title="なぜ TSX にしたのか">
+サポート記事はクライアント向けの実用的な情報で、
+視覚的にわかりやすいレイアウトが重要です。
+
+MDX でも JSX コンポーネントを使えますが、
+複雑なレイアウトは TSX で直接書く方が柔軟に対応できます。
+
+記事ごとにファイルを分割し、`supportArticles.tsx` で
+一元管理するアーキテクチャにしました。
+
+```
+src/content/support/
+  ├── copywriting.tsx
+  ├── photo-tips.tsx
+  ├── seo-basics.tsx
+  └── ai-design.tsx
+```
+</HighlightBox>
+
+---
+
+## 6. Resend でお問い合わせフォームを実装
+
+お問い合わせフォームのメール送信には Resend を使っています。
+
+<InfoBox title="Resend を選んだ理由">
+- Next.js API Routes との相性が抜群
+- 独自ドメインのメール送信が簡単に設定できる
+- 無料プランで月3,000通まで送信可能
+- TypeScript の型サポートが充実している
+</InfoBox>
+
+SendGrid や Nodemailer も検討しましたが、
+設定のシンプルさで Resend を選びました。
+
+---
+
+## 7. Vercel + Cloudflare の構成
+
+インフラは Vercel でホスティング、ドメイン管理は Cloudflare です。
+
+<StepCard title="この構成のメリット">
+- Git push するだけで自動デプロイ
+- Preview URL が自動生成されてレビューしやすい
+- Cloudflare の DNS 管理がシンプル
+- 独自ドメインの設定が数分で完了
+</StepCard>
+
+---
+
+## 実装して大変だったこと
+
+### モバイル最適化
+
+スクロール連動アニメーションはPC向けに作っていたため、
+モバイルでは全く別のレイアウトに切り替える実装が必要でした。
+
+`hidden lg:block` / `lg:hidden` でPC・モバイルを完全に分離する
+アプローチで解決しましたが、コードの重複が増えるのが課題です。
+
+### CSS変数の管理
+
+`var(--border)` と `var(--color-border)` が混在するバグが発生。
+全ページを見直して統一するのに時間がかかりました。
+
+命名規則を最初に決めておくことの重要性を実感しました。
+
+---
+
+## まとめ
+
+このサイトの技術選定のポイントをまとめます。
+
+- **Next.js App Router** → パフォーマンスと開発体験のバランス
+- **Framer Motion** → 豊富なアニメーションAPIで表現力が高い
+- **MDX + TSX の使い分け** → コンテンツの特性に合わせて選択
+- **Vercel + Cloudflare** → デプロイと運用がシンプル
+
+技術選定に正解はありませんが、「今のフェーズで必要な機能を、
+シンプルに実現できるか」を基準にすると迷いにくくなります。
+
+---
+
+<TipBox>
+💬 **技術的な相談もお気軽にどうぞ**
+
+「Next.js でサイトを作りたいけど、どこから始めればいいか分からない」
+「このサイトの実装について詳しく聞きたい」
+
+そんな相談も歓迎です。お気軽にご連絡ください。
+</TipBox>
