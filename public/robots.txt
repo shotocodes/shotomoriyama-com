@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://shotomoriyama.com/sitemap.xml
+Sitemap: https://www.shotomoriyama.com/sitemap.xml
