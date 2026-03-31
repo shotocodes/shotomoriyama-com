@@ -4,6 +4,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import AnimatedText from '@/components/shared/AnimatedText';
 import GridButton from '@/components/shared/GridButton';
 import GridBackground from '@/components/shared/GridBackground';
@@ -72,13 +73,12 @@ function FloatingWorks({ works, scrollProgress }: { works: Work[]; scrollProgres
                 transition: { duration: 0.2 }
               }}
             >
-              <img
+              <Image
                 src={work.image}
                 alt={work.title}
+                width={256}
+                height={192}
                 className="w-full h-48 object-cover"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/images/works/placeholder.png';
-                }}
               />
               <div className="p-3 bg-background">
                 <p className="text-xs text-text-secondary mb-1">{work.category} • {work.year}</p>
@@ -131,13 +131,12 @@ function MobileWorks({ works }: { works: Work[] }) {
           >
             <Link href={`/works/${work.id}`} className="block">
               <div className="rounded-lg overflow-hidden shadow-xl border-2 border-border">
-                <img
+                <Image
                   src={work.image}
                   alt={work.title}
+                  width={400}
+                  height={256}
                   className="w-full h-32 object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = '/images/works/placeholder.png';
-                  }}
                 />
                 <div className="p-2 bg-background">
                   <p className="text-[10px] text-text-secondary mb-1">{work.category} • {work.year}</p>

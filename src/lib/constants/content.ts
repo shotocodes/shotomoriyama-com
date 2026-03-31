@@ -96,7 +96,7 @@ export const siteContent = {
         title: 'ショートの暇つぶしブログ',
         description: '個人ブログサイト',
         image: '/images/works/blog.png',
-        url: 'https://your-blog-url.com',
+        url: 'https://sho-tolog.com/',
         tags: ['ブログ', 'Next.js'],
       },
     ],

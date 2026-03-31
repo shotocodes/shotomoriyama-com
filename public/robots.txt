@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://shotomoriyama.com/sitemap.xml
