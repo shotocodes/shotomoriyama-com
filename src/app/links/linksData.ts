@@ -4,7 +4,7 @@ export interface LinkItem {
   id: string;
   label: string;
   url: string;
-  icon: 'portfolio' | 'globe' | 'note' | 'x' | 'blog' | 'instagram' | 'contact';
+  icon: 'portfolio' | 'globe' | 'note' | 'x' | 'blog' | 'instagram' | 'contact' | 'enso';
   color: string;
   featured?: boolean;
 }
@@ -31,6 +31,14 @@ export const links: LinkItem[] = [
     url: 'https://www.shoto.tech',
     icon: 'globe',
     color: '#4ECDC4',
+  },
+  {
+    id: 'enso',
+    label: 'ENSO — Design your days.',
+    url: 'https://ensolife.app',
+    icon: 'enso',
+    color: '#10B981',
+    featured: true,
   },
   {
     id: 'note',
