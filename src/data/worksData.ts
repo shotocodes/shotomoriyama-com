@@ -103,6 +103,23 @@ export const personalProjects = [
     status: 'In Progress',
     image: '/images/works/portfolio-en.png',
   },
+  {
+    id: 'personal-3',
+    title: 'ENSO — Design your days.',
+    category: 'Personal Project',
+    tags: ['Next.js', 'TypeScript'],
+    description: '日々の暮らしをデザインするためのライフスタイルアプリ。',
+    purpose: '毎日をより意図的に、豊かにデザインするためのツール',
+    features: [
+      'ライフスタイルデザイン',
+      'モダンUI/UX',
+      'レスポンシブデザイン',
+    ],
+    year: '2025',
+    url: 'https://ensolife.app',
+    status: 'Active',
+    image: '/images/works/enso.png',
+  },
 ];
 
 
