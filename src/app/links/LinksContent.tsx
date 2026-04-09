@@ -74,7 +74,6 @@ function EnsoIcon({ color }: { color: string }) {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="9" stroke={color} strokeWidth="2"/>
-      <path d="M8 12a4 4 0 0 1 8 0" stroke={color} strokeWidth="2" strokeLinecap="round"/>
     </svg>
   );
 }
