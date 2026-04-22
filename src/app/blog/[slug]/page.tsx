@@ -53,7 +53,7 @@ const components = {
   ),
   // ✅ pre/code を分離（インラインcodeにdisplay:blockが当たらないように）
   pre: (props: any) => (
-    <pre style={{ backgroundColor: '#1a1a1a', padding: '1rem', borderRadius: '4px', marginBottom: '1.5rem', overflowX: 'auto' }} {...props} />
+    <pre style={{ backgroundColor: '#1a1a1a', color: '#e5e7eb', padding: '1rem', borderRadius: '4px', marginBottom: '1.5rem', overflowX: 'auto' }} {...props} />
   ),
   code: (props: any) => (
     <code style={{ fontSize: '0.9rem', lineHeight: '1.6' }} {...props} />
