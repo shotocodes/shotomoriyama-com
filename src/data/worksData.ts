@@ -1,5 +1,4 @@
 // src/data/worksData.ts
-import { Code2, Palette, Globe, FileText } from 'lucide-react';
 
 // ✅ カテゴリ定義（将来のフィルター用）
 export const workCategories = [
@@ -35,8 +34,8 @@ export const clientWorks = [
     // ✅ 追加: クライアントの声
     testimonial: {
       text: '丁寧なヒアリングで、私たちの想いを形にしていただきました。完成したサイトは想像以上の出来栄えで、お客様からの反響も上々です。',
-      author: '佐藤工務店 代表',
-      position: '佐藤 太郎 様'
+      author: '株式会社佐藤工務店 工事部',
+      position: '佐藤 匠 様'
     }
   },
   {
@@ -59,8 +58,8 @@ export const clientWorks = [
     // ✅ 追加: クライアントの声
     testimonial: {
       text: '短納期にも関わらず、クオリティの高いサイトを制作していただきました。レスポンスも早く、安心してお任せできました。',
-      author: 'エスケリア マーケティング部',
-      position: '田中 花子 様'
+      author: '株式会社エスケリア 代表取締役',
+      position: '坂爪 健祐 様'
     }
   },
 ];
