@@ -42,6 +42,7 @@ interface Work {
   // 個人プロジェクト
   purpose?: string;
   features?: string[];
+  articleUrl?: string;
 }
 
 interface WorkDetailContentProps {
@@ -184,21 +185,29 @@ export default function WorkDetailContent({ work, isClientWork }: WorkDetailCont
               </p>
             </motion.div>
 
-            {/* Visit Site ボタン */}
-            {work.url && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.5 }}
-                style={{ marginBottom: '3rem' }}
-              >
+            {/* Visit Site / 記事を読む ボタン */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="flex flex-wrap"
+              style={{ gap: '1rem', marginBottom: '3rem' }}
+            >
+              {work.url && (
                 <a href={work.url} target="_blank" rel="noopener noreferrer">
                   <AnimatedButton icon={ExternalLink}>
                     Visit Site
                   </AnimatedButton>
                 </a>
-              </motion.div>
-            )}
+              )}
+              {work.articleUrl && (
+                <a href={work.articleUrl}>
+                  <AnimatedButton icon={ArrowRight}>
+                    開発記事を読む
+                  </AnimatedButton>
+                </a>
+              )}
+            </motion.div>
           </div>
         </div>
       </section>

@@ -7,6 +7,14 @@ import { XIcon } from '@/components/icons/XIcon';
 // プロジェクトデータ
 export const projects = [
   {
+    title: 'ENSO',
+    url: 'https://ensolife.app',
+    description: 'タイマー・タスク・集中・日記が連携する4アプリ統合ライフスタイルアプリ。Next.js × Supabase × Claude API',
+    icon: Zap,
+    color: '#10B981',
+    tag: 'Active'
+  },
+  {
     title: 'International Portfolio',
     url: 'https://www.shoto.tech/',
     description: '英語圏向けのポートフォリオサイト（開発中）。Three.jsを使った3Dインタラクティブデザイン',
@@ -59,8 +67,10 @@ export const skills = [
   { name: 'TypeScript', level: 4, category: 'Frontend' },
   { name: 'Tailwind CSS', level: 5, category: 'Design' },
   { name: 'Figma', level: 4, category: 'Design' },
+  { name: 'Supabase', level: 4, category: 'Backend' },
   { name: 'Node.js', level: 3, category: 'Backend' },
   { name: 'WordPress', level: 4, category: 'CMS' },
+  { name: 'Three.js', level: 4, category: 'Frontend' },
   { name: 'Framer Motion', level: 5, category: 'Animation' }
 ];
 
@@ -95,10 +105,17 @@ export const timeline = [
     color: '#FF8C42'
   },
   {
-    year: '2024',
-    title: '現在',
-    description: '厳選した案件のみ受注し、1件1件に全力投球',
+    year: '2025',
+    title: '佐藤工務店 サイトリニューアル納品',
+    description: 'WordPress × PHPで構築。問い合わせ数前月比150%増・保守契約も獲得',
     icon: Target,
+    color: '#0066FF'
+  },
+  {
+    year: '2026',
+    title: 'ENSO v1リリース・受託案件拡大',
+    description: 'Next.js × Supabase × Claude APIで5アプリ統合ライフスタイルアプリを個人開発。おたからひろばのサイト制作も2週間で完成納品',
+    icon: Zap,
     color: '#10B981'
   }
 ];
