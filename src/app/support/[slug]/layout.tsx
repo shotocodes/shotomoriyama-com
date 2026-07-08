@@ -2,6 +2,11 @@ import type { Metadata } from 'next';
 import { ReactNode } from 'react';
 import { supportArticleMeta } from '@/data/supportArticles';
 
+// 公開中の記事をビルド時にプリレンダリングする
+export function generateStaticParams() {
+  return supportArticleMeta.map((article) => ({ slug: article.slug }));
+}
+
 export async function generateMetadata({
   params,
 }: {

@@ -22,25 +22,42 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
+    // rAF でスクロールイベントを間引く（1フレーム1回まで）
+    let ticking = false;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        setIsScrolled(window.scrollY > 20);
 
-      const sections = ['service', 'works', 'blog', 'support', 'about', 'contact'];
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          if (rect.top <= 150 && rect.bottom >= 150) {
-            setActiveSection(section);
-            break;
+        const sections = ['service', 'works', 'blog', 'support', 'about', 'contact'];
+        for (const section of sections) {
+          const element = document.getElementById(section);
+          if (element) {
+            const rect = element.getBoundingClientRect();
+            if (rect.top <= 150 && rect.bottom >= 150) {
+              setActiveSection(section);
+              break;
+            }
           }
         }
-      }
+      });
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Escape キーでモバイルメニューを閉じる
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsMobileMenuOpen(false);
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isMobileMenuOpen]);
 
   // モバイルメニューが開いているときはスクロール禁止
   useEffect(() => {
@@ -76,7 +93,7 @@ export default function Header() {
     const angleStep = 180 / characters.length;
 
     return (
-      <svg width="80" height="80" viewBox="0 0 80 80" className="overflow-visible">
+      <svg width="80" height="80" viewBox="0 0 80 80" className="overflow-visible" aria-hidden="true">
         {characters.map((character: string, index: number) => {
           const angle = (angleStep * index - 90) * (Math.PI / 180);
           const x = 40 + radius * Math.cos(angle);
@@ -159,7 +176,12 @@ export default function Header() {
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <Link href={item.href} aria-current={isActive ? 'page' : undefined} className="block relative">
+                    <Link
+                      href={item.href}
+                      aria-current={isActive ? 'page' : undefined}
+                      aria-label={item.label}
+                      className="block relative rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                    >
                       {/* 円形テキスト */}
                       <motion.div
                         className="relative w-20 h-20 flex items-center justify-center"
@@ -271,6 +293,9 @@ export default function Header() {
             {/* メニューパネル */}
             <motion.div
               className="fixed top-0 right-0 h-full w-72 bg-background z-50 lg:hidden shadow-2xl"
+              role="dialog"
+              aria-modal="true"
+              aria-label="ナビゲーションメニュー"
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}

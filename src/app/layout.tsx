@@ -74,6 +74,12 @@ export default function RootLayout({
   return (
     <html lang="ja" suppressHydrationWarning>
       <body className={`${notoSansJP.variable} antialiased`}>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:bg-background focus:text-primary focus:px-4 focus:py-2 focus:rounded focus:shadow-lg"
+        >
+          本文へスキップ
+        </a>
         <ThemeProvider>
           {children}
           {process.env.NEXT_PUBLIC_GA_ID && (

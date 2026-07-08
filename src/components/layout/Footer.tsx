@@ -224,6 +224,7 @@ export default function Footer({
                     }}
                     transition={{ duration: 0.2 }}
                     title={social.name}
+                    aria-label={social.name}
                   >
                     <Icon size={16} />
                   </motion.a>
