@@ -73,7 +73,7 @@ export default function WorksPage() {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-background" style={{ overflowX: 'hidden' }}>
+      <div className="min-h-screen bg-background" style={{ paddingTop: '80px', overflowX: 'hidden' }}>
 
         {/* Hero */}
         <PageHero

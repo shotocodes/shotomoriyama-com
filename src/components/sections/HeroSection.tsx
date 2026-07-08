@@ -75,7 +75,7 @@ const TypewriterLine = ({
     if (!showEnglish || isDissolving) return;
 
     let interval: ReturnType<typeof setInterval> | undefined;
-    const totalDelay = index * 800;
+    const totalDelay = index * 500;
     const timer = setTimeout(() => {
       interval = setInterval(() => {
         setDisplayedChars(prev => {
@@ -85,7 +85,7 @@ const TypewriterLine = ({
           if (interval) clearInterval(interval);
           return prev;
         });
-      }, 50);
+      }, 30);
     }, totalDelay);
 
     return () => {
@@ -172,14 +172,34 @@ export default function HeroSection() {
       return;
     }
 
+    let dissolveTimer: ReturnType<typeof setTimeout> | undefined;
     const timer = setTimeout(() => {
       setIsDissolving(true);
-      setTimeout(() => {
+      dissolveTimer = setTimeout(() => {
         setShowEnglish(false);
-      }, 1500); // ドット分解完了まで待つ
-    }, 6000); // 英文表示時間
+      }, 1200); // ドット分解完了まで待つ
+    }, 2500); // 英文表示時間（訪問者を待たせすぎない長さに短縮）
 
-    return () => clearTimeout(timer);
+    // スクロール・クリック・キー入力で英語イントロを即スキップ
+    // （本命の日本語コピーを見ずに離脱させない）
+    const skipIntro = () => {
+      clearTimeout(timer);
+      if (dissolveTimer) clearTimeout(dissolveTimer);
+      setShowEnglish(false);
+    };
+    window.addEventListener('wheel', skipIntro, { passive: true, once: true });
+    window.addEventListener('touchstart', skipIntro, { passive: true, once: true });
+    window.addEventListener('pointerdown', skipIntro, { once: true });
+    window.addEventListener('keydown', skipIntro, { once: true });
+
+    return () => {
+      clearTimeout(timer);
+      if (dissolveTimer) clearTimeout(dissolveTimer);
+      window.removeEventListener('wheel', skipIntro);
+      window.removeEventListener('touchstart', skipIntro);
+      window.removeEventListener('pointerdown', skipIntro);
+      window.removeEventListener('keydown', skipIntro);
+    };
   }, [prefersReducedMotion]);
 
   return (

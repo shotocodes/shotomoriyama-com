@@ -5,10 +5,47 @@ import { useEffect, useRef } from 'react';
 import { useTheme } from 'next-themes';
 import * as THREE from 'three';
 
+// 波の変位は GPU（vertex shader）で計算する。
+// CPU で毎フレーム全頂点を書き換える方式から移行し、
+// メインスレッド負荷とバッファ再アップロードをゼロにする。
+const vertexShader = /* glsl */ `
+  uniform float uTime;
+  uniform vec2 uMouse;
+
+  attribute vec3 aColor;
+
+  varying vec3 vColor;
+
+  void main() {
+    vColor = aColor;
+
+    vec3 pos = position;
+
+    float dist = distance(pos.xy, uMouse);
+    float mouseWave = sin(dist * 0.5 - uTime * 2.0) * 1.2;
+    float wave2 = sin(pos.x * 0.3 + uTime) * 0.5;
+    float wave3 = cos(pos.y * 0.3 + uTime * 0.7) * 0.5;
+
+    pos.z = mouseWave + wave2 + wave3;
+
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+  }
+`;
+
+const fragmentShader = /* glsl */ `
+  uniform float uOpacity;
+
+  varying vec3 vColor;
+
+  void main() {
+    gl_FragColor = vec4(vColor, uOpacity);
+  }
+`;
+
 // テーマに応じた頂点カラーを既存ジオメトリに書き込む（レンダラー再生成なしで切替可能にする）
 function applyThemeColors(
   geometry: THREE.PlaneGeometry,
-  material: THREE.MeshBasicMaterial,
+  material: THREE.ShaderMaterial,
   isDark: boolean,
   gridSize: number
 ) {
@@ -51,8 +88,8 @@ function applyThemeColors(
     colors[i * 3 + 2] = color.b;
   }
 
-  geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-  material.opacity = isDark ? 0.8 : 0.7;
+  geometry.setAttribute('aColor', new THREE.Float32BufferAttribute(colors, 3));
+  material.uniforms.uOpacity.value = isDark ? 0.8 : 0.7;
 }
 
 export default function HeroCanvas() {
@@ -62,7 +99,7 @@ export default function HeroCanvas() {
   // テーマ切替時にシーンを作り直さず色だけ差し替えるための参照
   const threeRef = useRef<{
     geometry: THREE.PlaneGeometry;
-    material: THREE.MeshBasicMaterial;
+    material: THREE.ShaderMaterial;
     gridSize: number;
     renderOnce: () => void;
   } | null>(null);
@@ -94,15 +131,21 @@ export default function HeroCanvas() {
     camera.position.z = 5;
 
     const gridSize = 50;
-    const gridDivisions = isMobile ? 45 : isTablet ? 50 : 60;
+    // 変位が GPU になったので、モバイルでも密度を落とす必要が薄い
+    const gridDivisions = isMobile ? 50 : isTablet ? 55 : 60;
 
     const geometry = new THREE.PlaneGeometry(gridSize, gridSize, gridDivisions, gridDivisions);
 
-    const material = new THREE.MeshBasicMaterial({
-      vertexColors: true,
+    const material = new THREE.ShaderMaterial({
+      vertexShader,
+      fragmentShader,
+      uniforms: {
+        uTime: { value: 0 },
+        uMouse: { value: new THREE.Vector2(0, 0) },
+        uOpacity: { value: isDark ? 0.8 : 0.7 },
+      },
       wireframe: true,
       transparent: true,
-      opacity: isDark ? 0.8 : 0.7,
     });
 
     applyThemeColors(geometry, material, isDark, gridSize);
@@ -128,23 +171,8 @@ export default function HeroCanvas() {
     let lastFrameTime = 0;
 
     const renderFrame = (elapsedTime: number) => {
-      const positions = geometry.attributes.position;
-
-      for (let i = 0; i < positions.count; i++) {
-        const x = positions.getX(i);
-        const y = positions.getY(i);
-
-        const distance = Math.sqrt(
-          Math.pow(x - mouse.x * 10, 2) + Math.pow(y - mouse.y * 10, 2)
-        );
-        const mouseWave = Math.sin(distance * 0.5 - elapsedTime * 2) * 1.2;
-
-        const wave2 = Math.sin(x * 0.3 + elapsedTime) * 0.5;
-        const wave3 = Math.cos(y * 0.3 + elapsedTime * 0.7) * 0.5;
-
-        positions.setZ(i, mouseWave + wave2 + wave3);
-      }
-      positions.needsUpdate = true;
+      material.uniforms.uTime.value = elapsedTime;
+      material.uniforms.uMouse.value.set(mouse.x * 10, mouse.y * 10);
 
       mesh.rotation.z = Math.sin(elapsedTime * 0.2) * 0.1;
 
