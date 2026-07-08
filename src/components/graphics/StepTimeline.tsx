@@ -287,11 +287,11 @@ export default function StepTimeline({
             filter="url(#absorbGlow)"
           />
 
-          {/* パーティクル（細かい粒子） */}
+          {/* パーティクル（細かい粒子・インデックスから決定的に導出） */}
           {Array.from({ length: 30 }).map((_, i) => {
-            const angle = Math.random() * 360;
+            const angle = (i * 137) % 360; // 黄金角でばらけさせる
             const rad = (angle * Math.PI) / 180;
-            const distance = 80 + Math.random() * 100;
+            const distance = 80 + ((i * 29) % 101);
             const endX = 850 + Math.cos(rad) * distance;
             const endY = 535 + Math.sin(rad) * distance;
 
@@ -300,7 +300,7 @@ export default function StepTimeline({
                 key={`particle-${i}`}
                 cx="850"
                 cy="535"
-                r={2 + Math.random() * 3}
+                r={2 + ((i * 3) % 4)}
                 fill={barColor}
                 animate={{
                   cx: endX,
@@ -309,7 +309,7 @@ export default function StepTimeline({
                   scale: [1, 0]
                 }}
                 transition={{
-                  duration: 0.5 + Math.random() * 0.4,
+                  duration: 0.5 + ((i * 7) % 5) / 10,
                   ease: "easeOut"
                 }}
                 filter="url(#hybridGlow)"

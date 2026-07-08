@@ -67,7 +67,7 @@ export default async function BlogPage() {
             <div style={{ width: '200px', height: '200px', transform: 'scale(0.6)', transformOrigin: 'center' }}>
               <HexagonPattern color="#9333EA" opacity={0.6} animate={true} hexCount={8} />
             </div>
-            <div style={{ width: '200px', height: '200px', transform: 'scale(0.3)', transformOrigin: 'reft' }}>
+            <div style={{ width: '200px', height: '200px', transform: 'scale(0.3)', transformOrigin: 'left' }}>
               <HexagonPattern color="#EC4899" opacity={0.6} animate={true} hexCount={10} />
             </div>
           </div>

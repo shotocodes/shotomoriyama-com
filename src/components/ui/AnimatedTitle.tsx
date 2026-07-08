@@ -20,9 +20,19 @@ export default function AnimatedTitle({
   accentColor = '#0066FF',
   className = 'text-5xl lg:text-7xl font-bold tracking-wider'
 }: AnimatedTitleProps) {
-  const [displayText, setDisplayText] = useState(text.split('').map(() => generateRandomChar()));
+  // SSR・ハイドレーション時は本物のテキストを表示する
+  // （初期 state にランダム文字を使うとサーバーとクライアントで食い違い、
+  //  ハイドレーションエラーになる。SEO 的にも h1 は実テキストが望ましい）
+  const [displayText, setDisplayText] = useState(() => text.split(''));
   const [revealedIndices, setRevealedIndices] = useState<number[]>([]);
-  const [isAnimating, setIsAnimating] = useState(true);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  // マウント後にスクランブル演出を開始
+  useEffect(() => {
+    setDisplayText(text.split('').map(() => generateRandomChar()));
+    setRevealedIndices([]);
+    setIsAnimating(true);
+  }, [text]);
 
   useEffect(() => {
     // 完了判定
