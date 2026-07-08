@@ -11,6 +11,7 @@ import * as THREE from 'three';
 const vertexShader = /* glsl */ `
   uniform float uTime;
   uniform vec2 uMouse;
+  uniform float uScroll; // 0 = ヒーロー先頭, 1 = ヒーローを通過
 
   attribute vec3 aColor;
 
@@ -26,7 +27,8 @@ const vertexShader = /* glsl */ `
     float wave2 = sin(pos.x * 0.3 + uTime) * 0.5;
     float wave3 = cos(pos.y * 0.3 + uTime * 0.7) * 0.5;
 
-    pos.z = mouseWave + wave2 + wave3;
+    // スクロールで波が静まっていく（穏やかな余韻を残して次のセクションへ）
+    pos.z = (mouseWave + wave2 + wave3) * (1.0 - uScroll * 0.65);
 
     gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
   }
@@ -142,6 +144,7 @@ export default function HeroCanvas() {
       uniforms: {
         uTime: { value: 0 },
         uMouse: { value: new THREE.Vector2(0, 0) },
+        uScroll: { value: 0 },
         uOpacity: { value: isDark ? 0.8 : 0.7 },
       },
       wireframe: true,
@@ -173,6 +176,12 @@ export default function HeroCanvas() {
     const renderFrame = (elapsedTime: number) => {
       material.uniforms.uTime.value = elapsedTime;
       material.uniforms.uMouse.value.set(mouse.x * 10, mouse.y * 10);
+
+      // スクロールと波を連動させる（振幅が静まり、カメラが引いていく）
+      const scrollProgress = Math.min(1, window.scrollY / window.innerHeight);
+      material.uniforms.uScroll.value = scrollProgress;
+      camera.position.z = 5 + scrollProgress * 1.5;
+      mesh.rotation.x = -Math.PI / 3 - scrollProgress * 0.12;
 
       mesh.rotation.z = Math.sin(elapsedTime * 0.2) * 0.1;
 

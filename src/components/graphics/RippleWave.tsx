@@ -3,6 +3,7 @@
 
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { useMounted } from '@/hooks/useMounted';
 
 interface Ripple {
   id: string;
@@ -33,11 +34,7 @@ export default function RippleWave({
   height = 800
 }: RippleWaveProps) {
   const [ripples, setRipples] = useState<Ripple[]>([]);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useMounted();
 
   // 新しい波紋を生成
   const createRipple = (): Ripple => ({

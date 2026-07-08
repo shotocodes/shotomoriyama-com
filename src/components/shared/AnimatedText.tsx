@@ -2,6 +2,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useMounted } from '@/hooks/useMounted';
 
 interface AnimatedTextProps {
   text: string;                    // 表示する文字列 (例: "SERVICE", "WORKS")
@@ -22,15 +23,11 @@ export default function AnimatedText({
 }: AnimatedTextProps) {
   // SSR とハイドレーション時はランダム文字を使わない（不一致でツリーが壊れるため）。
   // マウント後にインターバルでスクランブルを回す。
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const [, setScrambleTick] = useState(0);
 
   const progress = Math.min(scrollProgress * 1.5, 1);
   const isFullyRevealed = progress >= 1;
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     if (!mounted || isFullyRevealed) return;

@@ -1,7 +1,15 @@
 // src/components/sections/HeroSection.tsx
 'use client';
 
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import {
+  motion,
+  AnimatePresence,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+  useMotionValue,
+  useSpring,
+} from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 
@@ -164,6 +172,32 @@ export default function HeroSection() {
   const [showEnglish, setShowEnglish] = useState(true);
   const [isDissolving, setIsDissolving] = useState(false);
 
+  // スクロールでヒーローの文字が静かに退場する
+  // （MotionValue 駆動なので React の再レンダーは発生しない）
+  const { scrollY } = useScroll();
+  const heroOpacity = useTransform(scrollY, [0, 500], [1, 0]);
+  const heroY = useTransform(scrollY, [0, 500], [0, -60]);
+
+  // CONTACT ボタンのマグネティックホバー
+  const magnetX = useMotionValue(0);
+  const magnetY = useMotionValue(0);
+  const magnetSpringX = useSpring(magnetX, { stiffness: 260, damping: 18 });
+  const magnetSpringY = useSpring(magnetY, { stiffness: 260, damping: 18 });
+
+  const handleMagnetMove = (event: React.PointerEvent<HTMLButtonElement>) => {
+    if (prefersReducedMotion) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const dx = event.clientX - (rect.left + rect.width / 2);
+    const dy = event.clientY - (rect.top + rect.height / 2);
+    magnetX.set(Math.max(-10, Math.min(10, dx * 0.2)));
+    magnetY.set(Math.max(-8, Math.min(8, dy * 0.3)));
+  };
+
+  const handleMagnetLeave = () => {
+    magnetX.set(0);
+    magnetY.set(0);
+  };
+
   // 英語→日本語の切り替えタイマー
   useEffect(() => {
     // モーション軽減設定時はタイプライター演出をスキップして本文を即表示
@@ -213,7 +247,10 @@ export default function HeroSection() {
         小さな想いも、丁寧なものづくりで、大きな未来に変わる。 — 森山翔登 | Web制作・デザイン
       </h1>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <motion.div
+        className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10"
+        style={prefersReducedMotion ? undefined : { opacity: heroOpacity, y: heroY }}
+      >
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -295,19 +332,23 @@ export default function HeroSection() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 1 }}
               >
-                <button
+                <motion.button
                   onClick={() => {
                     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
                   }}
+                  onPointerMove={handleMagnetMove}
+                  onPointerLeave={handleMagnetLeave}
                   className="inline-block m-4 bg-gradient-to-r from-[#0066FF] to-[#0E7490] dark:from-[#3B82F6] dark:to-[#8B5CF6] text-white font-semibold rounded-full hover:shadow-2xl hover:scale-105 transition-all duration-300 text-base sm:text-lg px-12 sm:px-20 py-3 sm:py-4 group focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
                   style={{
                     boxShadow: '0 10px 40px rgba(59, 130, 246, 0.3)',
+                    x: magnetSpringX,
+                    y: magnetSpringY,
                   }}
                 >
                   <span className="inline-block group-hover:scale-110 transition-transform">
                     CONTACT
                   </span>
-                </button>
+                </motion.button>
               </motion.div>
 
               <motion.div
@@ -329,7 +370,7 @@ export default function HeroSection() {
             </>
           )}
         </motion.div>
-      </div>
+      </motion.div>
     </section>
   );
 }

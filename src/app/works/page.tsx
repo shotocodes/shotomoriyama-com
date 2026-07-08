@@ -1,49 +1,4 @@
 // src/app/works/page.tsx
-
-
-// src/app/works/page.tsx
-
-// ✅ 将来追加するフィルター機能（実績5件超えたら実装）
-/*
-import { workCategories } from '@/data/worksData';
-
-export default function WorksPage() {
-  const [selectedCategory, setSelectedCategory] = useState<WorkCategory>('All');
-
-  // フィルター適用
-  const filteredWorks = selectedCategory === 'All'
-    ? clientWorks
-    : clientWorks.filter(work => work.category === selectedCategory);
-
-  return (
-    <>
-      {/* カテゴリフィルターボタン * /}
-      <div className="flex justify-center gap-2 mb-8">
-        {workCategories.filter(cat => cat !== 'Personal Project').map(category => (
-          <button
-            key={category}
-            onClick={() => setSelectedCategory(category)}
-            className={`px-4 py-2 rounded-lg transition-all ${
-              selectedCategory === category
-                ? 'bg-primary text-background'
-                : 'bg-background-alt text-text-secondary hover:text-primary'
-            }`}
-          >
-            {category}
-          </button>
-        ))}
-      </div>
-
-      {/* フィルター後のカード表示 * /}
-      <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: '2rem' }}>
-        {filteredWorks.map((work, index) => (
-          // 既存のカードコード
-        ))}
-      </div>
-    </>
-  );
-}
-*/
 'use client';
 
 import { motion } from 'framer-motion';

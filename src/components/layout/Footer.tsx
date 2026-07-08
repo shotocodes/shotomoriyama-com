@@ -5,9 +5,9 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
-import { useState, useEffect } from 'react';
 import AnimatedButton from '@/components/ui/AnimatedButton';
 import { XIcon } from '@/components/icons/XIcon';
+import { useMounted } from '@/hooks/useMounted';
 import {
   Calculator,
   MessageCircle,
@@ -28,11 +28,7 @@ export default function Footer({
   ctaSubText = "お気軽にご相談ください。最適なソリューションを提案します"
 }: FooterProps) {
   const { theme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useMounted();
 
   const isDark = mounted && theme === 'dark';
 

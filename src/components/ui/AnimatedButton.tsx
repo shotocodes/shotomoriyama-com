@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { LucideIcon } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useState, useEffect } from 'react';
+import { useMounted } from '@/hooks/useMounted';
 
 interface AnimatedButtonProps {
   href?: string;
@@ -23,11 +24,7 @@ export default function AnimatedButton({
   children
 }: AnimatedButtonProps) {
   const { theme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useMounted();
 
   const isDark = mounted && theme === 'dark';
   const borderColor = isDark ? '#dde5ed' : '#25282a';

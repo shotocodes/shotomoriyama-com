@@ -75,14 +75,3 @@ export function getPostBySlug(slug: string): BlogPost | null {
     return null;
   }
 }
-
-// カテゴリでフィルタリング
-export function getPostsByCategory(categoryId: string): Array<BlogPostMetadata & { slug: string }> {
-  const allPosts = getAllPostsMetadata();
-
-  if (categoryId === 'all') {
-    return allPosts;
-  }
-
-  return allPosts.filter((post) => post.categoryId === categoryId);
-}
