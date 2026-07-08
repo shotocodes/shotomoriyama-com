@@ -1,5 +1,7 @@
 // src/app/blog/[slug]/page.tsx
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { SITE_URL } from '@/lib/constants/site';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { ArrowLeft, Calendar, Clock, Tag } from 'lucide-react';
@@ -16,6 +18,33 @@ export async function generateStaticParams() {
   return slugs.map((slug) => ({
     slug: slug,
   }));
+}
+
+// 記事ごとのメタデータ（frontmatter から生成）
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const post = getPostBySlug(slug);
+
+  if (!post) {
+    return { title: 'Blog' };
+  }
+
+  return {
+    title: post.metadata.title,
+    description: post.metadata.excerpt,
+    openGraph: {
+      type: 'article',
+      title: post.metadata.title,
+      description: post.metadata.excerpt,
+      publishedTime: post.metadata.date,
+      url: `${SITE_URL}/blog/${slug}`,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.metadata.title,
+      description: post.metadata.excerpt,
+    },
+  };
 }
 
 const formatDate = (dateString: string) =>
@@ -81,9 +110,24 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
 
   const { metadata, content } = post;
 
+  // 検索エンジン向けの構造化データ（BlogPosting）
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: metadata.title,
+    description: metadata.excerpt,
+    datePublished: metadata.date,
+    author: { '@type': 'Person', name: '森山翔登', url: SITE_URL },
+    mainEntityOfPage: `${SITE_URL}/blog/${slug}`,
+    inLanguage: 'ja',
+  };
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Header />
       <div className="min-h-screen bg-background" style={{ paddingTop: '80px', position: 'relative', overflowX: 'hidden' }}>
 

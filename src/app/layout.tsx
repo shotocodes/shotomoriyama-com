@@ -3,6 +3,7 @@ import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { GoogleAnalytics } from '@next/third-parties/google'
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from '@/lib/constants/site'
 
 const notoSansJP = Noto_Sans_JP({
   variable: "--font-sans",
@@ -13,23 +14,29 @@ const notoSansJP = Noto_Sans_JP({
 
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://shotomoriyama.com'),
-  title: "森山翔登 | Web制作・デザイン",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: SITE_NAME,
+    template: `%s | 森山翔登`,
+  },
   icons: {
   icon: '/favicon.png',
   apple: '/apple-touch-icon.png',
  },
-  description: "フリーランスとして、企業様や個人事業主様のWebサイト制作・デザインを承っております。一から丁寧に、想いを形に。",
+  description: SITE_DESCRIPTION,
   keywords: ["Web制作", "ホームページ制作", "デザイン", "フリーランス", "森山翔登"],
   authors: [{ name: "森山翔登" }],
   creator: "森山翔登",
+  alternates: {
+    canonical: './',
+  },
 
   openGraph: {
     type: "website",
     locale: "ja_JP",
-    url: "https://shotomoriyama.com",
-    siteName: "森山翔登 | Web制作・デザイン",
-    title: "森山翔登 | Web制作・デザイン",
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    title: SITE_NAME,
     description: "フリーランスとして、企業様や個人事業主様のWebサイト制作・デザインを承っております。",
     images: [
       {
@@ -43,7 +50,7 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: "森山翔登 | Web制作・デザイン",
+    title: SITE_NAME,
     description: "フリーランスとして、企業様や個人事業主様のWebサイト制作・デザインを承っております。",
     images: ["/og-image.png"],
     creator: "@SOAR_C72",
@@ -69,7 +76,9 @@ export default function RootLayout({
       <body className={`${notoSansJP.variable} antialiased`}>
         <ThemeProvider>
           {children}
-          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
+          {process.env.NEXT_PUBLIC_GA_ID && (
+            <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+          )}
         </ThemeProvider>
       </body>
     </html>

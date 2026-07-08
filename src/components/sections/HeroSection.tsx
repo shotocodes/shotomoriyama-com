@@ -1,326 +1,197 @@
 // src/components/sections/HeroSection.tsx
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
-import { useTheme } from 'next-themes';
-import * as THREE from 'three';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { useEffect, useMemo, useState } from 'react';
+import dynamic from 'next/dynamic';
 
-export default function HeroSection() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { theme, systemTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  const [showEnglish, setShowEnglish] = useState(true);
-  const [isDissolving, setIsDissolving] = useState(false);
+// three.js を含むキャンバスは初期バンドルから分離して遅延読み込みする
+const HeroCanvas = dynamic(() => import('./HeroCanvas'), { ssr: false });
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // 英語→日本語の切り替えタイマー
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsDissolving(true);
-      setTimeout(() => {
-        setShowEnglish(false);
-      }, 1500); // ドット分解完了まで待つ（1200→1500に延長）
-    }, 6000); // 英文表示時間（4000 → 6000に変更 = 6秒）
-
-    return () => clearTimeout(timer);
-  }, []);
-
-useEffect(() => {
-  if (!canvasRef.current || !mounted) return;
-
-  const currentTheme = theme === 'system' ? systemTheme : theme;
-  const isDark = currentTheme === 'dark';
-
-  // ✅ モバイル判定
-  const isMobile = window.innerWidth < 768;
-  const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
-
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-  );
-  const renderer = new THREE.WebGLRenderer({
-    canvas: canvasRef.current,
-    alpha: true,
-    antialias: true, // ✅ アンチエイリアス ON（見た目重視）
-  });
-
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  camera.position.z = 5;
-
-  const gridSize = 50;
-  // ✅ 見た目を維持できる頂点数に調整
-  const gridDivisions = isMobile ? 45 : isTablet ? 50 : 60;
-
-  const geometry = new THREE.PlaneGeometry(gridSize, gridSize, gridDivisions, gridDivisions);
-
-  const colors = [];
-  let color1, color2, color3, color4;
-
-  if (isDark) {
-    color1 = new THREE.Color('#3B82F6');
-    color2 = new THREE.Color('#8B5CF6');
-    color3 = new THREE.Color('#EF4444');
-    color4 = new THREE.Color('#F59E0B');
-  } else {
-    color1 = new THREE.Color('#0066FF');
-    color2 = new THREE.Color('#A8DADC');
-    color3 = new THREE.Color('#FF6B6B');
-    color4 = new THREE.Color('#FFE66D');
-  }
-
-  const positions = geometry.attributes.position;
-  for (let i = 0; i < positions.count; i++) {
-    const x = positions.getX(i);
-    const y = positions.getY(i);
-
-    const mixAmount = (x / gridSize + 0.5);
-    const mixAmountY = (y / gridSize + 0.5);
-    const color = new THREE.Color();
-
-    if (mixAmount < 0.33) {
-      color.lerpColors(color1, color2, mixAmount * 3);
-    } else if (mixAmount < 0.66) {
-      color.lerpColors(color2, color3, (mixAmount - 0.33) * 3);
-    } else {
-      color.lerpColors(color3, color4, (mixAmount - 0.66) * 3);
-    }
-
-    color.lerp(color4, mixAmountY * 0.2);
-    colors.push(color.r, color.g, color.b);
-  }
-
-  geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-
-  const material = new THREE.MeshBasicMaterial({
-    vertexColors: true,
-    wireframe: true,
-    transparent: true,
-    opacity: isDark ? 0.8 : 0.7,
-  });
-
-  const mesh = new THREE.Mesh(geometry, material);
-  mesh.rotation.x = -Math.PI / 3;
-  scene.add(mesh);
-
-  const mouse = { x: 0, y: 0 };
-
-  const handleMouseMove = (event: MouseEvent) => {
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-  };
-
-  document.addEventListener('mousemove', handleMouseMove);
-
-  const clock = new THREE.Clock();
-  let animationId: number;
-
-  // ✅ FPS 制限のみ（モバイルのみ）
-  const targetFPS = isMobile ? 30 : 60;
-  const frameInterval = 1000 / targetFPS;
-  let lastFrameTime = 0;
-
-  const animate = (currentTime: number) => {
-    animationId = requestAnimationFrame(animate);
-
-    // ✅ FPS 制限
-    const deltaTime = currentTime - lastFrameTime;
-    if (deltaTime < frameInterval) return;
-    lastFrameTime = currentTime - (deltaTime % frameInterval);
-
-    const elapsedTime = clock.getElapsedTime();
-
-    const positions = geometry.attributes.position;
-
-    // ✅ 全頂点を更新（間引きなし）
-    for (let i = 0; i < positions.count; i++) {
-      const x = positions.getX(i);
-      const y = positions.getY(i);
-
-      const distance = Math.sqrt(
-        Math.pow(x - mouse.x * 10, 2) + Math.pow(y - mouse.y * 10, 2)
-      );
-      const mouseWave = Math.sin(distance * 0.5 - elapsedTime * 2) * 1.2;
-
-      const wave2 = Math.sin(x * 0.3 + elapsedTime) * 0.5;
-      const wave3 = Math.cos(y * 0.3 + elapsedTime * 0.7) * 0.5;
-
-      positions.setZ(i, mouseWave + wave2 + wave3);
-    }
-    positions.needsUpdate = true;
-
-    mesh.rotation.z = Math.sin(elapsedTime * 0.2) * 0.1;
-
-    renderer.render(scene, camera);
-  };
-  animate(0);
-
-  const handleResize = () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  };
-  window.addEventListener('resize', handleResize);
-
-  return () => {
-    document.removeEventListener('mousemove', handleMouseMove);
-    window.removeEventListener('resize', handleResize);
-    cancelAnimationFrame(animationId);
-    geometry.dispose();
-    material.dispose();
-    renderer.dispose();
-  };
-}, [theme, systemTheme, mounted]);
-
-  // Tilted horizontal ellipse with heartbeat
-  const TiltedEllipse = () => (
-    <motion.svg
-      className="absolute -inset-2 sm:-inset-32 md:-inset-48 lg:-inset-56 w-auto h-auto pointer-events-none"
-      viewBox="0 0 600 400"
-      style={{
-        opacity: 0.25,
-        transform: 'rotate(45deg)',
+// Tilted horizontal ellipse with heartbeat
+const TiltedEllipse = () => (
+  <motion.svg
+    className="absolute -inset-2 sm:-inset-32 md:-inset-48 lg:-inset-56 w-auto h-auto pointer-events-none"
+    viewBox="0 0 600 400"
+    style={{
+      opacity: 0.25,
+      transform: 'rotate(45deg)',
+    }}
+  >
+    <motion.ellipse
+      cx="200"
+      cy="180"
+      rx="160"
+      ry="80"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="12"
+      className="text-accent"
+      initial={{ scale: 1 }}
+      animate={{
+        scale: [1, 1.04, 1, 1.02, 1],
       }}
-    >
-      <motion.ellipse
-        cx="200"
-        cy="180"
-        rx="160"
-        ry="80"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="12"
-        className="text-accent"
-        initial={{ scale: 1 }}
-        animate={{
-          scale: [1, 1.04, 1, 1.02, 1],
-        }}
-        transition={{
-          duration: 2.5,
-          repeat: Infinity,
-          ease: "easeInOut",
-          times: [0, 0.2, 0.4, 0.6, 1],
-        }}
-      />
-    </motion.svg>
+      transition={{
+        duration: 2.5,
+        repeat: Infinity,
+        ease: "easeInOut",
+        times: [0, 0.2, 0.4, 0.6, 1],
+      }}
+    />
+  </motion.svg>
+);
+
+// タイプライター + 文字分解アニメーション
+const TypewriterLine = ({
+  text,
+  index,
+  showEnglish,
+  isDissolving,
+}: {
+  text: string;
+  index: number;
+  showEnglish: boolean;
+  isDissolving: boolean;
+}) => {
+  const [displayedChars, setDisplayedChars] = useState(0);
+
+  // 飛散方向は文字ごとに一度だけ生成（再レンダーで軌道が変わらないように）
+  const scatter = useMemo(
+    () =>
+      text.split('').map(() => {
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 100 + Math.random() * 150;
+        return {
+          x: Math.cos(angle) * distance,
+          y: Math.sin(angle) * distance,
+          rotate: (Math.random() - 0.5) * 720,
+        };
+      }),
+    [text]
   );
 
-  // タイプライター + 文字分解アニメーション
-  const TypewriterLine = ({ text, index }: { text: string; index: number }) => {
-    const [displayedChars, setDisplayedChars] = useState(0);
+  useEffect(() => {
+    // 英語表示中かつ分解アニメーション前のみ実行
+    if (!showEnglish || isDissolving) return;
 
-    useEffect(() => {
-      // 英語表示中かつ分解アニメーション前のみ実行
-      if (!showEnglish || isDissolving) return;
-
-      const totalDelay = index * 800;
-      const timer = setTimeout(() => {
-        const interval = setInterval(() => {
-          setDisplayedChars(prev => {
-            if (prev < text.length) {
-              return prev + 1;
-            }
-            clearInterval(interval);
-            return prev;
-          });
-        }, 50);
-
-        return () => clearInterval(interval);
-      }, totalDelay);
-
-      return () => clearTimeout(timer);
-    }, [text, index, showEnglish, isDissolving]);
-
-    return (
-      <div className="mb-4 relative inline-block">
-        {text.split('').map((char, i) => {
-          if (char === ' ') {
-            return <span key={`char-${i}`} className="inline-block">&nbsp;</span>;
+    let interval: ReturnType<typeof setInterval> | undefined;
+    const totalDelay = index * 800;
+    const timer = setTimeout(() => {
+      interval = setInterval(() => {
+        setDisplayedChars(prev => {
+          if (prev < text.length) {
+            return prev + 1;
           }
+          if (interval) clearInterval(interval);
+          return prev;
+        });
+      }, 50);
+    }, totalDelay);
 
-          // ランダムな飛散方向を生成
-          const angle = Math.random() * Math.PI * 2;
-          const distance = 100 + Math.random() * 150;
-          const randomX = Math.cos(angle) * distance;
-          const randomY = Math.sin(angle) * distance;
-          const randomRotate = (Math.random() - 0.5) * 720;
+    return () => {
+      clearTimeout(timer);
+      if (interval) clearInterval(interval);
+    };
+  }, [text, index, showEnglish, isDissolving]);
 
-          return (
+  return (
+    <div className="mb-4 relative inline-block">
+      {text.split('').map((char, i) => {
+        if (char === ' ') {
+          return <span key={`char-${i}`} className="inline-block">&nbsp;</span>;
+        }
+
+        const { x: randomX, y: randomY, rotate: randomRotate } = scatter[i];
+
+        return (
+          <motion.span
+            key={`char-${i}`}
+            className="inline-block relative"
+            style={{
+              transformOrigin: 'center center',
+            }}
+          >
+            {/* タイプライター表示用の文字（分解前） */}
             <motion.span
-              key={`char-${i}`}
-              className="inline-block relative"
-              style={{
-                transformOrigin: 'center center',
+              className="inline-block"
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: isDissolving ? 0 : (i < displayedChars ? 1 : 0),
+              }}
+              transition={{
+                duration: isDissolving ? 0.3 : 0.1,
               }}
             >
-              {/* タイプライター表示用の文字（分解前） */}
+              {char}
+            </motion.span>
+
+            {/* 分解用の文字（粒子として飛散） */}
+            {isDissolving && (
               <motion.span
-                className="inline-block"
-                initial={{ opacity: 0 }}
+                className="absolute inset-0 inline-block"
+                initial={{
+                  opacity: 1,
+                  scale: 1,
+                  x: 0,
+                  y: 0,
+                  rotate: 0,
+                }}
                 animate={{
-                  opacity: isDissolving ? 0 : (i < displayedChars ? 1 : 0),
+                  opacity: 0,
+                  scale: 0.3,
+                  x: randomX,
+                  y: randomY,
+                  rotate: randomRotate,
                 }}
                 transition={{
-                  duration: isDissolving ? 0.3 : 0.1,
+                  duration: 1.5,
+                  delay: i * 0.02 + index * 0.1,
+                  ease: "easeOut",
                 }}
               >
                 {char}
               </motion.span>
+            )}
+          </motion.span>
+        );
+      })}
+    </div>
+  );
+};
 
-              {/* 分解用の文字（粒子として飛散） */}
-              {isDissolving && (
-                <motion.span
-                  className="absolute inset-0 inline-block"
-                  initial={{
-                    opacity: 1,
-                    scale: 1,
-                    x: 0,
-                    y: 0,
-                    rotate: 0,
-                  }}
-                  animate={{
-                    opacity: 0,
-                    scale: 0.3,
-                    x: randomX,
-                    y: randomY,
-                    rotate: randomRotate,
-                  }}
-                  transition={{
-                    duration: 1.5,
-                    delay: i * 0.02 + index * 0.1,
-                    ease: "easeOut",
-                  }}
-                >
-                  {char}
-                </motion.span>
-              )}
-            </motion.span>
-          );
-        })}
-      </div>
-    );
-  };
+export default function HeroSection() {
+  const prefersReducedMotion = useReducedMotion();
+  const [showEnglish, setShowEnglish] = useState(true);
+  const [isDissolving, setIsDissolving] = useState(false);
+
+  // 英語→日本語の切り替えタイマー
+  useEffect(() => {
+    // モーション軽減設定時はタイプライター演出をスキップして本文を即表示
+    if (prefersReducedMotion) {
+      setShowEnglish(false);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setIsDissolving(true);
+      setTimeout(() => {
+        setShowEnglish(false);
+      }, 1500); // ドット分解完了まで待つ
+    }, 6000); // 英文表示時間
+
+    return () => clearTimeout(timer);
+  }, [prefersReducedMotion]);
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background transition-colors duration-300">
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 w-full h-full"
-        style={{
-          opacity: 1,
-          filter: 'drop-shadow(0 0 20px rgba(59, 130, 246, 0.3))'
-        }}
-      />
+      <HeroCanvas />
 
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/30" />
+
+      {/* SSR 時点から存在する唯一の h1（演出用テキストは aria-hidden） */}
+      <h1 className="sr-only">
+        小さな想いも、丁寧なものづくりで、大きな未来に変わる。 — 森山翔登 | Web制作・デザイン
+      </h1>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
@@ -335,21 +206,25 @@ useEffect(() => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-base sm:text-lg text-text-muted mb-8 tracking-wider"
+              aria-hidden="true"
             >
               W E B  D E S I G N  &  D E V E L O P M E N T
             </motion.p>
           )}
 
-          <div className="mb-6 min-h-[100px] sm:min-h-[130px] md:min-h-[150px] lg:min-h-[200px] flex items-center justify-center">
+          <div
+            className="mb-6 min-h-[100px] sm:min-h-[130px] md:min-h-[150px] lg:min-h-[200px] flex items-center justify-center"
+            aria-hidden="true"
+          >
             <AnimatePresence mode="wait">
               {showEnglish ? (
                 <motion.div
                   key="english"
                   className="text-xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-light leading-relaxed text-primary"
                 >
-                  <TypewriterLine text="Even small ideas," index={0} />
-                  <TypewriterLine text="Through careful craftsmanship," index={1} />
-                  <TypewriterLine text="Transform into a great future." index={2} />
+                  <TypewriterLine text="Even small ideas," index={0} showEnglish={showEnglish} isDissolving={isDissolving} />
+                  <TypewriterLine text="Through careful craftsmanship," index={1} showEnglish={showEnglish} isDissolving={isDissolving} />
+                  <TypewriterLine text="Transform into a great future." index={2} showEnglish={showEnglish} isDissolving={isDissolving} />
                 </motion.div>
               ) : (
                 <motion.div
@@ -359,8 +234,8 @@ useEffect(() => {
                   transition={{ duration: 0.8 }}
                   className="text-2xl sm:text-3xl md:text-4xl lg:text-2xl xl:text-6xl font-light leading-relaxed text-primary"
                 >
-                  <h1 className="mb-1">小さな想いも、</h1>
-                  <h1 className="mb-1">丁寧なものづくりで、</h1>
+                  <p className="mb-1">小さな想いも、</p>
+                  <p className="mb-1">丁寧なものづくりで、</p>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -373,16 +248,17 @@ useEffect(() => {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 1, delay: 0.5 }}
                 className="relative inline-block mb-12"
+                aria-hidden="true"
               >
                 <TiltedEllipse />
-                <h1 className="relative text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-tight px-8">
+                <p className="relative text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-tight px-8">
                   <span
-                    className="bg-gradient-to-r from-[#0066FF] via-[#A8DADC] to-[#FF6B6B] dark:from-[#3B82F6] dark:via-[#8B5CF6] dark:to-[#EF4444] bg-clip-text text-transparent"
+                    className="bg-gradient-to-r from-[#0066FF] via-[#0891B2] to-[#E05252] dark:from-[#3B82F6] dark:via-[#8B5CF6] dark:to-[#EF4444] bg-clip-text text-transparent"
                     style={{ filter: 'drop-shadow(0 0 10px rgba(59, 130, 246, 0.3))' }}
                   >
                     大きな未来に<span className="whitespace-nowrap">変わる。</span>
                   </span>
-                </h1>
+                </p>
               </motion.div>
 
               <motion.p
@@ -403,11 +279,9 @@ useEffect(() => {
                   onClick={() => {
                     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="inline-block bg-gradient-to-r from-[#0066FF] to-[#A8DADC] dark:from-[#3B82F6] dark:to-[#8B5CF6] text-white font-semibold rounded-full hover:shadow-2xl hover:scale-105 transition-all duration-300 text-base sm:text-lg px-12 sm:px-20 py-3 sm:py-4 group"
+                  className="inline-block m-4 bg-gradient-to-r from-[#0066FF] to-[#0E7490] dark:from-[#3B82F6] dark:to-[#8B5CF6] text-white font-semibold rounded-full hover:shadow-2xl hover:scale-105 transition-all duration-300 text-base sm:text-lg px-12 sm:px-20 py-3 sm:py-4 group focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
                   style={{
                     boxShadow: '0 10px 40px rgba(59, 130, 246, 0.3)',
-                    padding: '5px 20px',
-                    margin: '10px 20px',
                   }}
                 >
                   <span className="inline-block group-hover:scale-110 transition-transform">
@@ -421,6 +295,7 @@ useEffect(() => {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.8, delay: 1.3 }}
                 className="mt-24"
+                aria-hidden="true"
               >
                 <motion.div
                   animate={{ y: [0, 12, 0] }}

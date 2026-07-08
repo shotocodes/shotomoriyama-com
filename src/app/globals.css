@@ -22,8 +22,9 @@
   --color-background-alt: #ffffff;
 
   --color-text-primary: #1a1a1a;
-  --color-text-secondary: #6B7280;
-  --color-text-muted: #9CA3AF;
+  /* #f5f5f5 背景で WCAG AA (4.5:1) を満たす値 */
+  --color-text-secondary: #4B5563;
+  --color-text-muted: #5B6472;
 
   --color-border: #E5E7EB;
 
@@ -119,6 +120,21 @@ body {
 
 html {
   scroll-behavior: smooth;
+}
+
+/* OS のモーション軽減設定を尊重する（WCAG 2.3.3） */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 section {

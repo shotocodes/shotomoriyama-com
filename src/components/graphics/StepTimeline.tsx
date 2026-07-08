@@ -42,6 +42,8 @@ export default function StepTimeline({
     const totalParticles = 10; // 10個の粒子
     const progressPerParticle = 10; // 1粒子あたり10%
 
+    let resetTimeout: ReturnType<typeof setTimeout> | undefined;
+
     const interval = setInterval(() => {
       currentProgress += progressPerParticle;
       currentCountdown -= 1;
@@ -55,7 +57,7 @@ export default function StepTimeline({
         setBarColor('#FF6B6B'); // 赤色
         setIsExploding(true);
 
-        setTimeout(() => {
+        resetTimeout = setTimeout(() => {
           // 爆発後リセット
           setIsExploding(false);
           setBarColor(color);
@@ -69,7 +71,10 @@ export default function StepTimeline({
       }
     }, particleDuration);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      if (resetTimeout) clearTimeout(resetTimeout);
+    };
   }, [animate, color]);
 
   return (

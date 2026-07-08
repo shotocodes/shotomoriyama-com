@@ -1,4 +1,5 @@
 // src/app/blog/page.tsx
+import type { Metadata } from 'next';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import PageHero from '@/components/sections/PageHero';
@@ -7,6 +8,11 @@ import SpiralLines from '@/components/graphics/SpiralLines';
 import WavePattern from '@/components/graphics/WavePattern';
 import { getAllPostsMetadata } from '@/lib/mdx';
 import BlogContent from './BlogContent';
+
+export const metadata: Metadata = {
+  title: 'Blog - ブログ',
+  description: '制作の裏側、技術情報、ライフスタイルなどを発信しています。',
+};
 
 export default async function BlogPage() {
   const allPosts = getAllPostsMetadata();

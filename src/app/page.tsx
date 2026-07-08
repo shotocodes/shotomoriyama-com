@@ -9,6 +9,30 @@ import SupportSection from '@/components/sections/SupportSection';
 import BlogSection from '@/components/sections/BlogSection';
 import ContactSection from '@/components/sections/ContactSection';
 import { getAllPostsMetadata } from '@/lib/mdx';
+import { SITE_URL, SITE_DESCRIPTION } from '@/lib/constants/site';
+
+// 検索エンジン向けの構造化データ（Person + ProfessionalService）
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Person',
+      name: '森山翔登',
+      url: SITE_URL,
+      jobTitle: 'Webデザイナー・エンジニア',
+      description: SITE_DESCRIPTION,
+      sameAs: ['https://x.com/SOAR_C72'],
+    },
+    {
+      '@type': 'ProfessionalService',
+      name: '森山翔登 | Web制作・デザイン',
+      url: SITE_URL,
+      description: SITE_DESCRIPTION,
+      areaServed: 'JP',
+      founder: { '@type': 'Person', name: '森山翔登' },
+    },
+  ],
+};
 
 export default async function Home() {
 
@@ -18,6 +42,10 @@ export default async function Home() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Header />
       <main>
         <HeroSection />
