@@ -122,6 +122,16 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Lenis 有効時は CSS スムーススクロールと競合しないようにする */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
 /* OS のモーション軽減設定を尊重する（WCAG 2.3.3） */
 @media (prefers-reduced-motion: reduce) {
   html {

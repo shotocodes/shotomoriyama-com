@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import SmoothScroll from "@/components/providers/SmoothScroll";
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from '@/lib/constants/site'
 
@@ -81,7 +82,7 @@ export default function RootLayout({
           本文へスキップ
         </a>
         <ThemeProvider>
-          {children}
+          <SmoothScroll>{children}</SmoothScroll>
           {process.env.NEXT_PUBLIC_GA_ID && (
             <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
           )}
