@@ -126,16 +126,23 @@ export default function Footer({
           {/* ブランド（モバイルで2列full幅） */}
           <div className="col-span-2 lg:col-span-1">
             <Link href="/" className="inline-block" style={{ marginBottom: '1rem' }}>
-              {mounted && (
-                <Image
-                  src={isDark ? '/logo-w.png' : '/logo-b.png'}
-                  alt="SHOTOMORIYAMA.JP"
-                  width={160}
-                  height={36}
-                  className="transition-transform hover:rotate-3"
-                  priority
-                />
-              )}
+              {/* テーマ別ロゴは CSS で切り替える（mounted ゲート不要 = 表示のちらつきなし） */}
+              <Image
+                src="/logo-b.png"
+                alt="SHOTOMORIYAMA.JP"
+                width={160}
+                height={36}
+                className="transition-transform hover:rotate-3 dark:hidden"
+                priority
+              />
+              <Image
+                src="/logo-w.png"
+                alt="SHOTOMORIYAMA.JP"
+                width={160}
+                height={36}
+                className="transition-transform hover:rotate-3 hidden dark:block"
+                priority
+              />
             </Link>
             <p
               className="text-text-secondary text-sm"

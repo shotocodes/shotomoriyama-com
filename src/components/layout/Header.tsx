@@ -6,20 +6,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Briefcase, Palette, BookOpen, LifeBuoy, User, Mail } from 'lucide-react';
-import { useTheme } from 'next-themes';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
-  const [mounted, setMounted] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const { theme, systemTheme } = useTheme();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     // rAF でスクロールイベントを間引く（1フレーム1回まで）
@@ -64,9 +57,6 @@ export default function Header() {
     document.body.style.overflow = isMobileMenuOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = 'unset'; };
   }, [isMobileMenuOpen]);
-
-  const currentTheme = theme === 'system' ? systemTheme : theme;
-  const isDark = currentTheme === 'dark';
 
   const navItems = [
     { label: 'SERVICE', href: '/#service', mobileHref: '/service', color: '#0066FF',  Icon: Briefcase },
@@ -135,26 +125,30 @@ export default function Header() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
 
-            {/* ロゴ */}
+            {/* ロゴ（テーマ別ロゴは CSS で切り替え = プレースホルダのちらつきなし） */}
             <Link href="/" className="flex items-center gap-3 z-10 group">
-              {mounted ? (
-                <motion.div
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  transition={{ type: 'spring', stiffness: 300 }}
-                  className="relative w-8 h-8 sm:w-10 sm:h-10"
-                >
-                  <Image
-                    src={isDark ? '/logo-w.png' : '/logo-b.png'}
-                    alt="M Logo"
-                    width={40}
-                    height={40}
-                    className="w-full h-full object-contain"
-                    priority
-                  />
-                </motion.div>
-              ) : (
-                <div className="relative w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse" />
-              )}
+              <motion.div
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+                className="relative w-8 h-8 sm:w-10 sm:h-10"
+              >
+                <Image
+                  src="/logo-b.png"
+                  alt="M Logo"
+                  width={40}
+                  height={40}
+                  className="w-full h-full object-contain dark:hidden"
+                  priority
+                />
+                <Image
+                  src="/logo-w.png"
+                  alt="M Logo"
+                  width={40}
+                  height={40}
+                  className="w-full h-full object-contain hidden dark:block"
+                  priority
+                />
+              </motion.div>
               <span className="text-lg sm:text-xl font-bold text-primary group-hover:text-accent transition-colors">
                 SHOTOMORIYAMA.JP
               </span>
