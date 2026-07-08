@@ -18,7 +18,7 @@ export default function SupportPage() {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
-  // カテゴリデータ
+  // カテゴリデータ（公開中の記事が1件もないカテゴリはタブに出さない）
   const categories = [
     { id: 'all', label: 'すべて', color: '#10B981' },
     { id: 'ai', label: 'AI活用', color: '#9333EA' },
@@ -27,7 +27,11 @@ export default function SupportPage() {
     { id: 'strategy', label: '戦略', color: '#4ECDC4' },
     { id: 'operation', label: '運用', color: '#FFB4B4' },
     { id: 'technical', label: '技術', color: '#A0C4FF' }
-  ];
+  ].filter(
+    (cat) =>
+      cat.id === 'all' ||
+      supportArticleMeta.some((article) => article.category === cat.id)
+  );
 
   // フィルタリング（データソースを変更）
   const filteredArticles = selectedCategory === 'all'
