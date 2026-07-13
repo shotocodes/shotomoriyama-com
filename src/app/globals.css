@@ -4,6 +4,14 @@
 
 @import "tailwindcss";
 
+/*
+ * dark: バリアントを next-themes が付与する .dark クラスに連動させる。
+ * Tailwind v4 のデフォルトは OS 設定（prefers-color-scheme）連動で、
+ * サイト内のテーマトグルを無視してしまうため必須。
+ * （tailwind.config.ts の darkMode: 'class' は v4 の CSS 設定方式では読み込まれない）
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
 
 /* ライトモード カラー定義 */
 :root {
@@ -133,6 +141,18 @@ html.lenis body {
 
 .lenis.lenis-smooth {
   scroll-behavior: auto !important;
+}
+
+/* カスタムカーソル有効時はネイティブカーソル（矢印・ハンド）を隠す。
+   テキスト入力系はキャレット位置が分からなくなるため I ビームを残す */
+.has-custom-cursor * {
+  cursor: none !important;
+}
+
+.has-custom-cursor input,
+.has-custom-cursor textarea,
+.has-custom-cursor select {
+  cursor: auto !important;
 }
 
 /* OS のモーション軽減設定を尊重する（WCAG 2.3.3） */
