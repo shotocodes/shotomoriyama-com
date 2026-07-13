@@ -11,6 +11,7 @@ import CircleDiagram from '@/components/graphics/CircleDiagram';
 import WavePattern from '@/components/graphics/WavePattern';
 import AnimatedButton from '@/components/ui/AnimatedButton';
 import Link from 'next/link';
+import Parallax from '@/components/shared/Parallax';
 
 import {
   ExternalLink,
@@ -71,11 +72,13 @@ export default function WorksPage() {
               zIndex: 0
             }}
           >
-            <CircleDiagram
-              color="#4ECDC4"
-              opacity={1}
-              animate={true}
-            />
+            <Parallax speed={0.3} className="w-full h-full">
+              <CircleDiagram
+                color="#4ECDC4"
+                opacity={1}
+                animate={true}
+              />
+            </Parallax>
           </div>
 
           <div className="container mx-auto px-4 sm:px-6 lg:px-8" style={{ position: 'relative', zIndex: 1 }}>
@@ -264,13 +267,15 @@ export default function WorksPage() {
               zIndex: 0
             }}
           >
-            <WavePattern
-              color="#10B981"
-              opacity={1}
-              animate={true}
-              waveCount={6}
-              position="center"
-            />
+            <Parallax speed={-0.25} className="w-full h-full">
+              <WavePattern
+                color="#10B981"
+                opacity={1}
+                animate={true}
+                waveCount={6}
+                position="center"
+              />
+            </Parallax>
           </div>
 
           <div className="container mx-auto px-4 sm:px-6 lg:px-8" style={{ position: 'relative', zIndex: 1 }}>

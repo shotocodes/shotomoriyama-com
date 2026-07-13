@@ -101,6 +101,9 @@
 
   /* ✅ 削除：layout.tsxのNext.js fontが自動でCSS変数を注入するので不要 */
   /* --font-sans: "Noto Sans JP", ui-sans-serif, system-ui, sans-serif; */
+
+  /* 英字見出し用ディスプレイフォント（font-display ユーティリティを生成） */
+  --font-display: var(--font-display), var(--font-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
 /* 基本スタイル */

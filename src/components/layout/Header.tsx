@@ -149,7 +149,7 @@ export default function Header() {
                   priority
                 />
               </motion.div>
-              <span className="text-lg sm:text-xl font-bold text-primary group-hover:text-accent transition-colors">
+              <span className="font-display text-lg sm:text-xl font-bold text-primary group-hover:text-accent transition-colors tracking-tight">
                 SHOTOMORIYAMA.JP
               </span>
             </Link>

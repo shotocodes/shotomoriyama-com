@@ -18,7 +18,7 @@ interface AnimatedTitleProps {
 export default function AnimatedTitle({
   text,
   accentColor = '#0066FF',
-  className = 'text-5xl lg:text-7xl font-bold tracking-wider'
+  className = 'font-display text-5xl lg:text-7xl font-bold tracking-wider'
 }: AnimatedTitleProps) {
   // SSR・ハイドレーション時は本物のテキストを表示する
   // （初期 state にランダム文字を使うとサーバーとクライアントで食い違い、

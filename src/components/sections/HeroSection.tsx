@@ -262,7 +262,7 @@ export default function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-base sm:text-lg text-text-muted mb-8 tracking-wider"
+              className="font-display text-base sm:text-lg text-text-muted mb-8 tracking-wider"
               aria-hidden="true"
             >
               W E B  D E S I G N  &  D E V E L O P M E N T
@@ -277,7 +277,7 @@ export default function HeroSection() {
               {showEnglish ? (
                 <motion.div
                   key="english"
-                  className="text-xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-light leading-relaxed text-primary"
+                  className="font-display text-xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-medium leading-relaxed text-primary"
                 >
                   <TypewriterLine text="Even small ideas," index={0} showEnglish={showEnglish} isDissolving={isDissolving} />
                   <TypewriterLine text="Through careful craftsmanship," index={1} showEnglish={showEnglish} isDissolving={isDissolving} />
@@ -345,7 +345,7 @@ export default function HeroSection() {
                     y: magnetSpringY,
                   }}
                 >
-                  <span className="inline-block group-hover:scale-110 transition-transform">
+                  <span className="font-display inline-block group-hover:scale-110 transition-transform tracking-wide">
                     CONTACT
                   </span>
                 </motion.button>
@@ -363,7 +363,7 @@ export default function HeroSection() {
                   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                   className="flex flex-col items-center gap-2"
                 >
-                  <span className="text-xs text-text-muted tracking-widest">S C R O L L</span>
+                  <span className="font-display text-xs text-text-muted tracking-widest">S C R O L L</span>
                   <div className="w-[2px] h-12 bg-gradient-to-b from-text-muted to-transparent" />
                 </motion.div>
               </motion.div>

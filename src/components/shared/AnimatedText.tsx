@@ -60,7 +60,7 @@ export default function AnimatedText({
           marginTop: '50px'
         }}
       >
-        <h2 className={`text-4xl md:text-5xl font-bold tracking-widest font-mono ${className}`}>
+        <h2 className={`font-display text-4xl md:text-5xl font-bold tracking-widest ${className}`}>
           {animatedChars.map((item, index) => (
             <span
               key={index}
@@ -85,7 +85,7 @@ export default function AnimatedText({
       >
         <div style={{ height: '500px', position: 'relative' }}>
           <h2
-            className={`text-6xl font-bold tracking-widest select-none absolute font-mono ${className}`}
+            className={`font-display text-6xl font-bold tracking-widest select-none absolute ${className}`}
             style={{
               writingMode: 'vertical-rl',
               left: '0',
