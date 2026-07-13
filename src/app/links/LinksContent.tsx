@@ -5,9 +5,9 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
-import { useState, useEffect } from 'react';
 import { profile, links, type LinkItem } from './linksData';
 import ThemeToggle from '@/components/ui/ThemeToggle';
+import { useMounted } from '@/hooks/useMounted';
 
 // ============================================================
 // アイコン
@@ -148,11 +148,7 @@ function LinkButton({ link }: { link: typeof links[number] }) {
 // ============================================================
 export default function LinksContent() {
   const { theme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useMounted();
 
   const isDark = mounted && theme === 'dark';
 

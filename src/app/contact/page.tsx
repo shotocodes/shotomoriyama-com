@@ -67,7 +67,8 @@ function ContactPageContent() {
     phone: '',
     projectType: '',
     budget: '',
-    message: ''
+    message: '',
+    website: '' // ハニーポット（ボット対策・画面には表示しない）
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -244,6 +245,17 @@ const handleSubmit = async (e: React.FormEvent) => {
         style={{ padding: '3rem 2rem' }}
       >
         <form onSubmit={handleSubmit}>
+          {/* ハニーポット：人間には見えない。ボットが埋めたら送信を無視する */}
+          <input
+            type="text"
+            name="website"
+            value={formData.website}
+            onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+            tabIndex={-1}
+            autoComplete="off"
+            aria-hidden="true"
+            style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px' }}
+          />
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
 
             {/* お名前 */}

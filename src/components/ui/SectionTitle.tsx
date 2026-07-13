@@ -25,7 +25,7 @@ export default function SectionTitle({
       className="text-center"
       style={{ marginBottom }}
     >
-      <h2 className="text-3xl lg:text-4xl font-bold text-primary">
+      <h2 className="font-display text-3xl lg:text-4xl font-bold text-primary tracking-tight">
         {title}
       </h2>
       <p className="text-lg text-text-secondary" style={{ marginTop: '1rem' }}>

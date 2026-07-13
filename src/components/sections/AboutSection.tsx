@@ -206,16 +206,35 @@ export default function AboutSection() {
     Github, Twitter, Linkedin, Mail, Instagram, ExternalLink, MessageCircle, Share2,
   ];
 
-  const floatingIcons = Array.from({ length: 40 }, (_, i) => ({
-    id: i,
-    Icon: icons[i % icons.length],
-    initialX: Math.random() * 100,
-    initialY: 100 + (Math.random() * 20),
-    speed: 0.8 + Math.random() * 0.4,
-    size: 24 + Math.random() * 32,
-    rotation: Math.random() * 360,
-    sway: (Math.random() - 0.5) * 40,
-  }));
+  // 乱数はマウント後に一度だけ生成する
+  // （レンダー中の Math.random() は SSR とのハイドレーション不一致と、
+  //  再レンダーごとの位置ジャンプの原因になる）
+  const [floatingIcons, setFloatingIcons] = useState<Array<{
+    id: number;
+    Icon: typeof icons[number];
+    initialX: number;
+    initialY: number;
+    speed: number;
+    size: number;
+    rotation: number;
+    sway: number;
+  }>>([]);
+
+  useEffect(() => {
+    setFloatingIcons(
+      Array.from({ length: 40 }, (_, i) => ({
+        id: i,
+        Icon: icons[i % icons.length],
+        initialX: Math.random() * 100,
+        initialY: 100 + (Math.random() * 20),
+        speed: 0.8 + Math.random() * 0.4,
+        size: 24 + Math.random() * 32,
+        rotation: Math.random() * 360,
+        sway: (Math.random() - 0.5) * 40,
+      }))
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // モーダル共通コンポーネント
   const Modal = ({

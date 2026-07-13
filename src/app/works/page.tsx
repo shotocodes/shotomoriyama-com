@@ -1,49 +1,4 @@
 // src/app/works/page.tsx
-
-
-// src/app/works/page.tsx
-
-// ✅ 将来追加するフィルター機能（実績5件超えたら実装）
-/*
-import { workCategories } from '@/data/worksData';
-
-export default function WorksPage() {
-  const [selectedCategory, setSelectedCategory] = useState<WorkCategory>('All');
-
-  // フィルター適用
-  const filteredWorks = selectedCategory === 'All'
-    ? clientWorks
-    : clientWorks.filter(work => work.category === selectedCategory);
-
-  return (
-    <>
-      {/* カテゴリフィルターボタン * /}
-      <div className="flex justify-center gap-2 mb-8">
-        {workCategories.filter(cat => cat !== 'Personal Project').map(category => (
-          <button
-            key={category}
-            onClick={() => setSelectedCategory(category)}
-            className={`px-4 py-2 rounded-lg transition-all ${
-              selectedCategory === category
-                ? 'bg-primary text-background'
-                : 'bg-background-alt text-text-secondary hover:text-primary'
-            }`}
-          >
-            {category}
-          </button>
-        ))}
-      </div>
-
-      {/* フィルター後のカード表示 * /}
-      <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: '2rem' }}>
-        {filteredWorks.map((work, index) => (
-          // 既存のカードコード
-        ))}
-      </div>
-    </>
-  );
-}
-*/
 'use client';
 
 import { motion } from 'framer-motion';
@@ -56,6 +11,7 @@ import CircleDiagram from '@/components/graphics/CircleDiagram';
 import WavePattern from '@/components/graphics/WavePattern';
 import AnimatedButton from '@/components/ui/AnimatedButton';
 import Link from 'next/link';
+import Parallax from '@/components/shared/Parallax';
 
 import {
   ExternalLink,
@@ -73,7 +29,7 @@ export default function WorksPage() {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-background" style={{ overflowX: 'hidden' }}>
+      <div className="min-h-screen bg-background" style={{ paddingTop: '80px', overflowX: 'hidden' }}>
 
         {/* Hero */}
         <PageHero
@@ -116,11 +72,13 @@ export default function WorksPage() {
               zIndex: 0
             }}
           >
-            <CircleDiagram
-              color="#4ECDC4"
-              opacity={1}
-              animate={true}
-            />
+            <Parallax speed={0.3} className="w-full h-full">
+              <CircleDiagram
+                color="#4ECDC4"
+                opacity={1}
+                animate={true}
+              />
+            </Parallax>
           </div>
 
           <div className="container mx-auto px-4 sm:px-6 lg:px-8" style={{ position: 'relative', zIndex: 1 }}>
@@ -309,13 +267,15 @@ export default function WorksPage() {
               zIndex: 0
             }}
           >
-            <WavePattern
-              color="#10B981"
-              opacity={1}
-              animate={true}
-              waveCount={6}
-              position="center"
-            />
+            <Parallax speed={-0.25} className="w-full h-full">
+              <WavePattern
+                color="#10B981"
+                opacity={1}
+                animate={true}
+                waveCount={6}
+                position="center"
+              />
+            </Parallax>
           </div>
 
           <div className="container mx-auto px-4 sm:px-6 lg:px-8" style={{ position: 'relative', zIndex: 1 }}>
@@ -357,11 +317,8 @@ export default function WorksPage() {
               }}
             >
               {personalProjects.map((project, index) => (
-                <motion.a
+                <motion.div
                   key={project.id}
-                  href={project.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -369,8 +326,6 @@ export default function WorksPage() {
                   className="bg-background border-2 border-border group hover:border-[#10B981] transition-all"
                   style={{
                     padding: '2rem',
-                    textDecoration: 'none',
-                    display: 'block',
                     position: 'relative',
                     overflow: 'hidden'
                   }}
@@ -461,13 +416,31 @@ export default function WorksPage() {
                       </div>
                     </div>
 
-                    {/* リンク */}
-                    <div className="flex items-center text-sm font-bold text-primary group-hover:text-[#10B981] transition-colors" style={{ gap: '0.5rem' }}>
-                      <span>Visit Project</span>
-                      <ExternalLink size={14} />
+                    {/* ボタン（クライアントワークと同じ2導線に統一） */}
+                    <div className="flex" style={{ gap: '1rem' }}>
+                      {project.url && (
+                        <a
+                          href={project.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center text-sm font-bold text-primary hover:text-[#10B981] transition-colors"
+                          style={{ gap: '0.5rem' }}
+                        >
+                          <span>Visit Project</span>
+                          <ExternalLink size={14} />
+                        </a>
+                      )}
+                      <Link
+                        href={`/works/${project.id}`}
+                        className="inline-flex items-center text-sm font-bold text-primary hover:text-[#10B981] transition-colors"
+                        style={{ gap: '0.5rem' }}
+                      >
+                        <span>View Details</span>
+                        <ArrowRight size={14} />
+                      </Link>
                     </div>
                   </div>
-                </motion.a>
+                </motion.div>
               ))}
             </div>
           </div>

@@ -2,7 +2,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useMounted } from '@/hooks/useMounted';
 
 interface SpiralLinesProps {
   color?: string;
@@ -17,11 +17,7 @@ export default function SpiralLines({
   animate = true,
   spiralCount = 3
 }: SpiralLinesProps) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useMounted();
 
   if (!mounted) return null;
 

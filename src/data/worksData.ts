@@ -83,6 +83,31 @@ export const personalProjects = [
     url: 'https://sho-tolog.com/',
     status: 'Active',
     image: '/images/works/blog.png',
+    // ブループリント・レンズ（variant="code"）に流すコード
+    codeSnippet: `<?php
+// single.php — 記事テンプレート
+get_header();
+
+while ( have_posts() ) : the_post();
+  $reading_time = ceil(
+    str_word_count( strip_tags( get_the_content() ) ) / 200
+  );
+?>
+  <article <?php post_class( 'post-entry' ); ?>>
+    <header class="post-entry__header">
+      <h1><?php the_title(); ?></h1>
+      <time datetime="<?php echo get_the_date( 'c' ); ?>">
+        <?php echo get_the_date(); ?> ・ 約<?php echo $reading_time; ?>分
+      </time>
+    </header>
+    <div class="post-entry__content">
+      <?php the_content(); ?>
+    </div>
+  </article>
+<?php
+endwhile;
+
+get_footer();`,
   },
   {
     id: 'personal-2',
@@ -101,6 +126,29 @@ export const personalProjects = [
     url: 'https://www.shoto.tech/',
     status: 'In Progress',
     image: '/images/works/portfolio-en.png',
+    // ブループリント・レンズ（variant="code"）に流すコード
+    codeSnippet: `// hero wave — vertex shader
+uniform float uTime;
+uniform vec2 uMouse;
+
+attribute vec3 aColor;
+varying vec3 vColor;
+
+void main() {
+  vColor = aColor;
+  vec3 pos = position;
+
+  float dist = distance(pos.xy, uMouse);
+  float ripple = sin(dist * 0.5 - uTime * 2.0) * 1.2;
+  float swellX = sin(pos.x * 0.3 + uTime) * 0.5;
+  float swellY = cos(pos.y * 0.3 + uTime * 0.7) * 0.5;
+
+  pos.z = ripple + swellX + swellY;
+
+  gl_Position = projectionMatrix
+    * modelViewMatrix
+    * vec4(pos, 1.0);
+}`,
   },
   {
     id: 'personal-3',
@@ -120,6 +168,28 @@ export const personalProjects = [
     articleUrl: '/blog/enso-productivity-app',
     status: 'Active',
     image: '/images/works/enso.png',
+    // ブループリント・レンズ（variant="code"）に流すコード
+    codeSnippet: `// FOCUS — ポモドーロセッションの保存
+export async function completeSession(task: Task) {
+  const { data: session } = await supabase
+    .from('focus_sessions')
+    .insert({
+      task_id: task.id,
+      duration_min: 25,
+      completed_at: new Date().toISOString(),
+    })
+    .select()
+    .single();
+
+  // JOURNAL 連携 — 今日の記録に自動追記
+  await appendJournalEntry({
+    type: 'focus',
+    summary: \`\${task.title} に25分集中\`,
+    session_id: session.id,
+  });
+
+  return session;
+}`,
   },
 ];
 

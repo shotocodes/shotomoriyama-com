@@ -18,8 +18,8 @@ import {
   Code2
 } from 'lucide-react';
 
-// メタデータ（一覧表示用）
-export const supportArticleMeta = [
+// 全記事のメタデータ（本文が未執筆のものも含むマスターリスト）
+const allSupportArticleMeta = [
   // AI活用
   {
     icon: Sparkles,
@@ -192,3 +192,9 @@ export const supportArticles: Record<string, SupportArticle> = {
   'seo-basics': seoBasics,
   'design-decision': designCommunication,
 };
+
+// 一覧・リンクには本文が存在する記事だけを公開する
+// （マスターリストとのずれによる 404 リンクを防ぐ）
+export const supportArticleMeta = allSupportArticleMeta.filter(
+  (article) => article.slug in supportArticles
+);

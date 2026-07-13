@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import PageHero from '@/components/sections/PageHero';
+import Parallax from '@/components/shared/Parallax';
 import SectionTitle from '@/components/ui/SectionTitle';
 import CircleGrid from '@/components/graphics/CircleGrid';
 import RadialLines from '@/components/graphics/RadialLines';
@@ -18,7 +19,7 @@ export default function SupportPage() {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
-  // カテゴリデータ
+  // カテゴリデータ（公開中の記事が1件もないカテゴリはタブに出さない）
   const categories = [
     { id: 'all', label: 'すべて', color: '#10B981' },
     { id: 'ai', label: 'AI活用', color: '#9333EA' },
@@ -27,7 +28,11 @@ export default function SupportPage() {
     { id: 'strategy', label: '戦略', color: '#4ECDC4' },
     { id: 'operation', label: '運用', color: '#FFB4B4' },
     { id: 'technical', label: '技術', color: '#A0C4FF' }
-  ];
+  ].filter(
+    (cat) =>
+      cat.id === 'all' ||
+      supportArticleMeta.some((article) => article.category === cat.id)
+  );
 
   // フィルタリング（データソースを変更）
   const filteredArticles = selectedCategory === 'all'
@@ -69,6 +74,7 @@ export default function SupportPage() {
               animate={{ opacity: 1 }}
               transition={{ duration: 2 }}
             >
+<Parallax speed={0.4} className="w-full h-full">
               <CircleGrid
                 color="#FF8C42"
                 opacity={0.35}
@@ -76,6 +82,7 @@ export default function SupportPage() {
                 gridSize={8}
                 circleSize={6}
               />
+</Parallax>
             </motion.div>
           </div>
 
@@ -103,12 +110,14 @@ export default function SupportPage() {
                 rotate: { duration: 60, repeat: Infinity, ease: 'linear' }
               }}
             >
+<Parallax speed={0.2} className="w-full h-full">
               <RadialLines
                 color="#FFB347"
                 opacity={0.25}
                 animate={false}
                 lineCount={32}
               />
+</Parallax>
             </motion.div>
           </div>
 
@@ -130,6 +139,7 @@ export default function SupportPage() {
               animate={{ opacity: 1 }}
               transition={{ duration: 2, delay: 0.5 }}
             >
+<Parallax speed={0.55} className="w-full h-full">
               <RippleWave
                 color="#FFA559"
                 opacity={0.4}
@@ -140,6 +150,7 @@ export default function SupportPage() {
                 width={650}
                 height={650}
               />
+</Parallax>
             </motion.div>
           </div>
 
@@ -174,6 +185,7 @@ export default function SupportPage() {
               zIndex: 2
             }}
           >
+<Parallax speed={0.3} className="w-full h-full">
             <CircleGrid
               color="#FF8C42"
               opacity={1}
@@ -181,6 +193,7 @@ export default function SupportPage() {
               gridSize={7}
               circleSize={5}
             />
+</Parallax>
           </div>
 
           {/* 左下 レイヤー2: RippleWave（波紋） */}
@@ -197,6 +210,7 @@ export default function SupportPage() {
               zIndex: 1
             }}
           >
+<Parallax speed={-0.2} className="w-full h-full">
             <RippleWave
               color="#FFB347"
               opacity={1}
@@ -207,6 +221,7 @@ export default function SupportPage() {
               width={700}
               height={700}
             />
+</Parallax>
           </div>
 
           {/* 右上 レイヤー3: RadialLines（大きく） */}

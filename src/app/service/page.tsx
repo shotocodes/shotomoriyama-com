@@ -491,7 +491,7 @@ export default function ServicePage() {
     {/* ランダムに光る点  */}
     {Array.from({ length: 8 }).map((_, i) => {
       const angle = (i * 360) / 8;
-      const radius = 120 + Math.random() * 40;
+      const radius = 120 + ((i * 37) % 41);
       const x = 200 + radius * Math.cos((angle * Math.PI) / 180);
       const y = 200 + radius * Math.sin((angle * Math.PI) / 180);
 
@@ -507,7 +507,7 @@ export default function ServicePage() {
             r: [0.8, 2, 0.8]
           }}
           transition={{
-            duration: 2 + Math.random() * 2,
+            duration: 2 + ((i * 7) % 21) / 10,
             repeat: Infinity,
             delay: i * 0.3,
             ease: "easeInOut"
@@ -923,7 +923,7 @@ export default function ServicePage() {
     {/* ランダムに光る点 */}
     {Array.from({ length: 8 }).map((_, i) => {
       const angle = (i * 360) / 8;
-      const radius = 120 + Math.random() * 40;
+      const radius = 120 + ((i * 37) % 41);
       const x = 200 + radius * Math.cos((angle * Math.PI) / 180);
       const y = 200 + radius * Math.sin((angle * Math.PI) / 180);
 
@@ -939,7 +939,7 @@ export default function ServicePage() {
             r: [0.8, 2, 0.8]
           }}
           transition={{
-            duration: 2 + Math.random() * 2,
+            duration: 2 + ((i * 7) % 21) / 10,
             repeat: Infinity,
             delay: i * 0.3,
             ease: "easeInOut"

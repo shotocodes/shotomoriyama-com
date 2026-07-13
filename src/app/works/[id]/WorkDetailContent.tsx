@@ -4,6 +4,7 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image'; // ✅ <img> → <Image>
 import AnimatedButton from '@/components/ui/AnimatedButton';
+import BlueprintLens from '@/components/shared/BlueprintLens';
 import {
   ArrowLeft,
   ArrowRight, // ✅ 追加
@@ -43,6 +44,7 @@ interface Work {
   purpose?: string;
   features?: string[];
   articleUrl?: string;
+  codeSnippet?: string;
 }
 
 interface WorkDetailContentProps {
@@ -70,25 +72,34 @@ export default function WorkDetailContent({ work, isClientWork }: WorkDetailCont
             transition={{ duration: 0.6 }}
             style={{ maxWidth: '1200px', margin: '0 auto' }}
           >
-            {/* ✅ <img> → <Image> */}
-            <div
-              className="relative overflow-hidden"
-              style={{
-                width: '100%',
-                aspectRatio: '16 / 9',
-                borderRadius: '8px',
-                border: '2px solid var(--color-border)',
-              }}
+            {/* カーソルをかざすと「裏側」が透けるレンズ
+                クライアントワーク: 設計図 / 個人プロジェクト: ソースコード */}
+            <BlueprintLens
+              meta={{ title: work.title, year: work.year, tags: work.tags }}
+              variant={isClientWork ? 'blueprint' : 'code'}
+              codeSnippet={work.codeSnippet}
+              className="overflow-hidden"
+              radius={120}
             >
-              <Image
-                src={work.image}
-                alt={work.title}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 1200px"
-                priority
-              />
-            </div>
+              <div
+                className="relative overflow-hidden"
+                style={{
+                  width: '100%',
+                  aspectRatio: '16 / 9',
+                  borderRadius: '8px',
+                  border: '2px solid var(--color-border)',
+                }}
+              >
+                <Image
+                  src={work.image}
+                  alt={work.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 1200px"
+                  priority
+                />
+              </div>
+            </BlueprintLens>
           </motion.div>
         </div>
       </section>

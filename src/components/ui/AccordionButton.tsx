@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useState, useEffect } from 'react';
+import { useMounted } from '@/hooks/useMounted';
 
 interface AccordionButtonProps {
   isOpen: boolean;
@@ -19,11 +20,7 @@ export default function AccordionButton({
   children
 }: AccordionButtonProps) {
   const { theme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useMounted();
 
   const isDark = mounted && theme === 'dark';
   const borderColor = isDark ? '#dde5ed' : '#25282a';

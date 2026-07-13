@@ -2,7 +2,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useMounted } from '@/hooks/useMounted';
 
 interface DotWaveProps {
   color?: string;
@@ -19,11 +19,7 @@ export default function DotWave({
   dotCount = 20,
   waveAmplitude = 30
 }: DotWaveProps) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useMounted();
 
   if (!mounted) return null;
 

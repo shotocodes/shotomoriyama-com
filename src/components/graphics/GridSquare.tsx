@@ -124,10 +124,10 @@ export default function GridSquare({
         );
       })}
 
-      {/* 各セルに光る点をランダム配置 */}
+      {/* 各セルに光る点を疑似ランダム配置（決定的 — SSR と一致させる） */}
       {Array.from({ length: Math.floor(gridSize * gridSize * 0.3) }).map((_, i) => {
-        const randomRow = Math.floor(Math.random() * gridSize);
-        const randomCol = Math.floor(Math.random() * gridSize);
+        const randomRow = (i * 7 + 3) % gridSize;
+        const randomCol = (i * 11 + 5) % gridSize;
         const cx = 20 + randomCol * cellSize + cellSize / 2;
         const cy = 20 + randomRow * cellSize + cellSize / 2;
 
@@ -144,8 +144,8 @@ export default function GridSquare({
               scale: [0, 1.5, 0]
             } : {}}
             transition={animate ? {
-              duration: 2 + Math.random() * 2,
-              delay: Math.random() * 3,
+              duration: 2 + ((i * 7) % 21) / 10,
+              delay: ((i * 13) % 30) / 10,
               repeat: Infinity,
               ease: "easeInOut"
             } : {}}
@@ -290,10 +290,10 @@ export default function GridSquare({
         />
       ))}
 
-      {/* ランダムに光る正方形（セル単位） */}
+      {/* 疑似ランダムに光る正方形（セル単位・決定的 — SSR と一致させる） */}
       {Array.from({ length: 8 }).map((_, i) => {
-        const randomRow = Math.floor(Math.random() * (gridSize - 1));
-        const randomCol = Math.floor(Math.random() * (gridSize - 1));
+        const randomRow = (i * 5 + 2) % (gridSize - 1);
+        const randomCol = (i * 3 + 1) % (gridSize - 1);
         const x = 20 + randomCol * cellSize;
         const y = 20 + randomRow * cellSize;
 

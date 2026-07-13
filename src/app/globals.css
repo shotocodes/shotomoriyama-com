@@ -4,6 +4,14 @@
 
 @import "tailwindcss";
 
+/*
+ * dark: バリアントを next-themes が付与する .dark クラスに連動させる。
+ * Tailwind v4 のデフォルトは OS 設定（prefers-color-scheme）連動で、
+ * サイト内のテーマトグルを無視してしまうため必須。
+ * （tailwind.config.ts の darkMode: 'class' は v4 の CSS 設定方式では読み込まれない）
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
 
 /* ライトモード カラー定義 */
 :root {
@@ -22,8 +30,9 @@
   --color-background-alt: #ffffff;
 
   --color-text-primary: #1a1a1a;
-  --color-text-secondary: #6B7280;
-  --color-text-muted: #9CA3AF;
+  /* #f5f5f5 背景で WCAG AA (4.5:1) を満たす値 */
+  --color-text-secondary: #4B5563;
+  --color-text-muted: #5B6472;
 
   --color-border: #E5E7EB;
 
@@ -100,6 +109,9 @@
 
   /* ✅ 削除：layout.tsxのNext.js fontが自動でCSS変数を注入するので不要 */
   /* --font-sans: "Noto Sans JP", ui-sans-serif, system-ui, sans-serif; */
+
+  /* 英字見出し用ディスプレイフォント（font-display ユーティリティを生成） */
+  --font-display: var(--font-display), var(--font-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
 /* 基本スタイル */
@@ -119,6 +131,43 @@ body {
 
 html {
   scroll-behavior: smooth;
+}
+
+/* Lenis 有効時は CSS スムーススクロールと競合しないようにする */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+/* カスタムカーソル有効時はネイティブカーソル（矢印・ハンド）を隠す。
+   テキスト入力系はキャレット位置が分からなくなるため I ビームを残す */
+.has-custom-cursor * {
+  cursor: none !important;
+}
+
+.has-custom-cursor input,
+.has-custom-cursor textarea,
+.has-custom-cursor select {
+  cursor: auto !important;
+}
+
+/* OS のモーション軽減設定を尊重する（WCAG 2.3.3） */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 section {

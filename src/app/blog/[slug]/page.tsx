@@ -1,5 +1,8 @@
 // src/app/blog/[slug]/page.tsx
+import type { Metadata } from 'next';
+import type { ComponentPropsWithoutRef } from 'react';
 import { notFound } from 'next/navigation';
+import { SITE_URL } from '@/lib/constants/site';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { ArrowLeft, Calendar, Clock, Tag } from 'lucide-react';
@@ -18,6 +21,33 @@ export async function generateStaticParams() {
   }));
 }
 
+// 記事ごとのメタデータ（frontmatter から生成）
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const post = getPostBySlug(slug);
+
+  if (!post) {
+    return { title: 'Blog' };
+  }
+
+  return {
+    title: post.metadata.title,
+    description: post.metadata.excerpt,
+    openGraph: {
+      type: 'article',
+      title: post.metadata.title,
+      description: post.metadata.excerpt,
+      publishedTime: post.metadata.date,
+      url: `${SITE_URL}/blog/${slug}`,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.metadata.title,
+      description: post.metadata.excerpt,
+    },
+  };
+}
+
 const formatDate = (dateString: string) =>
   new Date(dateString).toLocaleDateString('ja-JP', {
     year: 'numeric',
@@ -27,41 +57,41 @@ const formatDate = (dateString: string) =>
 
   // ✅ formatDateの下に追加（export default の前）
 const components = {
-  h2: (props: any) => (
+  h2: (props: ComponentPropsWithoutRef<'h2'>) => (
     <h2 className="text-2xl font-bold text-primary" style={{ marginBottom: '1.5rem', marginTop: '3rem', lineHeight: '1.4' }} {...props} />
   ),
-  h3: (props: any) => (
+  h3: (props: ComponentPropsWithoutRef<'h3'>) => (
     <h3 className="text-xl font-bold text-primary" style={{ marginBottom: '1rem', marginTop: '2rem', lineHeight: '1.4' }} {...props} />
   ),
-  h4: (props: any) => (
+  h4: (props: ComponentPropsWithoutRef<'h4'>) => (
     <h4 className="font-bold text-primary" style={{ marginBottom: '0.75rem', marginTop: '1.5rem', fontSize: '1rem' }} {...props} />
   ),
-  p: (props: any) => (
+  p: (props: ComponentPropsWithoutRef<'p'>) => (
     <p className="text-text-secondary" style={{ marginBottom: '1rem', lineHeight: '1.75' }} {...props} />
   ),
-  ul: (props: any) => (
+  ul: (props: ComponentPropsWithoutRef<'ul'>) => (
     <ul style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', paddingLeft: '1.5rem', marginBottom: '1.5rem', marginTop: '1rem' }} {...props} />
   ),
-  ol: (props: any) => (
+  ol: (props: ComponentPropsWithoutRef<'ol'>) => (
     <ol style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', paddingLeft: '1.5rem', marginBottom: '1.5rem', marginTop: '1rem' }} {...props} />
   ),
-  li: (props: any) => (
+  li: (props: ComponentPropsWithoutRef<'li'>) => (
     <li className="text-text-secondary" style={{ fontSize: '0.95rem', lineHeight: '1.6' }} {...props} />
   ),
-  strong: (props: any) => (
+  strong: (props: ComponentPropsWithoutRef<'strong'>) => (
     <strong className="text-primary" style={{ fontWeight: 'bold' }} {...props} />
   ),
   // ✅ pre/code を分離（インラインcodeにdisplay:blockが当たらないように）
-  pre: (props: any) => (
+  pre: (props: ComponentPropsWithoutRef<'pre'>) => (
     <pre style={{ backgroundColor: '#1a1a1a', color: '#e5e7eb', padding: '1rem', borderRadius: '4px', marginBottom: '1.5rem', overflowX: 'auto' }} {...props} />
   ),
-  code: (props: any) => (
+  code: (props: ComponentPropsWithoutRef<'code'>) => (
     <code style={{ fontSize: '0.9rem', lineHeight: '1.6' }} {...props} />
   ),
-  blockquote: (props: any) => (
+  blockquote: (props: ComponentPropsWithoutRef<'blockquote'>) => (
     <blockquote className="bg-background-alt border-l-4 border-primary" style={{ padding: '1.5rem', marginBottom: '2rem', lineHeight: '1.75' }} {...props} />
   ),
-  hr: (props: any) => (
+  hr: (props: ComponentPropsWithoutRef<'hr'>) => (
     <hr style={{ border: 'none', borderTop: '1px solid var(--color-border)', margin: '3rem 0' }} {...props} /> // ✅ --border → --color-border
   ),
   InfoBox,
@@ -81,9 +111,24 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
 
   const { metadata, content } = post;
 
+  // 検索エンジン向けの構造化データ（BlogPosting）
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: metadata.title,
+    description: metadata.excerpt,
+    datePublished: metadata.date,
+    author: { '@type': 'Person', name: '森山翔登', url: SITE_URL },
+    mainEntityOfPage: `${SITE_URL}/blog/${slug}`,
+    inLanguage: 'ja',
+  };
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Header />
       <div className="min-h-screen bg-background" style={{ paddingTop: '80px', position: 'relative', overflowX: 'hidden' }}>
 

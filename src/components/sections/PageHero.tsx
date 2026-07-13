@@ -45,7 +45,7 @@ export default function PageHero({
               </div>
             ) : (
               <h1
-                className="text-5xl lg:text-7xl font-bold text-primary"
+                className="font-display text-5xl lg:text-7xl font-bold text-primary tracking-tight"
                 style={{ marginBottom: '1rem' }}
               >
                 {title}

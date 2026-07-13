@@ -5,9 +5,9 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
-import { useState, useEffect } from 'react';
 import AnimatedButton from '@/components/ui/AnimatedButton';
 import { XIcon } from '@/components/icons/XIcon';
+import { useMounted } from '@/hooks/useMounted';
 import {
   Calculator,
   MessageCircle,
@@ -28,11 +28,7 @@ export default function Footer({
   ctaSubText = "お気軽にご相談ください。最適なソリューションを提案します"
 }: FooterProps) {
   const { theme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useMounted();
 
   const isDark = mounted && theme === 'dark';
 
@@ -126,16 +122,23 @@ export default function Footer({
           {/* ブランド（モバイルで2列full幅） */}
           <div className="col-span-2 lg:col-span-1">
             <Link href="/" className="inline-block" style={{ marginBottom: '1rem' }}>
-              {mounted && (
-                <Image
-                  src={isDark ? '/logo-w.png' : '/logo-b.png'}
-                  alt="SHOTOMORIYAMA.JP"
-                  width={160}
-                  height={36}
-                  className="transition-transform hover:rotate-3"
-                  priority
-                />
-              )}
+              {/* テーマ別ロゴは CSS で切り替える（mounted ゲート不要 = 表示のちらつきなし） */}
+              <Image
+                src="/logo-b.png"
+                alt="SHOTOMORIYAMA.JP"
+                width={160}
+                height={36}
+                className="transition-transform hover:rotate-3 dark:hidden"
+                priority
+              />
+              <Image
+                src="/logo-w.png"
+                alt="SHOTOMORIYAMA.JP"
+                width={160}
+                height={36}
+                className="transition-transform hover:rotate-3 hidden dark:block"
+                priority
+              />
             </Link>
             <p
               className="text-text-secondary text-sm"
@@ -224,6 +227,7 @@ export default function Footer({
                     }}
                     transition={{ duration: 0.2 }}
                     title={social.name}
+                    aria-label={social.name}
                   >
                     <Icon size={16} />
                   </motion.a>

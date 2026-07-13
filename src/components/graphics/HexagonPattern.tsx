@@ -2,7 +2,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useMounted } from '@/hooks/useMounted';
 
 interface HexagonPatternProps {
   color?: string;
@@ -17,11 +17,7 @@ export default function HexagonPattern({
   animate = true,
   hexCount = 12
 }: HexagonPatternProps) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useMounted();
 
   if (!mounted) return null;
 

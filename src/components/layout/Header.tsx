@@ -6,50 +6,57 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Briefcase, Palette, BookOpen, LifeBuoy, User, Mail } from 'lucide-react';
-import { useTheme } from 'next-themes';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
-  const [mounted, setMounted] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const { theme, systemTheme } = useTheme();
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
+    // rAF でスクロールイベントを間引く（1フレーム1回まで）
+    let ticking = false;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        setIsScrolled(window.scrollY > 20);
 
-      const sections = ['service', 'works', 'blog', 'support', 'about', 'contact'];
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          if (rect.top <= 150 && rect.bottom >= 150) {
-            setActiveSection(section);
-            break;
+        const sections = ['service', 'works', 'blog', 'support', 'about', 'contact'];
+        for (const section of sections) {
+          const element = document.getElementById(section);
+          if (element) {
+            const rect = element.getBoundingClientRect();
+            if (rect.top <= 150 && rect.bottom >= 150) {
+              setActiveSection(section);
+              break;
+            }
           }
         }
-      }
+      });
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Escape キーでモバイルメニューを閉じる
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsMobileMenuOpen(false);
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isMobileMenuOpen]);
 
   // モバイルメニューが開いているときはスクロール禁止
   useEffect(() => {
     document.body.style.overflow = isMobileMenuOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = 'unset'; };
   }, [isMobileMenuOpen]);
-
-  const currentTheme = theme === 'system' ? systemTheme : theme;
-  const isDark = currentTheme === 'dark';
 
   const navItems = [
     { label: 'SERVICE', href: '/#service', mobileHref: '/service', color: '#0066FF',  Icon: Briefcase },
@@ -76,7 +83,7 @@ export default function Header() {
     const angleStep = 180 / characters.length;
 
     return (
-      <svg width="80" height="80" viewBox="0 0 80 80" className="overflow-visible">
+      <svg width="80" height="80" viewBox="0 0 80 80" className="overflow-visible" aria-hidden="true">
         {characters.map((character: string, index: number) => {
           const angle = (angleStep * index - 90) * (Math.PI / 180);
           const x = 40 + radius * Math.cos(angle);
@@ -118,27 +125,31 @@ export default function Header() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
 
-            {/* ロゴ */}
+            {/* ロゴ（テーマ別ロゴは CSS で切り替え = プレースホルダのちらつきなし） */}
             <Link href="/" className="flex items-center gap-3 z-10 group">
-              {mounted ? (
-                <motion.div
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  transition={{ type: 'spring', stiffness: 300 }}
-                  className="relative w-8 h-8 sm:w-10 sm:h-10"
-                >
-                  <Image
-                    src={isDark ? '/logo-w.png' : '/logo-b.png'}
-                    alt="M Logo"
-                    width={40}
-                    height={40}
-                    className="w-full h-full object-contain"
-                    priority
-                  />
-                </motion.div>
-              ) : (
-                <div className="relative w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse" />
-              )}
-              <span className="text-lg sm:text-xl font-bold text-primary group-hover:text-accent transition-colors">
+              <motion.div
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+                className="relative w-8 h-8 sm:w-10 sm:h-10"
+              >
+                <Image
+                  src="/logo-b.png"
+                  alt="M Logo"
+                  width={40}
+                  height={40}
+                  className="w-full h-full object-contain dark:hidden"
+                  priority
+                />
+                <Image
+                  src="/logo-w.png"
+                  alt="M Logo"
+                  width={40}
+                  height={40}
+                  className="w-full h-full object-contain hidden dark:block"
+                  priority
+                />
+              </motion.div>
+              <span className="font-display text-lg sm:text-xl font-bold text-primary group-hover:text-accent transition-colors tracking-tight">
                 SHOTOMORIYAMA.JP
               </span>
             </Link>
@@ -159,7 +170,12 @@ export default function Header() {
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <Link href={item.href} aria-current={isActive ? 'page' : undefined} className="block relative">
+                    <Link
+                      href={item.href}
+                      aria-current={isActive ? 'page' : undefined}
+                      aria-label={item.label}
+                      className="block relative rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                    >
                       {/* 円形テキスト */}
                       <motion.div
                         className="relative w-20 h-20 flex items-center justify-center"
@@ -271,6 +287,9 @@ export default function Header() {
             {/* メニューパネル */}
             <motion.div
               className="fixed top-0 right-0 h-full w-72 bg-background z-50 lg:hidden shadow-2xl"
+              role="dialog"
+              aria-modal="true"
+              aria-label="ナビゲーションメニュー"
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}

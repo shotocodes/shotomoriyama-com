@@ -2,18 +2,15 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useMounted } from '@/hooks/useMounted';
 
 export default function ThemeToggle() {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const [isFlashing, setIsFlashing] = useState(false);
   const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number }>>([]);
   const { theme, setTheme } = useTheme();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   if (!mounted) {
     return (
@@ -39,27 +36,32 @@ export default function ThemeToggle() {
   };
 
   const playClickSound = () => {
-    // Create audio context for click sound
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
+    try {
+      const audioContext = new AudioContext();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
 
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
 
-    // Higher pitch for light mode, lower for dark mode
-    oscillator.frequency.value = isDark ? 800 : 400;
-    oscillator.type = 'sine';
+      // Higher pitch for light mode, lower for dark mode
+      oscillator.frequency.value = isDark ? 800 : 400;
+      oscillator.type = 'sine';
 
-    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+      gainNode.gain.setValueAtTime(0.08, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
 
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + 0.1);
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.1);
+      // AudioContext を都度リークさせない
+      oscillator.onended = () => audioContext.close();
+    } catch {
+      // 音が出せない環境では静かに何もしない
+    }
   };
 
   const createParticles = () => {
-    const newParticles = Array.from({ length: 100 }, (_, i) => ({
+    const newParticles = Array.from({ length: 30 }, (_, i) => ({
       id: Date.now() + i,
       x: Math.random() * 100 - 50,
       y: Math.random() * 100 - 50,
@@ -75,7 +77,8 @@ export default function ThemeToggle() {
         {isFlashing && (
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 0.8, 0] }}
+            // 光過敏の観点から全画面フラッシュは控えめに（0.8 → 0.15）
+            animate={{ opacity: [0, 0.15, 0] }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
             className={`fixed inset-0 z-50 pointer-events-none ${
@@ -92,7 +95,8 @@ export default function ThemeToggle() {
         className="relative w-12 h-12 rounded-full bg-background-alt hover:bg-border transition-colors focus:outline-none focus:ring-2 focus:ring-accent overflow-visible group"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95, rotate: 15 }}
-        aria-label="Toggle theme"
+        aria-label={isDark ? 'ライトモードに切り替え' : 'ダークモードに切り替え'}
+        aria-pressed={isDark}
       >
         {/* Particles */}
         {particles.map((particle) => (

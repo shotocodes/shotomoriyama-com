@@ -2,10 +2,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // eslint 設定を削除
-  // eslint: {
-  //   ignoreDuringBuilds: true,
-  // },
+  images: {
+    // next/image 経由の画像を AVIF 優先（非対応ブラウザは WebP）で配信する
+    formats: ["image/avif", "image/webp"],
+  },
 };
 
 export default nextConfig;

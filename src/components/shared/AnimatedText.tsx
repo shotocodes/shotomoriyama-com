@@ -2,6 +2,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useMounted } from '@/hooks/useMounted';
 
 interface AnimatedTextProps {
   text: string;                    // 表示する文字列 (例: "SERVICE", "WORKS")
@@ -20,23 +21,33 @@ export default function AnimatedText({
   className = '',
   accentColor,
 }: AnimatedTextProps) {
+  // SSR とハイドレーション時はランダム文字を使わない（不一致でツリーが壊れるため）。
+  // マウント後にインターバルでスクランブルを回す。
+  const mounted = useMounted();
+  const [, setScrambleTick] = useState(0);
+
+  const progress = Math.min(scrollProgress * 1.5, 1);
+  const isFullyRevealed = progress >= 1;
+
+  useEffect(() => {
+    if (!mounted || isFullyRevealed) return;
+    const interval = setInterval(() => setScrambleTick((t) => t + 1), 66);
+    return () => clearInterval(interval);
+  }, [mounted, isFullyRevealed]);
+
   const getRandomChar = () => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[Math.floor(Math.random() * 26)];
 
-  const getAnimatedText = () => {
-    const progress = Math.min(scrollProgress * 1.5, 1);
-    return text.split('').map((char, i) => {
-      const isRevealed = progress * text.length > i + 0.5;
-      const isLastChar = i === text.length - 1;
-      const displayChar = isRevealed ? char : getRandomChar();
+  const animatedChars = text.split('').map((char, i) => {
+    const isRevealed = progress * text.length > i + 0.5;
+    const isLastChar = i === text.length - 1;
+    // マウント前は実際の文字を表示（SEO 的にも見出しが本物のテキストになる）
+    const displayChar = isRevealed || !mounted ? char : getRandomChar();
 
-      return {
-        char: displayChar,
-        isLastChar: isLastChar && isRevealed,
-      };
-    });
-  };
-
-  const animatedChars = getAnimatedText();
+    return {
+      char: displayChar,
+      isLastChar: isLastChar && isRevealed,
+    };
+  });
 
   return (
     <div className="flex-shrink-0">
@@ -49,7 +60,7 @@ export default function AnimatedText({
           marginTop: '50px'
         }}
       >
-        <h2 className={`text-4xl md:text-5xl font-bold tracking-widest font-mono ${className}`}>
+        <h2 className={`font-display text-4xl md:text-5xl font-bold tracking-widest ${className}`}>
           {animatedChars.map((item, index) => (
             <span
               key={index}
@@ -74,7 +85,7 @@ export default function AnimatedText({
       >
         <div style={{ height: '500px', position: 'relative' }}>
           <h2
-            className={`text-6xl font-bold tracking-widest select-none absolute font-mono ${className}`}
+            className={`font-display text-6xl font-bold tracking-widest select-none absolute ${className}`}
             style={{
               writingMode: 'vertical-rl',
               left: '0',

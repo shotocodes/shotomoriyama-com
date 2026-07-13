@@ -2,7 +2,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useMounted } from '@/hooks/useMounted';
 
 interface CircleGridProps {
   color?: string;
@@ -19,11 +19,7 @@ export default function CircleGrid({
   gridSize = 8,
   circleSize = 4
 }: CircleGridProps) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useMounted();
 
   if (!mounted) return null;
 

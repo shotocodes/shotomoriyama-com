@@ -9,13 +9,11 @@ export function useMediaQuery(query: string): boolean {
 
   useEffect(() => {
     const media = window.matchMedia(query);
-    if (media.matches !== matches) {
-      setMatches(media.matches);
-    }
+    setMatches(media.matches);
     const listener = () => setMatches(media.matches);
     media.addEventListener('change', listener);
     return () => media.removeEventListener('change', listener);
-  }, [matches, query]);
+  }, [query]);
 
   return matches;
 }
@@ -84,7 +82,13 @@ export function useScrollProgress(containerRef: React.RefObject<HTMLDivElement |
   const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
-    const handleScroll = () => {
+    // rAF で 1 フレーム 1 回に間引く。
+    // 生のスクロールイベントごとに getBoundingClientRect + setState すると
+    // 消費側セクション全体がイベント頻度で再レンダーされてカクつく。
+    let ticking = false;
+
+    const update = () => {
+      ticking = false;
       if (!containerRef.current) return;
 
       const container = containerRef.current;
@@ -94,11 +98,18 @@ export function useScrollProgress(containerRef: React.RefObject<HTMLDivElement |
       const scrolled = -rect.top;
       const progress = Math.max(0, Math.min(1, scrolled / scrollableHeight));
 
-      setScrollProgress(progress);
+      // 変化がないフレームでは setState しない（不要な再レンダー防止）
+      setScrollProgress((prev) => (prev === progress ? prev : progress));
     };
 
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
+    const handleScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    update();
     return () => window.removeEventListener('scroll', handleScroll);
   }, [containerRef]);
 
