@@ -44,6 +44,7 @@ interface Work {
   purpose?: string;
   features?: string[];
   articleUrl?: string;
+  codeSnippet?: string;
 }
 
 interface WorkDetailContentProps {
@@ -71,9 +72,12 @@ export default function WorkDetailContent({ work, isClientWork }: WorkDetailCont
             transition={{ duration: 0.6 }}
             style={{ maxWidth: '1200px', margin: '0 auto' }}
           >
-            {/* カーソルをかざすと設計図レイヤーが透けるブループリント・レンズ */}
+            {/* カーソルをかざすと「裏側」が透けるレンズ
+                クライアントワーク: 設計図 / 個人プロジェクト: ソースコード */}
             <BlueprintLens
               meta={{ title: work.title, year: work.year, tags: work.tags }}
+              variant={isClientWork ? 'blueprint' : 'code'}
+              codeSnippet={work.codeSnippet}
               className="overflow-hidden"
               radius={120}
             >
