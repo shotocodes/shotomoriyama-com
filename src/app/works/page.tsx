@@ -317,11 +317,8 @@ export default function WorksPage() {
               }}
             >
               {personalProjects.map((project, index) => (
-                <motion.a
+                <motion.div
                   key={project.id}
-                  href={project.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -329,8 +326,6 @@ export default function WorksPage() {
                   className="bg-background border-2 border-border group hover:border-[#10B981] transition-all"
                   style={{
                     padding: '2rem',
-                    textDecoration: 'none',
-                    display: 'block',
                     position: 'relative',
                     overflow: 'hidden'
                   }}
@@ -421,13 +416,31 @@ export default function WorksPage() {
                       </div>
                     </div>
 
-                    {/* リンク */}
-                    <div className="flex items-center text-sm font-bold text-primary group-hover:text-[#10B981] transition-colors" style={{ gap: '0.5rem' }}>
-                      <span>Visit Project</span>
-                      <ExternalLink size={14} />
+                    {/* ボタン（クライアントワークと同じ2導線に統一） */}
+                    <div className="flex" style={{ gap: '1rem' }}>
+                      {project.url && (
+                        <a
+                          href={project.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center text-sm font-bold text-primary hover:text-[#10B981] transition-colors"
+                          style={{ gap: '0.5rem' }}
+                        >
+                          <span>Visit Project</span>
+                          <ExternalLink size={14} />
+                        </a>
+                      )}
+                      <Link
+                        href={`/works/${project.id}`}
+                        className="inline-flex items-center text-sm font-bold text-primary hover:text-[#10B981] transition-colors"
+                        style={{ gap: '0.5rem' }}
+                      >
+                        <span>View Details</span>
+                        <ArrowRight size={14} />
+                      </Link>
                     </div>
                   </div>
-                </motion.a>
+                </motion.div>
               ))}
             </div>
           </div>
