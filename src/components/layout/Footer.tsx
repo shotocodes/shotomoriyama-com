@@ -126,7 +126,7 @@ export default function Footer({
               {/* テーマ別ロゴは CSS で切り替える（mounted ゲート不要 = 表示のちらつきなし） */}
               <Image
                 src="/logo-b.png"
-                alt="SHOTOMORIYAMA.JP"
+                alt="SHOTOMORIYAMA"
                 width={160}
                 height={36}
                 className="transition-transform hover:rotate-3 dark:hidden"
@@ -134,7 +134,7 @@ export default function Footer({
               />
               <Image
                 src="/logo-w.png"
-                alt="SHOTOMORIYAMA.JP"
+                alt="SHOTOMORIYAMA"
                 width={160}
                 height={36}
                 className="transition-transform hover:rotate-3 hidden dark:block"
@@ -269,7 +269,7 @@ export default function Footer({
             style={{ gap: '0.75rem' }}
           >
             <p className="text-xs sm:text-sm">
-              © 2025 SHOTOMORIYAMA.JP All rights reserved.
+              © 2025 SHOTOMORIYAMA All rights reserved.
             </p>
             <div className="flex" style={{ gap: '1.25rem' }}>
               <Link href="/privacy" className="text-xs sm:text-sm hover:text-primary transition-colors">

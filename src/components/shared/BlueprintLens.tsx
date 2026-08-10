@@ -214,7 +214,7 @@ export default function BlueprintLens({
             style={{ color: 'rgba(125, 180, 255, 0.75)' }}
           >
             <p>SCALE 1:1</p>
-            <p className="mt-0.5">SHOTOMORIYAMA.JP</p>
+            <p className="mt-0.5">SHOTOMORIYAMA</p>
           </div>
         </motion.div>
       )}
