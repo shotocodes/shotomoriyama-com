@@ -275,3 +275,19 @@ section {
   color: var(--color-text-secondary);
   opacity: 0.5;
 }
+
+/* ============================================
+   ローディング演出のガード（LoadingScreen.tsx と対）
+   - セッション内2回目以降: <html data-loading-seen> が同期スクリプトで付与され、
+     ハイドレーション前からローディングを出さない
+   - モーション軽減設定時も表示しない
+   ============================================ */
+html[data-loading-seen] #loading-screen {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #loading-screen {
+    display: none;
+  }
+}

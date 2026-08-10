@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import SmoothScroll from "@/components/providers/SmoothScroll";
 import CustomCursor from "@/components/ui/CustomCursor";
+import LoadingScreen from "@/components/ui/LoadingScreen";
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from '@/lib/constants/site'
 
@@ -85,6 +86,14 @@ export default function RootLayout({
   return (
     <html lang="ja" suppressHydrationWarning>
       <body className={`${notoSansJP.variable} ${spaceGrotesk.variable} antialiased`}>
+        {/* セッション内2回目以降はローディングをハイドレーション前から非表示にする
+            （LoadingScreen.tsx の LOADING_SEEN_KEY と対） */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{if(sessionStorage.getItem('smj-loading-seen'))document.documentElement.setAttribute('data-loading-seen','')}catch(e){}",
+          }}
+        />
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:bg-background focus:text-primary focus:px-4 focus:py-2 focus:rounded focus:shadow-lg"
@@ -93,6 +102,7 @@ export default function RootLayout({
         </a>
         <ThemeProvider>
           <SmoothScroll>{children}</SmoothScroll>
+          <LoadingScreen />
           <CustomCursor />
           {process.env.NEXT_PUBLIC_GA_ID && (
             <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
