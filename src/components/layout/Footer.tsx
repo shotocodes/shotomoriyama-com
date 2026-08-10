@@ -8,6 +8,7 @@ import { useTheme } from 'next-themes';
 import AnimatedButton from '@/components/ui/AnimatedButton';
 import { XIcon } from '@/components/icons/XIcon';
 import { useMounted } from '@/hooks/useMounted';
+import { CONTACT_EMAIL, CONTACT_MAILTO } from '@/lib/constants/site';
 import {
   Calculator,
   MessageCircle,
@@ -57,7 +58,7 @@ export default function Footer({
     { name: 'Instagram', icon: Instagram, href: 'https://instagram.com/sh0t0x72',            color: '#E4405F' },
     { name: 'GitHub',    icon: Github,    href: 'https://github.com/shotocodes',             color: isDark ? '#aaa' : '#181717' },
     { name: 'LinkedIn',  icon: Linkedin,  href: 'https://linkedin.com/in/shotomoriyama',     color: '#0A66C2' },
-    { name: 'Email',     icon: Mail,      href: 'mailto:0sdm0.moriyama@gmail.com',           color: '#EA4335' },
+    { name: 'Email',     icon: Mail,      href: CONTACT_MAILTO,                              color: '#EA4335' },
   ];
 
   return (
@@ -125,7 +126,7 @@ export default function Footer({
               {/* テーマ別ロゴは CSS で切り替える（mounted ゲート不要 = 表示のちらつきなし） */}
               <Image
                 src="/logo-b.png"
-                alt="SHOTOMORIYAMA.JP"
+                alt="SHOTOMORIYAMA"
                 width={160}
                 height={36}
                 className="transition-transform hover:rotate-3 dark:hidden"
@@ -133,7 +134,7 @@ export default function Footer({
               />
               <Image
                 src="/logo-w.png"
-                alt="SHOTOMORIYAMA.JP"
+                alt="SHOTOMORIYAMA"
                 width={160}
                 height={36}
                 className="transition-transform hover:rotate-3 hidden dark:block"
@@ -246,10 +247,10 @@ export default function Footer({
                 LINE: @shoto0720
               </a>
               <a
-                href="mailto:0sdm0.moriyama@gmail.com"
+                href={CONTACT_MAILTO}
                 className="text-sm text-text-secondary hover:text-primary transition-colors"
               >
-                0sdm0.moriyama@gmail.com
+                {CONTACT_EMAIL}
               </a>
             </div>
           </div>
@@ -268,7 +269,7 @@ export default function Footer({
             style={{ gap: '0.75rem' }}
           >
             <p className="text-xs sm:text-sm">
-              © 2025 SHOTOMORIYAMA.JP All rights reserved.
+              © 2025 SHOTOMORIYAMA All rights reserved.
             </p>
             <div className="flex" style={{ gap: '1.25rem' }}>
               <Link href="/privacy" className="text-xs sm:text-sm hover:text-primary transition-colors">

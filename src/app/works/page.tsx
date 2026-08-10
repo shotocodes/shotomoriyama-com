@@ -12,6 +12,7 @@ import WavePattern from '@/components/graphics/WavePattern';
 import AnimatedButton from '@/components/ui/AnimatedButton';
 import Link from 'next/link';
 import Parallax from '@/components/shared/Parallax';
+import WorkImage from '@/components/shared/WorkImage';
 
 import {
   ExternalLink,
@@ -128,11 +129,25 @@ export default function WorksPage() {
                   transition={{ duration: 0.4, delay: index * 0.1 }}
                   className="bg-background-alt border-2 border-border group hover:border-[#4ECDC4] transition-all"
                   style={{
-                    padding: '2rem',
                     position: 'relative',
                     overflow: 'hidden'
                   }}
                 >
+                  {/* サムネイル */}
+                  <Link
+                    href={`/works/${work.id}`}
+                    className="block relative overflow-hidden border-b-2 border-border"
+                    style={{ aspectRatio: '16 / 9' }}
+                  >
+                    <WorkImage
+                      src={work.thumbnail}
+                      alt={`${work.title}のサムネイル`}
+                      fill
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, 600px"
+                    />
+                  </Link>
+
                   {/* 背景グラデーション */}
                   <div
                     className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -143,7 +158,7 @@ export default function WorksPage() {
                   />
 
                   {/* コンテンツ */}
-                  <div style={{ position: 'relative', zIndex: 1 }}>
+                  <div style={{ position: 'relative', zIndex: 1, padding: '2rem' }}>
                     {/* ヘッダー */}
                     <div style={{ marginBottom: '1.5rem' }}>
                       {/* タイトル & バッジ */}
@@ -168,11 +183,28 @@ export default function WorksPage() {
                       </div>
 
                       {/* クライアント & 業種 */}
-                      <p className="text-sm text-text-secondary" style={{ marginBottom: '0.5rem' }}>
+                      <p className="text-sm text-text-secondary" style={{ marginBottom: '0.75rem' }}>
                         {work.client} / {work.industry}
                       </p>
 
-                      {/* タグ */}
+                      {/* 成果物チップ（納品した制作物） */}
+                      <div className="flex flex-wrap" style={{ gap: '0.5rem', marginBottom: '0.5rem' }}>
+                        {work.deliverables.map((item, i) => (
+                          <span
+                            key={i}
+                            className="text-xs font-bold text-primary"
+                            style={{
+                              padding: '0.25rem 0.75rem',
+                              backgroundColor: '#4ECDC426',
+                              borderRadius: '9999px'
+                            }}
+                          >
+                            {item}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* 技術タグ */}
                       <div className="flex flex-wrap" style={{ gap: '0.5rem' }}>
                         {work.tags.map((tag, i) => (
                           <span

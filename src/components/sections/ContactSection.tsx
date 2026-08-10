@@ -10,6 +10,7 @@ import SpeedMeter from '@/components/shared/SpeedMeter';
 import GridBackground from '@/components/shared/GridBackground';
 import { Mail, FileText, Calculator, ArrowRight } from 'lucide-react';
 import { useScrollProgress } from '@/hooks/useResponsive';
+import { FREE_AUDIT_LABEL, FREE_AUDIT_MAILTO, FREE_AUDIT_DESCRIPTION } from '@/lib/constants/site';
 
 // Instagram アイコン
 const InstagramIcon = ({ size = 24, style }: { size?: number; style?: CSSProperties }) => (
@@ -56,11 +57,11 @@ const quickContactOptions = [
   {
     icon: Mail,
     title: 'Email',
-    value: 'メール',
+    value: FREE_AUDIT_LABEL,
     description: '24時間受付',
     priority: 3,
     color: '#FF6B6B',
-    link: 'mailto:0sdm0.moriyama@gmail.com',
+    link: FREE_AUDIT_MAILTO,
   }
 ];
 
@@ -118,6 +119,9 @@ function MobileContact() {
         </p>
         <p className="text-xs text-text-secondary opacity-70 mt-1">
           あなたのビジネスに最適なソリューションを提案します
+        </p>
+        <p className="text-xs text-text-secondary mt-2 leading-relaxed">
+          {FREE_AUDIT_DESCRIPTION}
         </p>
       </motion.div>
 
@@ -341,6 +345,9 @@ export default function ContactSection() {
                       </p>
                       <p className="text-base text-text-secondary opacity-70 mt-2">
                         あなたのビジネスに最適なソリューションを提案します
+                      </p>
+                      <p className="text-sm text-text-secondary mt-2">
+                        {FREE_AUDIT_DESCRIPTION}
                       </p>
                     </div>
 
