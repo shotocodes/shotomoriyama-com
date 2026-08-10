@@ -14,6 +14,12 @@ import RippleWave from '@/components/graphics/RippleWave';
 import { Mail } from 'lucide-react';
 import { supportArticleMeta } from '@/data/supportArticles';
 import Link from 'next/link';
+import {
+  CONTACT_EMAIL,
+  FREE_AUDIT_LABEL,
+  FREE_AUDIT_MAILTO,
+  FREE_AUDIT_DESCRIPTION,
+} from '@/lib/constants/site';
 
 export default function SupportPage() {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
@@ -450,9 +456,15 @@ export default function SupportPage() {
 </h2>
 <p
   className="text-text-secondary"
-  style={{ marginBottom: '3rem' }}
+  style={{ marginBottom: '1rem' }}
 >
   サイトに関してのご不明点、今のサイトでいいのか不安な方もお気軽にお問い合わせください
+</p>
+<p
+  className="text-sm text-text-secondary"
+  style={{ marginBottom: '3rem' }}
+>
+  {FREE_AUDIT_DESCRIPTION}
 </p>
 
       <div
@@ -486,9 +498,9 @@ export default function SupportPage() {
           <span>LINE で相談</span>
         </motion.a>
 
-{/* メール */}
+{/* メール（無料診断CTA・件名自動挿入） */}
 <motion.a
-  href="mailto:0sdm0.moriyama@gmail.com"
+  href={FREE_AUDIT_MAILTO}
   className="inline-flex items-center font-bold text-lg border-2 transition-all"
   style={{
     padding: '1rem 2rem',
@@ -506,7 +518,7 @@ export default function SupportPage() {
   whileTap={{ scale: 0.95 }}
 >
   <Mail size={24} />
-  <span>メールで相談</span>
+  <span>{FREE_AUDIT_LABEL}</span>
 </motion.a>
       </div>
 
@@ -515,7 +527,7 @@ export default function SupportPage() {
         className="text-sm text-text-secondary"
         style={{ marginTop: '2rem' }}
       >
-        0sdm0.moriyama@gmail.com
+        {CONTACT_EMAIL}
       </p>
     </motion.div>
   </div>

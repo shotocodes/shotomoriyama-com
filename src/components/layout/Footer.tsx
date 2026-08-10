@@ -8,6 +8,7 @@ import { useTheme } from 'next-themes';
 import AnimatedButton from '@/components/ui/AnimatedButton';
 import { XIcon } from '@/components/icons/XIcon';
 import { useMounted } from '@/hooks/useMounted';
+import { CONTACT_EMAIL, CONTACT_MAILTO } from '@/lib/constants/site';
 import {
   Calculator,
   MessageCircle,
@@ -57,7 +58,7 @@ export default function Footer({
     { name: 'Instagram', icon: Instagram, href: 'https://instagram.com/sh0t0x72',            color: '#E4405F' },
     { name: 'GitHub',    icon: Github,    href: 'https://github.com/shotocodes',             color: isDark ? '#aaa' : '#181717' },
     { name: 'LinkedIn',  icon: Linkedin,  href: 'https://linkedin.com/in/shotomoriyama',     color: '#0A66C2' },
-    { name: 'Email',     icon: Mail,      href: 'mailto:0sdm0.moriyama@gmail.com',           color: '#EA4335' },
+    { name: 'Email',     icon: Mail,      href: CONTACT_MAILTO,                              color: '#EA4335' },
   ];
 
   return (
@@ -246,10 +247,10 @@ export default function Footer({
                 LINE: @shoto0720
               </a>
               <a
-                href="mailto:0sdm0.moriyama@gmail.com"
+                href={CONTACT_MAILTO}
                 className="text-sm text-text-secondary hover:text-primary transition-colors"
               >
-                0sdm0.moriyama@gmail.com
+                {CONTACT_EMAIL}
               </a>
             </div>
           </div>

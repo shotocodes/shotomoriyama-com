@@ -13,6 +13,7 @@ import SectionTitle from '@/components/ui/SectionTitle';
 import StepTimeline from '@/components/graphics/StepTimeline';
 import WavePattern from '@/components/graphics/WavePattern';
 import RadialLines from '@/components/graphics/RadialLines';
+import { FREE_AUDIT_LABEL, FREE_AUDIT_MAILTO } from '@/lib/constants/site';
 import { useSearchParams } from 'next/navigation';
 import {
   Mail,
@@ -1403,11 +1404,11 @@ const faqs = [
             {
               icon: 'mail',
               title: 'Email',
-              value: 'メール',
+              value: FREE_AUDIT_LABEL,
               description: '24時間受付',
               priority: 3,
               color: '#FF6B6B',
-              link: 'mailto:0sdm0.moriyama@gmail.com'
+              link: FREE_AUDIT_MAILTO
             }
           ].map((option, index) => (
             <motion.div

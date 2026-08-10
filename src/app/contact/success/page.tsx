@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { CheckCircle, MessageCircle, ArrowLeft, Instagram, Mail } from 'lucide-react';
+import { CONTACT_MAILTO } from '@/lib/constants/site';
 
 interface IconProps {
   size?: number;
@@ -176,7 +177,7 @@ export default function ContactSuccessPage() {
                   </motion.button>
                 </a>
 
-                <a href="mailto:0sdm0.moriyama@gmail.com">
+                <a href={CONTACT_MAILTO}>
                   <motion.button
                     className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 font-bold border-2 transition-all"
                     style={{
