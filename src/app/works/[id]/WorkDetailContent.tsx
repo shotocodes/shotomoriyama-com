@@ -11,7 +11,6 @@ import {
   ExternalLink,
   Calendar,
   Clock,
-  Tag,
   CheckCircle,
   Quote,
 } from 'lucide-react';
@@ -145,12 +144,6 @@ export default function WorkDetailContent({ work, isClientWork }: WorkDetailCont
                 <div className="flex items-center" style={{ gap: '0.5rem' }}>
                   <Clock size={20} />
                   <span>{work.duration}</span>
-                </div>
-              )}
-              {isClientWork && work.price && (
-                <div className="flex items-center" style={{ gap: '0.5rem' }}>
-                  <Tag size={20} />
-                  <span>{work.price}</span>
                 </div>
               )}
               {isClientWork && work.maintenance && (

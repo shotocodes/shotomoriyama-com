@@ -10,6 +10,7 @@ import AccordionButton from '@/components/ui/AccordionButton';
 import AnimatedButton from '@/components/ui/AnimatedButton';
 import AnimatedTitle from '@/components/ui/AnimatedTitle';
 import SectionTitle from '@/components/ui/SectionTitle';
+import { FREE_AUDIT_LABEL, FREE_AUDIT_MAILTO } from '@/lib/constants/site';
 
 import {
   Globe,
@@ -1008,7 +1009,7 @@ export default function ServicePage() {
           number: 4,
           title: '制作開始',
           icon: Code,
-          detail: 'デザイン・開発を開始。進捗は随時共有し、修正は無制限で対応します。制作期間は2週間〜2ヶ月です。'
+          detail: 'デザイン・開発を開始。進捗は随時共有し、仮サイトでリアルタイムにご確認いただけます。'
         },
         {
           number: 5,
@@ -1388,7 +1389,7 @@ export default function ServicePage() {
           },
           {
             q: '修正は何回まで可能ですか？',
-            a: '制作期間中の修正回数に制限はありません。ご納得いただけるまで丁寧に対応いたします。ただし、大幅な仕様変更の場合は追加料金が発生する場合があります。'
+            a: '最初に確定した制作範囲の中で、ご納得いただけるまで丁寧に調整いたします。制作範囲を超える仕様変更の場合は、事前にご相談の上で対応いたします。'
           },
           {
             q: '公開後のサポートはありますか？',
@@ -1546,167 +1547,44 @@ export default function ServicePage() {
       </motion.svg>
     </div>
 
-{/* 料金カード */}
+{/* 料金のご案内（具体的金額は改定中のため非掲載・お見積もりは無料） */}
 <div
   style={{
-    maxWidth: '80rem',
+    maxWidth: '48rem',
     margin: '0 auto',
     position: 'relative',
     zIndex: 1
   }}
 >
-  <div
-    className="grid grid-cols-1 md:grid-cols-3"
-    style={{ gap: '2rem' }}
-  >
-    {[
-      {
-        id: 1,
-        name: 'Light',
-        subtitle: 'ランディングページ',
-        price: '100,000',
-        description: 'シンプルなLP制作に最適',
-        features: [
-          '1ページ構成',
-          'レスポンシブ対応',
-          'お問い合わせフォーム',
-          '1ヶ月間無償保守'
-        ]
-      },
-      {
-        id: 2,
-        name: 'Standard',
-        subtitle: 'コーポレートサイト',
-        price: '300,000',
-        description: '企業サイトに最適',
-        features: [
-          '5ページ構成',
-          'CMS導入',
-          'SEO対策',
-          '3ヶ月間無償保守'
-        ],
-        popular: true
-      },
-      {
-        id: 3,
-        name: 'Premium',
-        subtitle: 'ECサイト・大規模',
-        price: '500,000',
-        description: '本格的なサイト制作',
-        features: [
-          '10ページ以上',
-          'カスタム機能開発',
-          '決済システム連携',
-          '6ヶ月間無償保守'
-        ]
-      }
-    ].map((plan, index) => (
-      <motion.div
-        key={plan.id}
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: index * 0.1 }}
-        className="relative group"
-      >
-        {/* 人気バッジ */}
-        {plan.popular && (
-          <div
-            className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-primary text-background text-xs font-bold px-4 py-1"
-            style={{ zIndex: 2 }}
-          >
-            POPULAR
-          </div>
-        )}
-
-        {/* カード */}
-        <div
-          className="border border-border bg-background transition-all duration-300 hover:border-primary"
-          style={{
-            padding: '2.5rem 2rem',
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column'
-          }}
-        >
-          {/* プラン名 */}
-          <div style={{ marginBottom: '1.5rem' }}>
-            <p className="text-sm text-text-secondary mb-1">
-              {plan.subtitle}
-            </p>
-            <h3 className="text-2xl font-bold text-primary">
-              {plan.name}
-            </h3>
-          </div>
-
-          {/* 料金 */}
-          <div style={{ marginBottom: '1.5rem' }}>
-            <div className="flex items-baseline gap-1">
-              <span className="text-4xl font-bold text-primary">
-                ¥{plan.price.toLocaleString()}
-              </span>
-              <span className="text-sm text-text-secondary">
-                〜
-              </span>
-            </div>
-          </div>
-
-          {/* 説明 */}
-          <p
-            className="text-sm text-text-secondary"
-            style={{ marginBottom: '2rem' }}
-          >
-            {plan.description}
-          </p>
-
-          {/* 機能リスト */}
-          <div style={{ flex: 1, marginBottom: '2rem' }}>
-            <ul style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              {plan.features.map((feature, i) => (
-                <li key={i} className="flex items-start gap-2">
-                  <CheckCircle
-                    size={16}
-                    style={{
-                      color: '#0066FF',
-                      flexShrink: 0,
-                      marginTop: '0.25rem'
-                    }}
-                  />
-                  <span className="text-sm text-text-secondary">
-                    {feature}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* ボタン */}
-          <div>
-            <Link href="/contact">
-              <div
-                className="w-full text-center border border-border py-3 font-bold transition-all duration-300 hover:bg-primary hover:text-background hover:border-primary cursor-pointer"
-              >
-                お見積もり
-              </div>
-            </Link>
-          </div>
-        </div>
-      </motion.div>
-    ))}
-  </div>
-
-  {/* 注意書き */}
   <motion.div
-    initial={{ opacity: 0, y: 20 }}
+    initial={{ opacity: 0, y: 40 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
-    transition={{ duration: 0.6, delay: 0.5 }}
-    className="text-center"
-    style={{ marginTop: '3rem' }}
+    transition={{ duration: 0.6 }}
+    className="border border-border bg-background"
+    style={{ padding: '3rem 2rem', textAlign: 'center' }}
   >
-    <p className="text-sm text-text-secondary">
-      ※ 料金はプロジェクトの内容により変動します。詳細なお見積もりは無料でご提示いたします。
+    <h3 className="text-2xl font-bold text-primary" style={{ marginBottom: '1rem' }}>
+      内容に応じた固定価格でご提示します
+    </h3>
+    <p className="text-sm text-text-secondary leading-relaxed" style={{ marginBottom: '2rem' }}>
+      お見積もりは無料です。ご要望を伺ったうえで、制作範囲と金額を最初に確定し、
+      追加費用のない固定価格でご提示いたします。
+      <br />
+      まずは無料診断で、今のサイトの改善点からご確認いただけます。
     </p>
+    <div className="flex flex-col sm:flex-row justify-center" style={{ gap: '1rem' }}>
+      <a href={FREE_AUDIT_MAILTO}>
+        <div className="w-full text-center border border-border py-3 px-8 font-bold transition-all duration-300 hover:bg-primary hover:text-background hover:border-primary cursor-pointer">
+          {FREE_AUDIT_LABEL}
+        </div>
+      </a>
+      <Link href="/contact">
+        <div className="w-full text-center border border-border py-3 px-8 font-bold transition-all duration-300 hover:bg-primary hover:text-background hover:border-primary cursor-pointer">
+          お見積もり
+        </div>
+      </Link>
+    </div>
   </motion.div>
 </div>
   </div>
