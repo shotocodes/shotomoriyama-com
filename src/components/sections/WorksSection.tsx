@@ -45,8 +45,9 @@ function FloatingWorks({ works, scrollProgress }: { works: Work[]; scrollProgres
         const appearProgress = Math.min(1, cardProgress / 0.3);
         const moveProgress = Math.max(0, (cardProgress - 0.3) / 0.7);
 
-        const translateY = params.initialY - (appearProgress * (params.initialY - 50));
-        const targetX = -250 + (index * 120);
+        const translateY = params.initialY - (appearProgress * (params.initialY - 0));
+        // 4枚を中央揃えで横一列に（カード幅256pxに対する%指定）
+        const targetX = -240 + (index * 115);
         const translateX = params.initialX + ((targetX - params.initialX) * moveProgress);
         const rotation = params.rotation * (1 - moveProgress);
         const scale = params.scale + ((1 - params.scale) * moveProgress);
@@ -181,8 +182,13 @@ export default function WorksSection() {
     return () => window.removeEventListener('resize', update);
   }, []);
 
-  const allWorks = [...clientWorks, ...personalProjects];
-  const works: Work[] = allWorks.map((work) => ({
+  // TOPは代表4件（クライアントワーク全件＋ENSO）に絞る。
+  // 全件は /works へ（PC: GridButton・モバイル: 「実績一覧を見る」ボタンで誘導済み）
+  const featuredWorks = [
+    ...clientWorks,
+    ...personalProjects.filter((project) => project.id === 'personal-3'),
+  ];
+  const works: Work[] = featuredWorks.map((work) => ({
     id: work.id,
     title: work.title,
     image: work.thumbnail,
