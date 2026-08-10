@@ -1,10 +1,15 @@
 // src/components/ui/LoadingScreen.tsx
 'use client';
 
-// 初回訪問時のみのローディング演出。
-// コンセプト「設計図から、引き渡しまで。」— 大工出身の制作フローをそのまま演出化。
-// 製図グリッドの上でロゴタイプが線画で引かれ、工程ラベル（設計→施工→仕上げ→引き渡し）が進み、
-// 100%で検収印が押されて、画面が上下に割れてサイトが現れる。
+// 初回訪問時のみのローディング演出。バリアントは2種:
+//
+// - blueprint（現行デフォルト）:「設計図から、引き渡しまで。」
+//   製図グリッド上でロゴが線画で引かれ、工程ラベルが進み、検収印が押されて上下に割れる
+// - drop:「一滴の波紋」
+//   一滴が水面に落ち、波紋が広がり、最後は波紋の穴からサイトが現れる
+//
+// URLに ?loading=drop / ?loading=blueprint を付けると、セッションガードを無視して
+// そのバリアントを強制再生できる（比較検討用。判断が終わったら片方に固定する）。
 //
 // - セッション内の2回目以降は表示しない（sessionStorage + globals.css の先行ガードで
 //   ハイドレーション前のちらつきも防止）
@@ -15,6 +20,9 @@ import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 
 export const LOADING_SEEN_KEY = 'smj-loading-seen';
 
+type Variant = 'blueprint' | 'drop';
+const DEFAULT_VARIANT: Variant = 'blueprint';
+
 const PHASES = [
   { until: 34, label: '設計中', en: 'DRAFTING' },
   { until: 68, label: '施工中', en: 'BUILDING' },
@@ -23,16 +31,26 @@ const PHASES = [
 ] as const;
 
 const DURATION_MS = 2400;
-const STAMP_MS = 650; // 検収印を見せてから割れるまで
+const HOLD_MS = 650; // 100%の画（検収印 / 最大波紋）を見せてから開くまで
 
 export default function LoadingScreen() {
   const prefersReducedMotion = useReducedMotion();
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState<'loading' | 'exiting' | 'done'>('loading');
+  const [variant, setVariant] = useState<Variant>(DEFAULT_VARIANT);
   const rafRef = useRef<number | null>(null);
   const finishedRef = useRef(false);
 
   useEffect(() => {
+    // ?loading=xxx でバリアント強制再生（比較用）
+    let forced: Variant | null = null;
+    try {
+      const p = new URLSearchParams(window.location.search).get('loading');
+      if (p === 'drop' || p === 'blueprint') forced = p;
+    } catch {
+      /* noop */
+    }
+
     let seen = false;
     try {
       seen = !!sessionStorage.getItem(LOADING_SEEN_KEY);
@@ -40,7 +58,11 @@ export default function LoadingScreen() {
       /* プライベートモード等では毎回表示でよい */
     }
 
-    if (seen || prefersReducedMotion) {
+    if (forced) {
+      setVariant(forced);
+      // 先行ガード（data-loading-seen）で非表示になっていても強制再生する
+      document.documentElement.removeAttribute('data-loading-seen');
+    } else if (seen || prefersReducedMotion) {
       setStatus('done');
       return;
     }
@@ -55,20 +77,24 @@ export default function LoadingScreen() {
     document.body.style.overflow = 'hidden';
 
     const start = performance.now();
+    const activeVariant: Variant = forced ?? DEFAULT_VARIANT;
+    // blueprint は序盤に勢いよく進む easeOut、
+    // drop は「落下→着水→波紋」の各局面を均等に見せたいので緩やかな easeInOut
     const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+    const easeInOutQuad = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
+    const ease = activeVariant === 'drop' ? easeInOutQuad : easeOutCubic;
 
     const finish = () => {
       if (finishedRef.current) return;
       finishedRef.current = true;
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       setProgress(100);
-      // 検収印を一拍見せてから開く
-      setTimeout(() => setStatus('exiting'), STAMP_MS);
+      setTimeout(() => setStatus('exiting'), HOLD_MS);
     };
 
     const tick = (now: number) => {
       const t = Math.min(1, (now - start) / DURATION_MS);
-      setProgress(Math.min(100, Math.round(easeOutCubic(t) * 100)));
+      setProgress(Math.min(100, Math.round(ease(t) * 100)));
       if (t >= 1) {
         finish();
         return;
@@ -97,26 +123,215 @@ export default function LoadingScreen() {
   useEffect(() => {
     if (status !== 'exiting') return;
     document.body.style.overflow = '';
-    const timer = setTimeout(() => setStatus('done'), 900);
+    const timer = setTimeout(() => setStatus('done'), 950);
     return () => clearTimeout(timer);
   }, [status]);
 
   if (status === 'done') return null;
 
-  const phase = PHASES.find((p) => progress <= p.until) ?? PHASES[PHASES.length - 1];
   const complete = progress >= 100;
   const opening = status === 'exiting';
-  // 割れ目の位置（画面中央）から上下に開く
-  const panelTransition = { duration: 0.85, ease: [0.76, 0, 0.24, 1] as const };
+
+  return (
+    <div id="loading-screen" className="fixed inset-0" style={{ zIndex: 100 }} role="status" aria-label="読み込み中">
+      {variant === 'drop' ? (
+        <DropVariant progress={progress} complete={complete} opening={opening} />
+      ) : (
+        <BlueprintVariant progress={progress} complete={complete} opening={opening} />
+      )}
+    </div>
+  );
+}
+
+// ============================================================
+// 案D: 一滴の波紋 — 「小さな想いも、大きな未来に変わる。」をそのまま絵に
+// ============================================================
+const IMPACT_AT = 55; // 着水する進捗
+
+function DropVariant({ progress, complete, opening }: { progress: number; complete: boolean; opening: boolean }) {
+  // 波紋の穴が広がってサイトが現れる（mask の穴を rAF で拡大）
+  const [hole, setHole] = useState(0); // vmax
+  useEffect(() => {
+    if (!opening) return;
+    let raf: number;
+    const start = performance.now();
+    const grow = (now: number) => {
+      const t = Math.min(1, (now - start) / 850);
+      const eased = 1 - Math.pow(1 - t, 3);
+      setHole(eased * 240);
+      if (t < 1) raf = requestAnimationFrame(grow);
+    };
+    raf = requestAnimationFrame(grow);
+    return () => cancelAnimationFrame(raf);
+  }, [opening]);
+
+  const impacted = progress >= IMPACT_AT;
+  // 落下: 進捗0→IMPACT_ATで上(12%)から水面(50%)へ
+  const fallT = Math.min(1, progress / IMPACT_AT);
+  const dropTop = 12 + (50 - 12) * fallT * fallT; // 自由落下風に加速
+  // 波紋: 着水後の進捗で3本のリングが順に広がる
+  const rippleT = impacted ? (progress - IMPACT_AT) / (100 - IMPACT_AT) : 0;
+  const rings = [0, 0.22, 0.44].map((delay) => Math.max(0, (rippleT - delay) / (1 - delay)));
+  // 着水直後だけ水面が盛り上がる
+  const bulge = impacted ? Math.max(0, 1 - rippleT * 2.2) : 0;
+
+  const mask = opening
+    ? `radial-gradient(ellipse ${hole}vmax ${hole * 0.45}vmax at 50% 50%, transparent 98%, black 100%)`
+    : undefined;
 
   return (
     <div
-      id="loading-screen"
-      className="fixed inset-0"
-      style={{ zIndex: 100 }}
-      role="status"
-      aria-label="読み込み中"
+      className="absolute inset-0 bg-background"
+      style={{ WebkitMaskImage: mask, maskImage: mask }}
     >
+      {/* 水面 */}
+      <div
+        className="absolute left-0 right-0"
+        style={{ top: '50%', height: '1px', background: 'var(--color-text-muted)', opacity: 0.5 }}
+      />
+
+      {/* 一滴（落下中のみ） */}
+      {!impacted && (
+        <>
+          <div
+            className="absolute"
+            style={{
+              left: '50%',
+              top: `${dropTop - 8}%`,
+              width: '2px',
+              height: '10vh',
+              marginLeft: '-1px',
+              transform: 'translateY(-100%)',
+              background: 'linear-gradient(to bottom, transparent, var(--color-accent))',
+              opacity: 0.35,
+            }}
+          />
+          <div
+            className="absolute"
+            style={{
+              left: '50%',
+              top: `${dropTop}%`,
+              width: '8px',
+              height: '8px',
+              margin: '-4px 0 0 -4px',
+              borderRadius: '50%',
+              background: 'var(--color-accent)',
+            }}
+          />
+        </>
+      )}
+
+      {/* 着水の盛り上がり */}
+      {bulge > 0 && (
+        <svg
+          className="absolute"
+          viewBox="0 0 120 22"
+          style={{
+            left: '50%',
+            top: '50%',
+            width: '120px',
+            height: '22px',
+            transform: `translate(-50%, -50%) scaleY(${bulge})`,
+            transformOrigin: 'center bottom',
+          }}
+          aria-hidden="true"
+        >
+          <path
+            d="M0 11 Q 40 11 52 5 Q 60 0 68 5 Q 80 11 120 11"
+            fill="none"
+            stroke="var(--color-accent)"
+            strokeWidth="1.5"
+          />
+        </svg>
+      )}
+
+      {/* 波紋（遠近感のある楕円） */}
+      {rings.map((t, i) =>
+        t > 0 ? (
+          <div
+            key={i}
+            className="absolute"
+            style={{
+              left: '50%',
+              top: '50%',
+              width: `${40 + t * 560}px`,
+              height: `${(40 + t * 560) * 0.32}px`,
+              transform: 'translate(-50%, -50%)',
+              border: '1.5px solid var(--color-accent)',
+              borderRadius: '50%',
+              opacity: Math.max(0, 0.75 - t * 0.7),
+            }}
+          />
+        ) : null
+      )}
+
+      {/* カウンター（上部中央・字間広め） */}
+      <p
+        className="absolute font-display"
+        style={{
+          left: '50%',
+          top: '36%',
+          transform: 'translate(-50%, -50%)',
+          fontSize: '1rem',
+          letterSpacing: '0.35em',
+          color: 'var(--color-text-muted)',
+        }}
+      >
+        {String(progress).padStart(3, '0').split('').join(' ')}
+      </p>
+
+      {/* ラベル: 着水でコピーが切り替わる */}
+      <div
+        className="absolute"
+        style={{ left: '50%', top: '62%', transform: 'translateX(-50%)', height: '2rem', overflow: 'hidden' }}
+      >
+        <AnimatePresence mode="popLayout">
+          <motion.p
+            key={impacted ? 'after' : 'before'}
+            initial={{ y: 24, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -24, opacity: 0 }}
+            transition={{ duration: 0.35 }}
+            className="text-sm text-text-secondary"
+            style={{ letterSpacing: '0.45em', whiteSpace: 'nowrap' }}
+          >
+            {impacted ? '大きな未来へ。' : '小さな想いも、'}
+            <span
+              className="font-display"
+              style={{ fontSize: '9px', letterSpacing: '0.3em', marginLeft: '1em', opacity: 0.55 }}
+            >
+              {impacted ? 'INTO THE WAVE' : 'A SMALL DROP'}
+            </span>
+          </motion.p>
+        </AnimatePresence>
+      </div>
+
+      {/* ブランド */}
+      <p
+        className="absolute font-display"
+        style={{
+          right: '1.5rem',
+          bottom: '3rem',
+          fontSize: '10px',
+          letterSpacing: '0.35em',
+          color: 'var(--color-text-muted)',
+        }}
+      >
+        SHOTOMORIYAMA
+      </p>
+    </div>
+  );
+}
+
+// ============================================================
+// 案A: 設計図から、引き渡しまで。（現行デフォルト）
+// ============================================================
+function BlueprintVariant({ progress, complete, opening }: { progress: number; complete: boolean; opening: boolean }) {
+  const phase = PHASES.find((p) => progress <= p.until) ?? PHASES[PHASES.length - 1];
+  const panelTransition = { duration: 0.85, ease: [0.76, 0, 0.24, 1] as const };
+
+  return (
+    <>
       {/* 上下パネル（100%で水面が割れるように開く） */}
       <motion.div
         className="absolute left-0 right-0 top-0 bg-background"
@@ -309,6 +524,6 @@ export default function LoadingScreen() {
           設計図から、引き渡しまで。
         </p>
       </motion.div>
-    </div>
+    </>
   );
 }
