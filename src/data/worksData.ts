@@ -87,8 +87,8 @@ export const clientWorks: ClientWork[] = [
     title: '佐藤工務店サイトリニューアル',
     category: 'Web Development',
     tags: ['WordPress', 'PHP'],
-    deliverables: ['Webサイト', '保守運用'],
-    description: '企業のブランドリニューアルに伴うWebサイト制作。企画からデザイン、実装まで一貫して担当。',
+    deliverables: ['Webサイト', '案内看板', '保守運用'],
+    description: '企業のブランドリニューアルに伴うWebサイト制作。企画からデザイン、実装まで一貫して担当。案内看板のデザインも制作。',
     challenge: 'クライアントの要望を形にしながら、ユーザビリティを最優先に設計',
     solution: 'ヒアリングを重ね、プロトタイプを3回作成。最終的にクライアント満足度◎',
     result: '問い合わせ数が前月比150%増加。保守契約も獲得。',
@@ -100,6 +100,7 @@ export const clientWorks: ClientWork[] = [
     industry: '工務店',
     url: 'https://www.sato-kohmuten.com/',
     thumbnail: '/images/works/client1.png',
+    gallery: ['/works/sato-kohmuten/kanban-1.webp', '/works/sato-kohmuten/kanban-2.webp'],
     note: '年間保守契約で継続サポート中',
     testimonial: {
       text: '丁寧なヒアリングで、私たちの想いを形にしていただきました。完成したサイトは想像以上の出来栄えで、お客様からの反響も上々です。',

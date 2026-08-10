@@ -19,6 +19,8 @@
 | `yk-realty/logo.webp` | ロゴ | 1200×900px（4:3） |
 | `yk-realty/meishi.webp` | 名刺 | 1200×900px（4:3） |
 | `otakarahiroba/meishi.webp` | 名刺 | 1200×900px（4:3） |
+| `sato-kohmuten/kanban-1.webp` | 案内看板 1点目 | 1200×900px（4:3） |
+| `sato-kohmuten/kanban-2.webp` | 案内看板 2点目 | 1200×900px（4:3） |
 
 - 形式は webp 推奨（png/jpg でも可。その場合は worksData.ts のパスも合わせる）
 - 200KB 以下を目安に圧縮
