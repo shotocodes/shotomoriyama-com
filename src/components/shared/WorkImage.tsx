@@ -4,6 +4,11 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { ImageIcon } from 'lucide-react';
+import manifest from '@/data/worksImageManifest.json';
+
+// ビルド時に生成される「実際に存在する実績画像」の一覧。
+// 未配置の画像はリクエスト自体を出さずにプレースホルダへ（コンソール400を防ぐ）
+const existingImages = new Set<string>(manifest);
 
 interface WorkImageProps {
   src?: string;
@@ -36,7 +41,7 @@ export default function WorkImage({
 }: WorkImageProps) {
   const [failed, setFailed] = useState(false);
 
-  if (!src || failed) {
+  if (!src || !existingImages.has(src) || failed) {
     return (
       <div
         role="img"

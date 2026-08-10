@@ -22,3 +22,6 @@
 
 - 形式は webp 推奨（png/jpg でも可。その場合は worksData.ts のパスも合わせる）
 - 200KB 以下を目安に圧縮
+- 画像の存在チェックはビルド時に自動生成される
+  `src/data/worksImageManifest.json` で行われる（`npm run dev` / `npm run build` で再生成）。
+  画像を置いたら次のビルド・デプロイで自動反映される
