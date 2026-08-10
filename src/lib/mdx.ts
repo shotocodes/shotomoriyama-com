@@ -14,6 +14,8 @@ export interface BlogPostMetadata {
   date: string;
   readTime: string;
   excerpt: string;
+  /** frontmatter に published: false と書くと一覧・詳細・sitemapから非公開になる */
+  published?: boolean;
 }
 
 // 記事の完全な型
@@ -23,13 +25,18 @@ export interface BlogPost {
   content: string;  // ← MDXRemoteSerializeResult から string に変更
 }
 
-// すべての記事のスラッグを取得
+// すべての記事のスラッグを取得（published: false の記事は除外）
 export function getAllPostSlugs(): string[] {
   try {
     const files = fs.readdirSync(BLOG_PATH);
     return files
       .filter((file) => file.endsWith('.mdx'))
-      .map((file) => file.replace(/\.mdx$/, ''));
+      .map((file) => file.replace(/\.mdx$/, ''))
+      .filter((slug) => {
+        const fileContent = fs.readFileSync(path.join(BLOG_PATH, `${slug}.mdx`), 'utf8');
+        const { data } = matter(fileContent);
+        return data.published !== false;
+      });
   } catch (error) {
     console.error('Error reading blog directory:', error);
     return [];
@@ -64,7 +71,11 @@ export function getPostBySlug(slug: string): BlogPost | null {
     const fileContent = fs.readFileSync(filePath, 'utf8');
     const { data, content } = matter(fileContent);
 
-    // serialize 不要！文字列をそのまま返す
+    // 非公開記事は詳細ページも 404 にする
+    if ((data as BlogPostMetadata).published === false) {
+      return null;
+    }
+
     return {
       slug,
       metadata: data as BlogPostMetadata,
