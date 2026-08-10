@@ -179,7 +179,6 @@ export interface SupportArticle {
 
  import copywriting from '@/content/support/copywriting';
 import photoTips from '@/content/support/photo-tips';
-import productionFlow from '@/content/support/production-flow';
 import aiDesign from '@/content/support/ai-design';
 import seoBasics from '@/content/support/seo-basics';
 import designCommunication from '@/content/support/design-communication';
@@ -187,7 +186,8 @@ import designCommunication from '@/content/support/design-communication';
 export const supportArticles: Record<string, SupportArticle> = {
   'copywriting': copywriting,
   'photo-tips': photoTips,
-  'production-flow': productionFlow,
+  // 'production-flow' は旧制作フロー（納期・修正・保守の記述が現サービスと不一致）のため
+  // 新フローで改稿するまで非公開。本文は src/content/support/production-flow.tsx に残している
   'ai-design': aiDesign,
   'seo-basics': seoBasics,
   'design-decision': designCommunication,
