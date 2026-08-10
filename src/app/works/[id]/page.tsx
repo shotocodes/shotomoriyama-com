@@ -4,7 +4,11 @@ import { notFound } from 'next/navigation';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { clientWorks, personalProjects } from '@/data/worksData';
+import worksImageManifest from '@/data/worksImageManifest.json';
 import WorkDetailContent from './WorkDetailContent';
+
+// 未配置のサムネイルをOG画像に出さない（存在する画像だけメタデータに載せる）
+const existingImages = new Set<string>(worksImageManifest);
 
 // 静的パス生成（データは静的配列なのでビルド時にプリレンダリング）
 export async function generateStaticParams() {
@@ -26,7 +30,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     openGraph: {
       title: `${work.title} - 制作実績`,
       description: work.description,
-      images: work.thumbnail ? [{ url: work.thumbnail }] : undefined,
+      images: existingImages.has(work.thumbnail) ? [{ url: work.thumbnail }] : undefined,
     },
   };
 }
