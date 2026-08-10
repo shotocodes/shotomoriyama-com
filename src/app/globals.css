@@ -291,3 +291,16 @@ html[data-loading-seen] #loading-screen {
     display: none;
   }
 }
+
+/* 案F「波を、組み上げる」進行中はヒーローの文字とヘッダーを隠し、
+   波が完成した瞬間にフェードインさせる（LoadingScreen が data-wave-loading を制御） */
+.hero-copy {
+  transition: opacity 0.9s ease 0.15s;
+}
+html[data-wave-loading] .hero-copy {
+  opacity: 0;
+}
+html[data-wave-loading] header {
+  opacity: 0 !important;
+  pointer-events: none;
+}

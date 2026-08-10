@@ -93,7 +93,8 @@ export default function HeroSection() {
         className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10"
         style={prefersReducedMotion ? undefined : { opacity: heroOpacity, y: heroY }}
       >
-        <div className="text-center max-w-5xl mx-auto" aria-hidden="true">
+        {/* hero-copy: 案Fローディング中は非表示にし、波の組み上げ完了後にフェードイン */}
+        <div className="text-center max-w-5xl mx-auto hero-copy" aria-hidden="true">
           {/* キャッチ（1行に圧縮） */}
           <p className="text-sm sm:text-base text-text-secondary font-light mb-10 sm:mb-12" style={{ letterSpacing: '0.35em' }}>
             小さな想いも、丁寧なものづくりで。
