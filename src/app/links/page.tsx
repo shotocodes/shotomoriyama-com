@@ -1,14 +1,15 @@
 // src/app/links/page.tsx
 import type { Metadata } from 'next';
 import LinksContent from './LinksContent';
+import { SITE_URL } from '@/lib/constants/site';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://shotomoriyama.com'),
+  metadataBase: new URL(SITE_URL),
   title: 'Shoto Moriyama | Links',
   description: 'AI × フルスタックエンジニア。大工→エンジニア。AIでWeb制作を爆速化。',
   openGraph: {
     type: 'website',
-    url: 'https://shotomoriyama.com/links',
+    url: `${SITE_URL}/links`,
     title: 'Shoto Moriyama | Links',
     description: 'AI × フルスタックエンジニア。大工→エンジニア。AIでWeb制作を爆速化。',
     images: [

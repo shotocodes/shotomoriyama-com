@@ -7,10 +7,11 @@ import CustomCursor from "@/components/ui/CustomCursor";
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from '@/lib/constants/site'
 
+// weight 900 は未使用のため読み込まない（@font-face 宣言だけでCSSが大きく膨らむ）
 const notoSansJP = Noto_Sans_JP({
   variable: "--font-sans",
   subsets: ["latin"],
-  weight: ["400", "500", "700", "900"],
+  weight: ["400", "500", "700"],
   display: "swap",
 });
 
@@ -63,7 +64,7 @@ export const metadata: Metadata = {
     title: SITE_NAME,
     description: "フリーランスとして、企業様や個人事業主様のWebサイト制作・デザインを承っております。",
     images: ["/og-image.png"],
-    creator: "@SOAR_C72",
+    creator: "@ShotoMoriyama",
   },
 
   robots: {

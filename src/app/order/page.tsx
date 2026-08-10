@@ -38,7 +38,9 @@ function OrderPageContent() {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<TabType>('flow');
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
-  const [accentColor, setAccentColor] = useState('#556270');
+  // 以前は21秒間隔でアクセント色を巡回させていたが、
+  // setState がページ全体(1600行超)を再レンダーし続けるため固定色に変更
+  const accentColor = '#556270';
   const [wavePosition, setWavePosition] = useState(0);
   const tabRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({});
   const [expandedStep, setExpandedStep] = useState<number | null>(null);
@@ -46,24 +48,10 @@ function OrderPageContent() {
   // URL パラメータ受け取り
   useEffect(() => {
     const tab = searchParams.get('tab') as TabType;
-    if (tab && ['flow', 'pricing', 'timeline', 'faq', 'payment'].includes(tab)) {
+    if (tab && ['flow', 'timeline', 'faq', 'payment'].includes(tab)) {
       setActiveTab(tab);
     }
   }, [searchParams]);
-
-
-  // 色変化アニメーション
-  useEffect(() => {
-    const colors = ['#0066FF', '#4ECDC4','#FF8C42', '#9333EA', '#10B981', '#556270'];
-    let index = 0;
-
-    const interval = setInterval(() => {
-      index = (index + 1) % colors.length;
-      setAccentColor(colors[index]);
-    }, 21000);
-
-    return () => clearInterval(interval);
-  }, []);
 
   // 波の位置を更新
   useEffect(() => {
