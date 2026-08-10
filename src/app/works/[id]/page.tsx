@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     openGraph: {
       title: `${work.title} - 制作実績`,
       description: work.description,
-      images: work.image ? [{ url: work.image }] : undefined,
+      images: work.thumbnail ? [{ url: work.thumbnail }] : undefined,
     },
   };
 }

@@ -4,7 +4,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import Image from 'next/image';
+import WorkImage from '@/components/shared/WorkImage';
 import AnimatedText from '@/components/shared/AnimatedText';
 import GridButton from '@/components/shared/GridButton';
 import GridBackground from '@/components/shared/GridBackground';
@@ -73,7 +73,7 @@ function FloatingWorks({ works, scrollProgress }: { works: Work[]; scrollProgres
                 transition: { duration: 0.2 }
               }}
             >
-              <Image
+              <WorkImage
                 src={work.image}
                 alt={work.title}
                 width={256}
@@ -131,7 +131,7 @@ function MobileWorks({ works }: { works: Work[] }) {
           >
             <Link href={`/works/${work.id}`} className="block">
               <div className="rounded-lg overflow-hidden shadow-xl border-2 border-border">
-                <Image
+                <WorkImage
                   src={work.image}
                   alt={work.title}
                   width={400}
@@ -185,7 +185,7 @@ export default function WorksSection() {
   const works: Work[] = allWorks.map((work) => ({
     id: work.id,
     title: work.title,
-    image: work.image,
+    image: work.thumbnail,
     category: work.category,
     year: work.year,
   }));
