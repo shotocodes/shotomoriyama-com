@@ -87,11 +87,13 @@ export default function RootLayout({
     <html lang="ja" suppressHydrationWarning>
       <body className={`${notoSansJP.variable} ${spaceGrotesk.variable} antialiased`}>
         {/* セッション内2回目以降はローディングをハイドレーション前から非表示にする
-            （LoadingScreen.tsx の LOADING_SEEN_KEY と対） */}
+            （LoadingScreen.tsx の LOADING_SEEN_KEY と対）。
+            ?loading= での強制再生時はガードを掛けない（掛けるとハイドレーションまで
+            素のヒーローが見えてしまい、ローディング開始時にちらつく） */}
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "try{if(sessionStorage.getItem('smj-loading-seen'))document.documentElement.setAttribute('data-loading-seen','')}catch(e){}",
+              "try{var q=new URLSearchParams(location.search);if(!q.has('loading')&&sessionStorage.getItem('smj-loading-seen'))document.documentElement.setAttribute('data-loading-seen','')}catch(e){}",
           }}
         />
         <a

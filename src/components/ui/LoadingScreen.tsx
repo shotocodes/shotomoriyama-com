@@ -41,9 +41,10 @@ const HOLD_MS = 650; // 100%の画（検収印 / 最大波紋）を見せてか�
 
 // 案F（wave）のタイムライン
 const WAVE_WAIT_CAP = 30; // Three.js 準備待ちの間に進む上限%
-const WAVE_BUILD_MS = 2300; // スキャンで波を組み上げる時間
-const WAVE_READY_TIMEOUT_MS = 6500; // 波が準備できない場合の保険（WebGL不可など）
-const WAVE_HOLD_MS = 500;
+const WAVE_MIN_DORMANT_MS = 1100; // 「眠っている点群」を最低これだけ見せてから組み上げ開始
+const WAVE_BUILD_MS = 3600; // スキャンで波を組み上げる時間（しっかり見せる）
+const WAVE_READY_TIMEOUT_MS = 8000; // 波が準備できない場合の保険（WebGL不可など）
+const WAVE_HOLD_MS = 650;
 
 export default function LoadingScreen() {
   const prefersReducedMotion = useReducedMotion();
@@ -52,6 +53,7 @@ export default function LoadingScreen() {
   const routeVariant: Variant = pathname === '/' ? 'wave' : 'drop';
 
   const [progress, setProgress] = useState(0);
+  const [buildRatio, setBuildRatio] = useState(0); // wave: スキャンの進行(0..1)
   const [status, setStatus] = useState<'loading' | 'exiting' | 'done'>('loading');
   const [variant, setVariant] = useState<Variant>(routeVariant);
   // wave: ハイドレーション後にオーバーレイ背景を透過へ切り替える
@@ -134,24 +136,29 @@ export default function LoadingScreen() {
 
       const start = performance.now();
       let buildStart = 0;
+      let pBase = 0; // 組み上げ開始時点の%（ここから100へ滑らかに繋ぐ）
 
       const tick = (now: number) => {
         const elapsed = now - start;
         let p: number;
-        if (!ready) {
-          // 準備待ち: ゆっくり30%まで
+        const building = ready && elapsed >= WAVE_MIN_DORMANT_MS;
+        if (!building) {
+          // 準備待ち＋点群の余韻: ゆっくり30%まで
           p = Math.min(WAVE_WAIT_CAP, elapsed * 0.02);
-          if (elapsed > WAVE_READY_TIMEOUT_MS) {
+          pBase = p;
+          if (!ready && elapsed > WAVE_READY_TIMEOUT_MS) {
             finish();
             return;
           }
         } else {
           if (buildStart === 0) buildStart = now;
           const bt = Math.min(1, (now - buildStart) / WAVE_BUILD_MS);
-          p = WAVE_WAIT_CAP + (100 - WAVE_WAIT_CAP) * easeInOutQuad(bt);
+          p = pBase + (100 - pBase) * easeInOutQuad(bt);
         }
         setProgress(Math.min(100, Math.round(p)));
-        waveGlobals.__waveBuild = Math.max(0, Math.min(1, (p - WAVE_WAIT_CAP) / (100 - WAVE_WAIT_CAP)));
+        const build = building ? Math.max(0, Math.min(1, (p - pBase) / (100 - pBase))) : 0;
+        setBuildRatio(build);
+        waveGlobals.__waveBuild = build;
         if (p >= 100) {
           finish();
           return;
@@ -233,7 +240,7 @@ export default function LoadingScreen() {
   return (
     <div id="loading-screen" className="fixed inset-0" style={{ zIndex: 100 }} role="status" aria-label="読み込み中">
       {variant === 'wave' ? (
-        <WaveVariant progress={progress} complete={complete} opening={opening} armed={armed} />
+        <WaveVariant progress={progress} build={buildRatio} complete={complete} opening={opening} armed={armed} />
       ) : variant === 'drop' ? (
         <DropVariant progress={progress} complete={complete} opening={opening} />
       ) : (
@@ -249,18 +256,19 @@ export default function LoadingScreen() {
 // ============================================================
 function WaveVariant({
   progress,
+  build,
   complete,
   opening,
   armed,
 }: {
   progress: number;
+  build: number;
   complete: boolean;
   opening: boolean;
   armed: boolean;
 }) {
-  // 組み上げスキャンの画面位置（0-30%は準備待ちなので非表示）
-  const build = Math.max(0, Math.min(1, (progress - WAVE_WAIT_CAP) / (100 - WAVE_WAIT_CAP)));
-  const scanning = progress > WAVE_WAIT_CAP && !complete;
+  // 組み上げスキャンの画面位置（準備待ち中は非表示）
+  const scanning = build > 0 && !complete;
 
   return (
     <motion.div
