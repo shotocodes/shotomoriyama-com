@@ -17,7 +17,7 @@
 // - prefers-reduced-motion では表示しない（CSS側でも display:none ）
 import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export const LOADING_SEEN_KEY = 'smj-loading-seen';
 
@@ -47,7 +47,6 @@ const WAVE_READY_TIMEOUT_MS = 8000; // 波が準備できない場合の保険�
 const WAVE_HOLD_MS = 650;
 
 export default function LoadingScreen() {
-  const prefersReducedMotion = useReducedMotion();
   const pathname = usePathname();
   // 案F はヒーローの波（ホーム）でだけ成立する。他ルート直行時は案Dで迎える
   const routeVariant: Variant = pathname === '/' ? 'wave' : 'drop';
@@ -64,9 +63,14 @@ export default function LoadingScreen() {
   const ranRef = useRef(false);
 
   useEffect(() => {
-    // ルート遷移で pathname が変わっても再実行しない（初回マウントの1回だけ）
+    // このエフェクトは初回マウントの1回だけ実行する。
+    // 依存値の変化で再実行されるとクリーンアップが先に走り、
+    // 進行中の演出（rAF・data-wave-loading属性）を壊してしまうため、
+    // reduced-motion はフックではなく matchMedia を直接読む（deps を空にできる）
     if (ranRef.current) return;
     ranRef.current = true;
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // ?loading=xxx でバリアント強制再生（比較用）
     let forced: Variant | null = null;
@@ -217,7 +221,7 @@ export default function LoadingScreen() {
       window.removeEventListener('keydown', finish);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [prefersReducedMotion]);
+  }, []);
 
   // 開き際: wave はヒーローの文字・ヘッダーのフェードインを同時に始める
   useEffect(() => {
