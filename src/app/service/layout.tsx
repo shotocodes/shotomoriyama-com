@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 import { ReactNode } from 'react';
+import { productionPackage } from '@/data/pricing';
 
 export const metadata: Metadata = {
-  title: 'Service - 提供サービス・料金',
-  description:
-    'Webサイト制作・デザインのサービス内容、制作の流れ、料金プラン、よくある質問をご案内します。',
+  title: 'Service - 工務店・不動産会社向けサイト制作',
+  description: `工務店・不動産会社向けホームページ制作パッケージ（${productionPackage.priceLabel}・${productionPackage.delivery}納品）。保守・運用プラン、施工事例の制作代行、無料診断のご案内。`,
 };
 
 export default function ServiceLayout({ children }: { children: ReactNode }) {
