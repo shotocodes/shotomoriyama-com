@@ -275,3 +275,36 @@ section {
   color: var(--color-text-secondary);
   opacity: 0.5;
 }
+
+/* ============================================
+   ローディング演出のガード（LoadingScreen.tsx と対）
+   - セッション内2回目以降: <html data-loading-seen> が同期スクリプトで付与され、
+     ハイドレーション前からローディングを出さない
+   - モーション軽減設定時も表示しない
+   ============================================ */
+html[data-loading-seen] #loading-screen {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #loading-screen {
+    display: none;
+  }
+}
+
+/* 案F「波を、組み上げる」進行中はヒーローの文字とヘッダーを隠し、
+   波が完成した瞬間にフェードインさせる（LoadingScreen が data-wave-loading を制御）。
+   隠すときは transition を切って即座に消す — transition を残すと
+   ローディング開始直後にヒーローが「ゆっくり消えていく」姿が見えてしまう */
+.hero-copy {
+  transition: opacity 0.9s ease 0.15s;
+}
+html[data-wave-loading] .hero-copy {
+  opacity: 0;
+  transition: none;
+}
+html[data-wave-loading] header {
+  opacity: 0 !important;
+  pointer-events: none;
+  transition: none !important;
+}

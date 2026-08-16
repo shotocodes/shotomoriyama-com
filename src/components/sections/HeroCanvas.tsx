@@ -4,33 +4,59 @@
 import { useEffect, useRef } from 'react';
 import { useTheme } from 'next-themes';
 import * as THREE from 'three';
+import { LOADING_SEEN_KEY } from '@/components/ui/LoadingScreen';
+
+// ローディング（案F「波を、組み上げる」）との連携:
+// LoadingScreen が window.__waveBuild (0..1) を書き、ここで uBuild uniform に流す。
+// uBuild はスキャンラインの位置で、通過済みの領域はワイヤーフレームの波・
+// 未通過の領域は静かな点群として描く。uBuild=1 で従来のヒーローと完全に一致する。
+type WaveLoadingGlobals = {
+  __waveBuild?: number;
+  __waveCanvasReady?: boolean;
+};
 
 // 波の変位は GPU（vertex shader）で計算する。
 // CPU で毎フレーム全頂点を書き換える方式から移行し、
 // メインスレッド負荷とバッファ再アップロードをゼロにする。
-const vertexShader = /* glsl */ `
+const vertexShaderCommon = /* glsl */ `
   uniform float uTime;
   uniform vec2 uMouse;
   uniform float uScroll; // 0 = ヒーロー先頭, 1 = ヒーローを通過
+  uniform float uBuild;  // 0 = 点群のみ, 1 = 波が完全に組み上がった状態
 
   attribute vec3 aColor;
 
   varying vec3 vColor;
+  varying float vAssembled;
 
-  void main() {
+  void computeWave() {
     vColor = aColor;
 
     vec3 pos = position;
+
+    // ジオメトリは gridSize=50 の PlaneGeometry（x: -25..25）
+    float xNorm = position.x / 50.0 + 0.5;
+    float scan = uBuild * 1.12; // 端まで確実に通過させる
+    float assembled = 1.0 - smoothstep(scan - 0.10, scan, xNorm);
+    vAssembled = assembled;
 
     float dist = distance(pos.xy, uMouse);
     float mouseWave = sin(dist * 0.5 - uTime * 2.0) * 1.2;
     float wave2 = sin(pos.x * 0.3 + uTime) * 0.5;
     float wave3 = cos(pos.y * 0.3 + uTime * 0.7) * 0.5;
 
+    // 未組み上げ領域はごく小さな「眠っている」揺らぎだけを残す。
     // スクロールで波が静まっていく（穏やかな余韻を残して次のセクションへ）
-    pos.z = (mouseWave + wave2 + wave3) * (1.0 - uScroll * 0.65);
+    float amp = mix(0.05, 1.0, assembled);
+    pos.z = (mouseWave + wave2 + wave3) * amp * (1.0 - uScroll * 0.65);
 
     gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+  }
+`;
+
+const vertexShader = vertexShaderCommon + /* glsl */ `
+  void main() {
+    computeWave();
   }
 `;
 
@@ -38,9 +64,35 @@ const fragmentShader = /* glsl */ `
   uniform float uOpacity;
 
   varying vec3 vColor;
+  varying float vAssembled;
 
   void main() {
-    gl_FragColor = vec4(vColor, uOpacity);
+    float alpha = uOpacity * vAssembled;
+    if (alpha < 0.01) discard;
+    gl_FragColor = vec4(vColor, alpha);
+  }
+`;
+
+// 未組み上げ領域の点群（組み上げ前の「眠っている頂点」）
+const pointsVertexShader = vertexShaderCommon + /* glsl */ `
+  void main() {
+    computeWave();
+    gl_PointSize = 4.0;
+  }
+`;
+
+const pointsFragmentShader = /* glsl */ `
+  uniform float uOpacity;
+
+  varying vec3 vColor;
+  varying float vAssembled;
+
+  void main() {
+    float alpha = uOpacity * (1.0 - vAssembled) * 0.85;
+    if (alpha < 0.01) discard;
+    vec2 c = gl_PointCoord - 0.5;
+    if (dot(c, c) > 0.25) discard; // 丸いドット
+    gl_FragColor = vec4(mix(vColor, vec3(0.62), 0.55), alpha);
   }
 `;
 
@@ -138,15 +190,34 @@ export default function HeroCanvas() {
 
     const geometry = new THREE.PlaneGeometry(gridSize, gridSize, gridDivisions, gridDivisions);
 
+    // ローディング（案F）進行中かどうかで uBuild の初期値を決める。
+    // - 初回訪問（ローダーがこれから組み上げ演出をする）→ 0（点群から）
+    // - 2回目以降 / モーション軽減 → 1（最初から完成した波）
+    const waveGlobals = window as unknown as WaveLoadingGlobals;
+    let loaderWillBuild = false;
+    try {
+      const forced = new URLSearchParams(window.location.search).get('loading');
+      const seen = !!sessionStorage.getItem(LOADING_SEEN_KEY);
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      loaderWillBuild = !reduced && (forced === 'wave' || (!forced && !seen));
+    } catch {
+      loaderWillBuild = false;
+    }
+    let buildCurrent = loaderWillBuild ? 0 : 1;
+
+    // 両マテリアルで uniforms オブジェクトを共有し、更新箇所を1つにする
+    const sharedUniforms = {
+      uTime: { value: 0 },
+      uMouse: { value: new THREE.Vector2(0, 0) },
+      uScroll: { value: 0 },
+      uBuild: { value: buildCurrent },
+      uOpacity: { value: isDark ? 0.8 : 0.7 },
+    };
+
     const material = new THREE.ShaderMaterial({
       vertexShader,
       fragmentShader,
-      uniforms: {
-        uTime: { value: 0 },
-        uMouse: { value: new THREE.Vector2(0, 0) },
-        uScroll: { value: 0 },
-        uOpacity: { value: isDark ? 0.8 : 0.7 },
-      },
+      uniforms: sharedUniforms,
       wireframe: true,
       transparent: true,
     });
@@ -156,6 +227,19 @@ export default function HeroCanvas() {
     const mesh = new THREE.Mesh(geometry, material);
     mesh.rotation.x = -Math.PI / 3;
     scene.add(mesh);
+
+    // 未組み上げ領域の点群（uBuild=1 になったら非表示にして描画コストを消す）
+    const pointsMaterial = new THREE.ShaderMaterial({
+      vertexShader: pointsVertexShader,
+      fragmentShader: pointsFragmentShader,
+      uniforms: sharedUniforms,
+      transparent: true,
+      depthWrite: false,
+    });
+    const points = new THREE.Points(geometry, pointsMaterial);
+    points.rotation.copy(mesh.rotation);
+    points.visible = buildCurrent < 0.999;
+    scene.add(points);
 
     const mouse = { x: 0, y: 0 };
 
@@ -174,16 +258,26 @@ export default function HeroCanvas() {
     let lastFrameTime = 0;
 
     const renderFrame = (elapsedTime: number) => {
-      material.uniforms.uTime.value = elapsedTime;
-      material.uniforms.uMouse.value.set(mouse.x * 10, mouse.y * 10);
+      sharedUniforms.uTime.value = elapsedTime;
+      sharedUniforms.uMouse.value.set(mouse.x * 10, mouse.y * 10);
+
+      // ローディングの組み上げ進行（0..1）へ滑らかに追従する。
+      // window.__waveBuild が無ければ 1（＝通常のヒーロー表示）。
+      const buildTarget =
+        typeof waveGlobals.__waveBuild === 'number' ? waveGlobals.__waveBuild : 1;
+      buildCurrent += (buildTarget - buildCurrent) * 0.14;
+      if (Math.abs(buildTarget - buildCurrent) < 0.001) buildCurrent = buildTarget;
+      sharedUniforms.uBuild.value = buildCurrent;
+      points.visible = buildCurrent < 0.999;
 
       // スクロールと波を連動させる（振幅が静まり、カメラが引いていく）
       const scrollProgress = Math.min(1, window.scrollY / window.innerHeight);
-      material.uniforms.uScroll.value = scrollProgress;
+      sharedUniforms.uScroll.value = scrollProgress;
       camera.position.z = 5 + scrollProgress * 1.5;
       mesh.rotation.x = -Math.PI / 3 - scrollProgress * 0.12;
 
       mesh.rotation.z = Math.sin(elapsedTime * 0.2) * 0.1;
+      points.rotation.copy(mesh.rotation);
 
       renderer.render(scene, camera);
     };
@@ -268,6 +362,10 @@ export default function HeroCanvas() {
     renderFrame(0);
     syncLoop();
 
+    // ローディング側へ「波の土台ができた」ことを知らせる（案Fの組み上げ開始合図）
+    waveGlobals.__waveCanvasReady = true;
+    window.dispatchEvent(new Event('wave-canvas-ready'));
+
     const handleResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
@@ -288,8 +386,10 @@ export default function HeroCanvas() {
       observer.disconnect();
       stopLoop();
       threeRef.current = null;
+      waveGlobals.__waveCanvasReady = false;
       geometry.dispose();
       material.dispose();
+      pointsMaterial.dispose();
       renderer.dispose();
     };
     // テーマ変更は下の effect が色更新だけで処理するため、ここでは再生成しない
