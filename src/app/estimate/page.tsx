@@ -15,6 +15,7 @@ import {
   FREE_AUDIT_MAILTO,
   CONTACT_EMAIL,
 } from '@/lib/constants/site';
+import { freeAudit } from '@/data/pricing';
 
 const checks = [
   {
@@ -40,11 +41,12 @@ const checks = [
   },
 ];
 
-const steps = [
-  { step: '1', title: 'メールで申し込み', text: '下のボタンからメールをお送りください。サイトのURLだけで結構です。' },
-  { step: '2', title: '3点を無料で診断', text: 'スマホ表示速度・問い合わせ導線・実績の見せ方を確認し、結果をまとめます。' },
-  { step: '3', title: '結果のご報告', text: '改善点をわかりやすくご報告します。そのまま依頼する義務は一切ありません。' },
-];
+// 診断の流れは pricing.ts の freeAudit（単一ソース）から
+const steps = freeAudit.flow.map((item, i) => ({
+  step: String(i + 1),
+  title: item.title,
+  text: item.text,
+}));
 
 export default function FreeAuditPage() {
   return (
@@ -103,6 +105,18 @@ export default function FreeAuditPage() {
                   </div>
                 );
               })}
+            </div>
+
+            {/* 実際の診断例 */}
+            <div
+              className="border-2 border-border bg-background-alt"
+              style={{ maxWidth: '1100px', margin: '2rem auto 0', padding: '1.5rem 2rem' }}
+            >
+              <p className="text-sm text-text-secondary leading-relaxed">
+                <strong style={{ color: 'var(--color-text-primary)' }}>💡 </strong>
+                {freeAudit.example}
+                表示が遅いだけで、お客様は問い合わせの前に離れてしまいます。
+              </p>
             </div>
           </div>
         </section>
