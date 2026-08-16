@@ -187,7 +187,7 @@ const steps = [
     number: 4,
     icon: Palette,
     title: '制作開始',
-    time: '約2週間',
+    time: productionPackage.delivery,
     description: 'お見積もりにご了承いただいた後、制作を開始します。Figmaを使わず、Next.jsで直接コーディングしながらデザインを作り上げます。進捗は定期的にご報告し、仮サイトでリアルタイムに確認いただけます。',
     points: [
       '週次進捗報告',
@@ -270,7 +270,7 @@ const steps = [
   }
 ];
 
-  // 納期データ（確定: スコープ固定方式・約2週間 — 詳細は src/data/pricing.ts）
+  // 納期データ（確定: スコープ固定方式 — 期間・詳細は src/data/pricing.ts）
   const timeline = [
     {
       category: 'ホームページ制作パッケージ',

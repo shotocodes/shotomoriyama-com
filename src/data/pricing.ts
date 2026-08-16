@@ -18,8 +18,8 @@ export const productionPackage = {
   /** 固定価格（税別・円） */
   price: 398_000,
   priceLabel: '398,000円(税別)',
-  delivery: '約2週間',
-  deliveryNote: 'ページ構成・機能を事前に確定するスコープ固定方式だから実現できる納期です',
+  delivery: '約1ヶ月',
+  deliveryNote: 'ページ構成・機能を事前に確定するスコープ固定方式で、計画どおりに進めます',
   includes: [
     'サイト設計・デザイン・実装一式',
     '施工実績の掲載機能',

@@ -13,6 +13,7 @@ import RadialLines from '@/components/graphics/RadialLines';
 import WavePattern from '@/components/graphics/WavePattern';
 import CircleDiagram from '@/components/graphics/CircleDiagram';
 import { CONTACT_EMAIL, FREE_AUDIT_MAILTO } from '@/lib/constants/site';
+import { productionPackage } from '@/data/pricing';
 
 import { useRouter } from 'next/navigation';
 
@@ -1026,7 +1027,7 @@ export default function ContactPage() {
                   },
                   {
                     q: '納期はどのくらいですか？',
-                    a: '約2週間です。ページ構成・機能を事前に確定するスコープ固定方式のため、短い納期で制作できます。'
+                    a: `${productionPackage.delivery}です。ページ構成・機能を事前に確定するスコープ固定方式で、計画どおりに進めます。`
                   },
                   {
                     q: '分割払いは可能ですか？',
