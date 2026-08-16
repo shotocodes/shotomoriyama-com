@@ -48,7 +48,6 @@ export interface ClientWork {
   solution: string;
   result: string;
   year: string;
-  price: string;
   duration: string;
   maintenance: boolean;
   client: string;
@@ -93,7 +92,6 @@ export const clientWorks: ClientWork[] = [
     solution: 'ヒアリングを重ね、プロトタイプを3回作成。最終的にクライアント満足度◎',
     result: '問い合わせ数が前月比150%増加。保守契約も獲得。',
     year: '2025',
-    price: '50万円〜',
     duration: '2ヶ月',
     maintenance: true,
     client: '株式会社佐藤工務店様',
@@ -119,7 +117,6 @@ export const clientWorks: ClientWork[] = [
     solution: 'テンプレートをカスタマイズし、効率的に開発。週次で進捗報告。',
     result: '予定通り納品。その後、名刺4種とリンク集ページの制作もご依頼いただく。',
     year: '2026',
-    price: '20万円〜',
     duration: '2週間',
     maintenance: false,
     client: '株式会社エスケリア様',
@@ -145,7 +142,6 @@ export const clientWorks: ClientWork[] = [
     solution: 'サイト・ロゴ・名刺を一貫したデザインで制作。表示速度を最優先に、WordPressを使わない軽量な静的サイト構成を採用。',
     result: 'スマホ表示速度91点・SEO100点を達成（PageSpeed Insights）。公開後の運用代行も継続中。',
     year: '2026',
-    price: '26万円〜',
     duration: '約3ヶ月',
     maintenance: true,
     client: 'Y-Kリアルティ株式会社様',
