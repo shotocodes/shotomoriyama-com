@@ -917,6 +917,104 @@ export default function ServicePage() {
           </div>
         </section>
 
+        {/* 施工事例・記事の制作代行（コンテンツ運用プラン） */}
+        <section className="bg-background-alt" style={{ padding: '8rem 0' }}>
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <SectionTitle
+              title="Content Support"
+              subtitle="施工事例・記事の制作代行"
+              accentColor="#FF8C42"
+              marginBottom="4rem"
+            />
+
+            <div style={{ maxWidth: '56rem', margin: '0 auto' }}>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                style={{ textAlign: 'center', marginBottom: '3rem' }}
+              >
+                <h3 className="text-2xl lg:text-3xl font-bold text-primary" style={{ marginBottom: '1.5rem' }}>
+                  「施工事例が溜まらない」を、
+                  <br className="lg:hidden" />
+                  終わらせます
+                </h3>
+                <p className="text-text-secondary leading-relaxed" style={{ maxWidth: '40rem', margin: '0 auto' }}>
+                  写真を撮る時間がない。文章を書く人がいない。
+                  <br />
+                  多くの工務店サイトは、そこで止まっています。
+                  <br />
+                  でも、工務店サイトの成果は施工事例の量と質でほぼ決まります。
+                </p>
+              </motion.div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: '1.5rem', marginBottom: '3rem' }}>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5 }}
+                  className="bg-background border-2 border-border"
+                  style={{ padding: '2rem' }}
+                >
+                  <div
+                    className="inline-flex items-center justify-center"
+                    style={{ width: '3rem', height: '3rem', backgroundColor: '#FF8C4220', marginBottom: '1.25rem' }}
+                  >
+                    <PenLine size={22} style={{ color: '#FF8C42' }} />
+                  </div>
+                  <h4 className="text-lg font-bold text-primary" style={{ marginBottom: '0.75rem' }}>
+                    現役大工が、現場の言葉で書く
+                  </h4>
+                  <p className="text-sm text-text-secondary leading-relaxed">
+                    どの工程を、どの言葉で伝えれば施主に響くか。現場を知っているから、取材も執筆も的確です。
+                    専門用語の「翻訳」に時間を取らせません。
+                  </p>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                  className="bg-background border-2 border-border"
+                  style={{ padding: '2rem' }}
+                >
+                  <div
+                    className="inline-flex items-center justify-center"
+                    style={{ width: '3rem', height: '3rem', backgroundColor: '#FF8C4220', marginBottom: '1.25rem' }}
+                  >
+                    <TrendingUp size={22} style={{ color: '#FF8C42' }} />
+                  </div>
+                  <h4 className="text-lg font-bold text-primary" style={{ marginBottom: '0.75rem' }}>
+                    取材から公開まで、月2〜4本を代行
+                  </h4>
+                  <p className="text-sm text-text-secondary leading-relaxed">
+                    コンテンツ運用プラン（{maintenancePlans.find((p) => p.id === 'content')?.monthlyLabel}）では、
+                    施工事例・記事の取材・執筆・公開までを丸ごと代行。社内の手を止めずに事例が増えていきます。
+                  </p>
+                </motion.div>
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                style={{ textAlign: 'center' }}
+              >
+                <p className="text-sm text-text-secondary" style={{ marginBottom: '1.5rem' }}>
+                  まずは今のサイトの「実績の見せ方」から、無料で診断します。
+                </p>
+                <AnimatedButton href={FREE_AUDIT_MAILTO} icon={Mail}>
+                  {FREE_AUDIT_LABEL}
+                </AnimatedButton>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
         {/* 現役大工の強み */}
         <section style={{ padding: '8rem 0' }}>
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
