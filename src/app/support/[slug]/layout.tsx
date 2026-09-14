@@ -7,6 +7,9 @@ export function generateStaticParams() {
   return supportArticleMeta.map((article) => ({ slug: article.slug }));
 }
 
+// 上記以外のスラッグは 404（未知の slug でページ本体を動的描画させない）
+export const dynamicParams = false;
+
 export async function generateMetadata({
   params,
 }: {

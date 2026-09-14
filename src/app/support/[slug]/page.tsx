@@ -19,8 +19,11 @@ const formatDate = (dateString: string) =>
 
 export default function SupportArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
-  const article = supportArticles[slug];
-
+  // プレーンオブジェクトへの添字アクセスは "constructor" 等のプロトタイプ経由で
+  // 真になるため、自身のキーに限定する
+  const article = Object.prototype.hasOwnProperty.call(supportArticles, slug)
+    ? supportArticles[slug]
+    : undefined;
 
   if (!article) {
     notFound();
