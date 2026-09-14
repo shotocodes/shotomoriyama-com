@@ -148,7 +148,11 @@ export const clientWorks: ClientWork[] = [
     industry: '不動産',
     url: 'https://yk-realty.jp',
     thumbnail: '/works/yk-realty/main.webp',
-    gallery: ['/works/yk-realty/logo.webp', '/works/yk-realty/meishi.webp'],
+    gallery: [
+      '/works/yk-realty/logo.webp',
+      '/works/yk-realty/meishi.webp',
+      '/works/yk-realty/meishi-back.webp',
+    ],
     note: '設計から保守まで一式',
   },
 ];
