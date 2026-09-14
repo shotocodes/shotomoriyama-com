@@ -54,53 +54,64 @@ export default function LoadingScreen() {
   const [armed, setArmed] = useState(false);
   const rafRef = useRef<number | null>(null);
   const finishedRef = useRef(false);
-  const ranRef = useRef(false);
+  // 「表示するか・どのバリアントか」の判定結果。初回に1度だけ決める
+  const planRef = useRef<{ show: boolean; variant: Variant } | null>(null);
 
   useEffect(() => {
-    // このエフェクトは初回マウントの1回だけ実行する。
-    // 依存値の変化で再実行されるとクリーンアップが先に走り、
-    // 進行中の演出（rAF・data-wave-loading属性）を壊してしまうため、
-    // reduced-motion はフックではなく matchMedia を直接読む（deps を空にできる）
-    if (ranRef.current) return;
-    ranRef.current = true;
+    // 開発時の StrictMode はこのエフェクトを「実行→クリーンアップ→再実行」する。
+    // 判定（sessionStorage への「表示済み」書き込みを含む）は初回だけ行い、
+    // 再実行時は同じ判定で演出を最初からやり直す（早期 return で二度目を
+    // 飛ばすと、クリーンアップ済みの rAF が再開されず画面が固まる）。
+    // reduced-motion はフックではなく matchMedia を直接読み、deps を空に保つ。
+    if (!planRef.current) {
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      // ?loading=xxx でバリアント強制再生（比較用）
+      let forced: Variant | null = null;
+      try {
+        const p = new URLSearchParams(window.location.search).get('loading');
+        if (p === 'wave' || p === 'drop') forced = p;
+      } catch {
+        /* noop */
+      }
+      // wave は HeroCanvas のあるホームでしか完成しない。他ルートでは drop に落とす
+      if (forced === 'wave' && routeVariant !== 'wave') forced = 'drop';
 
-    // ?loading=xxx でバリアント強制再生（比較用）
-    let forced: Variant | null = null;
-    try {
-      const p = new URLSearchParams(window.location.search).get('loading');
-      if (p === 'wave' || p === 'drop') forced = p;
-    } catch {
-      /* noop */
+      let seen = false;
+      try {
+        seen = !!sessionStorage.getItem(LOADING_SEEN_KEY);
+      } catch {
+        /* プライベートモード等では毎回表示でよい */
+      }
+
+      if (forced) {
+        // 先行ガード（data-loading-seen）で非表示になっていても強制再生する
+        document.documentElement.removeAttribute('data-loading-seen');
+      }
+
+      const show = forced !== null || !(seen || prefersReducedMotion);
+      if (show) {
+        try {
+          sessionStorage.setItem(LOADING_SEEN_KEY, '1');
+        } catch {
+          /* noop */
+        }
+      }
+      planRef.current = { show, variant: forced ?? routeVariant };
     }
 
-    let seen = false;
-    try {
-      seen = !!sessionStorage.getItem(LOADING_SEEN_KEY);
-    } catch {
-      /* プライベートモード等では毎回表示でよい */
-    }
-
-    if (forced) {
-      setVariant(forced);
-      // 先行ガード（data-loading-seen）で非表示になっていても強制再生する
-      document.documentElement.removeAttribute('data-loading-seen');
-    } else if (seen || prefersReducedMotion) {
+    const plan = planRef.current;
+    if (!plan.show) {
       setStatus('done');
       return;
     }
-
-    try {
-      sessionStorage.setItem(LOADING_SEEN_KEY, '1');
-    } catch {
-      /* noop */
-    }
+    setVariant(plan.variant);
+    finishedRef.current = false;
 
     // 表示中はスクロールさせない
     document.body.style.overflow = 'hidden';
 
-    const activeVariant: Variant = forced ?? routeVariant;
+    const activeVariant: Variant = plan.variant;
     const waveGlobals = window as unknown as WaveLoadingGlobals;
     const easeInOutQuad = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
 
