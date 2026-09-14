@@ -15,9 +15,6 @@
 
 | ファイル | 内容 | 推奨サイズ |
 | --- | --- | --- |
-| `yk-realty/main.webp` | サイトのスクリーンショット等 | 1600×900px（16:9） |
-| `yk-realty/logo.webp` | ロゴ | 1200×900px（4:3） |
-| `yk-realty/meishi.webp` | 名刺 | 1200×900px（4:3） |
 | `otakarahiroba/meishi.webp` | 名刺 | 1200×900px（4:3） |
 | `sato-kohmuten/kanban-1.webp` | 案内看板 1点目 | 1200×900px（4:3） |
 | `sato-kohmuten/kanban-2.webp` | 案内看板 2点目 | 1200×900px（4:3） |
