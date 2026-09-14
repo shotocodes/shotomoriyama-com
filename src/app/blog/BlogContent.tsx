@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import SectionTitle from '@/components/ui/SectionTitle';
 import { Calendar, Tag } from 'lucide-react';
+import { readableTextOn } from '@/lib/color';
 
 const blogCategories = [
   { id: 'all',       label: 'すべて',         color: '#0066FF' },
@@ -70,7 +71,7 @@ export default function BlogContent({ posts }: BlogContentProps) {
               border: '2px solid',
               borderColor: selectedCategory === cat.id ? cat.color : 'var(--color-border)',
               backgroundColor: selectedCategory === cat.id ? cat.color : 'transparent',
-              color: selectedCategory === cat.id ? '#ffffff' : 'var(--color-text-primary)',
+              color: selectedCategory === cat.id ? readableTextOn(cat.color) : 'var(--color-text-primary)',
               cursor: 'pointer',
             }}
             whileHover={{ scale: 1.05 }}

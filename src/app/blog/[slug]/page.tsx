@@ -39,11 +39,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description: post.metadata.excerpt,
       publishedTime: post.metadata.date,
       url: `${SITE_URL}/blog/${slug}`,
+      images: [{ url: '/og-image.png', width: 1200, height: 630 }],
     },
     twitter: {
       card: 'summary_large_image',
       title: post.metadata.title,
       description: post.metadata.excerpt,
+      images: ['/og-image.png'],
     },
   };
 }

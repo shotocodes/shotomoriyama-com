@@ -14,6 +14,7 @@ import RippleWave from '@/components/graphics/RippleWave';
 import { Mail } from 'lucide-react';
 import { supportArticleMeta } from '@/data/supportArticles';
 import Link from 'next/link';
+import { readableTextOn } from '@/lib/color';
 import {
   CONTACT_EMAIL,
   FREE_AUDIT_LABEL,
@@ -287,7 +288,7 @@ export default function SupportPage() {
                     border: '2px solid',
                     borderColor: selectedCategory === cat.id ? cat.color : 'var(--color-border)',
                     backgroundColor: selectedCategory === cat.id ? cat.color : 'transparent',
-                    color: selectedCategory === cat.id ? '#ffffff' : 'var(--color-text-primary)',
+                    color: selectedCategory === cat.id ? readableTextOn(cat.color) : 'var(--color-text-primary)',
                     cursor: 'pointer'
                   }}
                   whileHover={{ scale: 1.05 }}
