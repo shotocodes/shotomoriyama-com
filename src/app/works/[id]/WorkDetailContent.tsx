@@ -2,9 +2,9 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Image from 'next/image'; // ✅ <img> → <Image>
 import AnimatedButton from '@/components/ui/AnimatedButton';
 import BlueprintLens from '@/components/shared/BlueprintLens';
+import WorkImage from '@/components/shared/WorkImage';
 import {
   ArrowLeft,
   ArrowRight, // ✅ 追加
@@ -25,7 +25,7 @@ interface Testimonial {
 interface Work {
   id: string;
   title: string;
-  image: string;
+  thumbnail: string;
   url?: string;
   year: string;
   tags: string[];
@@ -36,6 +36,9 @@ interface Work {
   duration?: string;
   price?: string;
   maintenance?: boolean;
+  deliverables?: string[];
+  gallery?: string[];
+  note?: string;
   challenge?: string;
   solution?: string;
   result?: string;
@@ -90,8 +93,8 @@ export default function WorkDetailContent({ work, isClientWork }: WorkDetailCont
                   border: '2px solid var(--color-border)',
                 }}
               >
-                <Image
-                  src={work.image}
+                <WorkImage
+                  src={work.thumbnail}
                   alt={work.title}
                   fill
                   className="object-cover"
@@ -157,6 +160,37 @@ export default function WorkDetailContent({ work, isClientWork }: WorkDetailCont
                 </div>
               )}
             </motion.div>
+
+            {/* 成果物チップ + 補足（クライアントワークのみ） */}
+            {isClientWork && work.deliverables && work.deliverables.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.25 }}
+                style={{ marginBottom: '1.5rem' }}
+              >
+                <div className="flex flex-wrap" style={{ gap: '0.75rem' }}>
+                  {work.deliverables.map((item, i) => (
+                    <span
+                      key={i}
+                      className="text-sm font-bold text-primary"
+                      style={{
+                        padding: '0.5rem 1rem',
+                        backgroundColor: '#4ECDC426',
+                        borderRadius: '9999px',
+                      }}
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+                {work.note && (
+                  <p className="text-sm" style={{ marginTop: '0.75rem', color: 'var(--color-text-secondary)' }}>
+                    {work.note}
+                  </p>
+                )}
+              </motion.div>
+            )}
 
             {/* タグ */}
             <motion.div
@@ -294,6 +328,47 @@ export default function WorkDetailContent({ work, isClientWork }: WorkDetailCont
                     <div key={i} className="flex items-start" style={{ gap: '1rem' }}>
                       <CheckCircle size={24} style={{ color: '#10B981', flexShrink: 0, marginTop: '0.25rem' }} />
                       <p className="text-lg" style={{ color: 'var(--color-text-secondary)' }}>{feature}</p>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* クライアントワークのみ: 制作物ギャラリー（ロゴ・名刺・看板など） */}
+      {isClientWork && work.gallery && work.gallery.length > 0 && (
+        <section className="bg-background" style={{ padding: '0 0 5rem' }}>
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+              >
+                <h2 className="text-2xl lg:text-3xl font-bold text-primary" style={{ marginBottom: '1.5rem' }}>
+                  制作物
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: '1.5rem' }}>
+                  {work.gallery.map((src, i) => (
+                    <div
+                      key={i}
+                      className="relative overflow-hidden"
+                      style={{
+                        aspectRatio: '4 / 3',
+                        borderRadius: '8px',
+                        border: '2px solid var(--color-border)',
+                      }}
+                    >
+                      <WorkImage
+                        src={src}
+                        alt={`${work.title}の制作物 ${i + 1}`}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 640px) 100vw, 450px"
+                      />
                     </div>
                   ))}
                 </div>

@@ -12,6 +12,7 @@ import SectionTitle from '@/components/ui/SectionTitle';
 import RadialLines from '@/components/graphics/RadialLines';
 import WavePattern from '@/components/graphics/WavePattern';
 import CircleDiagram from '@/components/graphics/CircleDiagram';
+import { CONTACT_EMAIL, FREE_AUDIT_MAILTO } from '@/lib/constants/site';
 
 import { useRouter } from 'next/navigation';
 
@@ -652,11 +653,11 @@ export default function ContactPage() {
     {
       icon: Mail,
       title: 'Email',
-      value: '0sdm0.moriyama@gmail.com',
+      value: CONTACT_EMAIL,
       description: '24時間受付・翌営業日までに返信',
       priority: 3,  // ✅ 数字だけに変更
       color: '#FF6B6B',
-      link: 'mailto:0sdm0.moriyama@gmail.com'
+      link: FREE_AUDIT_MAILTO
     }
   ].map((method, index) => {
     const Icon = method.icon;

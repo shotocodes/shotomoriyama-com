@@ -2,6 +2,7 @@
 import { Resend } from 'resend';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
+import { CONTACT_EMAIL } from '@/lib/constants/site';
 
 // ✅ XSSサニタイズ関数
 const sanitize = (str: string) =>
@@ -124,7 +125,7 @@ export async function POST(request: Request) {
 
     await resend.emails.send({
       from: 'noreply@shotomoriyama.com',
-      to: '0sdm0.moriyama@gmail.com',
+      to: CONTACT_EMAIL,
       replyTo: email,
       subject: `【お問い合わせ】${sanitize(name)}様より`,
       html: `

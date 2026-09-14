@@ -1,4 +1,19 @@
 // src/data/worksData.ts
+//
+// ============================================================
+// 実績データの単一ソース
+//
+// ✅ 新規実績の追加は clientWorks / personalProjects の配列に
+//    1件オブジェクトを足すだけ。一覧・詳細・サイトマップ・OG画像に自動反映される。
+//
+// 画像の置き場所（新規実績はこの規約に従う）:
+//   /public/works/<クライアントslug>/main.webp   ← サムネイル（thumbnail）
+//   /public/works/<クライアントslug>/logo.webp 等 ← 制作物ギャラリー（gallery）
+//
+// 画像ファイルがまだ存在しなくてもビルド・表示は壊れない
+// （<WorkImage> がプレースホルダを表示する）。素材が用意でき次第
+// /public/works/ に置けばそのまま表示される。
+// ============================================================
 
 // ✅ カテゴリ定義（将来のフィルター用）
 export const workCategories = [
@@ -12,14 +27,68 @@ export const workCategories = [
 
 export type WorkCategory = typeof workCategories[number];
 
+// クライアントの声
+export interface Testimonial {
+  text: string;
+  author: string;
+  position: string;
+}
+
+// クライアントワーク（1クライアント＝複数成果物）
+export interface ClientWork {
+  id: string;
+  title: string;
+  category: WorkCategory;
+  /** 技術タグ（WordPress 等） */
+  tags: string[];
+  /** 納品した成果物（カードにチップ表示）: 「Webサイト」「ロゴ」「看板」「名刺」等 */
+  deliverables: string[];
+  description: string;
+  challenge: string;
+  solution: string;
+  result: string;
+  year: string;
+  price: string;
+  duration: string;
+  maintenance: boolean;
+  client: string;
+  industry: string;
+  url?: string;
+  /** サムネイル画像。/works/<slug>/main.webp（未配置ならプレースホルダ表示） */
+  thumbnail: string;
+  /** ロゴ・名刺・看板などの制作物画像（詳細ページにギャラリー表示） */
+  gallery?: string[];
+  /** 補足ひとこと（例: 設計から保守まで一式） */
+  note?: string;
+  testimonial?: Testimonial;
+}
+
+// 個人プロジェクト
+export interface PersonalProject {
+  id: string;
+  title: string;
+  category: string;
+  tags: string[];
+  description: string;
+  purpose: string;
+  features: string[];
+  year: string;
+  url?: string;
+  articleUrl?: string;
+  status: 'Active' | 'In Progress';
+  thumbnail: string;
+  codeSnippet?: string;
+}
+
 // クライアントワーク
-export const clientWorks = [
+export const clientWorks: ClientWork[] = [
   {
     id: 'client-1',
     title: '佐藤工務店サイトリニューアル',
-    category: 'Web Development' as WorkCategory,
+    category: 'Web Development',
     tags: ['WordPress', 'PHP'],
-    description: '企業のブランドリニューアルに伴うWebサイト制作。企画からデザイン、実装まで一貫して担当。',
+    deliverables: ['Webサイト', '案内看板', '保守運用'],
+    description: '企業のブランドリニューアルに伴うWebサイト制作。企画からデザイン、実装まで一貫して担当。案内看板のデザインも制作。',
     challenge: 'クライアントの要望を形にしながら、ユーザビリティを最優先に設計',
     solution: 'ヒアリングを重ね、プロトタイプを3回作成。最終的にクライアント満足度◎',
     result: '問い合わせ数が前月比150%増加。保守契約も獲得。',
@@ -30,8 +99,9 @@ export const clientWorks = [
     client: '株式会社佐藤工務店様',
     industry: '工務店',
     url: 'https://www.sato-kohmuten.com/',
-    image: '/images/works/client1.png',
-    // ✅ 追加: クライアントの声
+    thumbnail: '/images/works/client1.png',
+    gallery: ['/works/sato-kohmuten/kanban-1.webp', '/works/sato-kohmuten/kanban-2.webp'],
+    note: '年間保守契約で継続サポート中',
     testimonial: {
       text: '丁寧なヒアリングで、私たちの想いを形にしていただきました。完成したサイトは想像以上の出来栄えで、お客様からの反響も上々です。',
       author: '株式会社佐藤工務店 工事部',
@@ -41,12 +111,13 @@ export const clientWorks = [
   {
     id: 'client-2',
     title: 'おたからひろばコーポレートサイト作成',
-    category: 'Design' as WorkCategory,
+    category: 'Design',
     tags: ['WordPress', 'PHP'],
-    description: 'サービスサイトのデザインとWordPress実装。短納期での納品を実現。',
+    deliverables: ['Webサイト', '名刺', 'リンク集ページ'],
+    description: 'サービスサイトのデザインとWordPress実装。短納期での納品後、名刺デザインとリンク集ページも追加でご依頼いただく。',
     challenge: '納期2週間という短期間での制作',
     solution: 'テンプレートをカスタマイズし、効率的に開発。週次で進捗報告。',
-    result: '予定通り納品。クライアントから高評価をいただく。',
+    result: '予定通り納品。その後、名刺4種とリンク集ページの制作もご依頼いただく。',
     year: '2026',
     price: '20万円〜',
     duration: '2週間',
@@ -54,18 +125,40 @@ export const clientWorks = [
     client: '株式会社エスケリア様',
     industry: '買取業',
     url: 'https://www.otakarahiroba05.com/',
-    image: '/images/works/client2.png',
-    // ✅ 追加: クライアントの声
+    thumbnail: '/images/works/client2.png',
+    gallery: ['/works/otakarahiroba/meishi.webp'],
+    note: 'サイト納品後に名刺・リンク集ページを追加制作',
     testimonial: {
       text: '短納期にも関わらず、クオリティの高いサイトを制作していただきました。レスポンスも早く、安心してお任せできました。',
       author: '株式会社エスケリア 代表取締役',
       position: '坂爪 健祐 様'
     }
   },
+  {
+    id: 'client-3',
+    title: 'Y-Kリアルティ コーポレートサイト制作',
+    category: 'Web Development',
+    tags: ['HTML/CSS/JS', '静的サイト'],
+    deliverables: ['Webサイト', 'ロゴ', '名刺', 'QRデザイン'],
+    description: '不動産会社の新規サイト立ち上げ。ロゴ・名刺・QRデザインまで会社の顔となるデザイン一式を担当。',
+    challenge: '会社の立ち上げ期で、サイトだけでなくロゴ・名刺などブランドの土台をまとめて整える必要があった',
+    solution: 'サイト・ロゴ・名刺を一貫したデザインで制作。表示速度を最優先に、WordPressを使わない軽量な静的サイト構成を採用。',
+    result: 'スマホ表示速度91点・SEO100点を達成（PageSpeed Insights）。公開後の運用代行も継続中。',
+    year: '2026',
+    price: '26万円〜',
+    duration: '約3ヶ月',
+    maintenance: true,
+    client: 'Y-Kリアルティ株式会社様',
+    industry: '不動産（埼玉県川口市）',
+    url: 'https://yk-realty.jp',
+    thumbnail: '/works/yk-realty/main.webp',
+    gallery: ['/works/yk-realty/logo.webp', '/works/yk-realty/meishi.webp'],
+    note: '設計から保守まで一式',
+  },
 ];
 
 // 個人プロジェクト（testimonial なし）
-export const personalProjects = [
+export const personalProjects: PersonalProject[] = [
   {
     id: 'personal-1',
     title: 'Sho-tolog',
@@ -82,7 +175,7 @@ export const personalProjects = [
     year: '2024',
     url: 'https://sho-tolog.com/',
     status: 'Active',
-    image: '/images/works/blog.png',
+    thumbnail: '/images/works/blog.png',
     // ブループリント・レンズ（variant="code"）に流すコード
     codeSnippet: `<?php
 // single.php — 記事テンプレート
@@ -125,7 +218,7 @@ get_footer();`,
     year: '2024',
     url: 'https://www.shoto.tech/',
     status: 'In Progress',
-    image: '/images/works/portfolio-en.png',
+    thumbnail: '/images/works/portfolio-en.png',
     // ブループリント・レンズ（variant="code"）に流すコード
     codeSnippet: `// hero wave — vertex shader
 uniform float uTime;
@@ -167,7 +260,7 @@ void main() {
     url: 'https://ensolife.app',
     articleUrl: '/blog/enso-productivity-app',
     status: 'Active',
-    image: '/images/works/enso.png',
+    thumbnail: '/images/works/enso.png',
     // ブループリント・レンズ（variant="code"）に流すコード
     codeSnippet: `// FOCUS — ポモドーロセッションの保存
 export async function completeSession(task: Task) {
@@ -192,12 +285,3 @@ export async function completeSession(task: Task) {
 }`,
   },
 ];
-
-
-// ✅ 将来のフィルター実装用（コメントアウト）
-/*
-export const getFilteredWorks = (category: WorkCategory) => {
-  if (category === 'All') return clientWorks;
-  return clientWorks.filter(work => work.category === category);
-};
-*/

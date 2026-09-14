@@ -150,7 +150,7 @@ export default function Header() {
                 />
               </motion.div>
               <span className="font-display text-lg sm:text-xl font-bold text-primary group-hover:text-accent transition-colors tracking-tight">
-                SHOTOMORIYAMA.JP
+                SHOTOMORIYAMA
               </span>
             </Link>
 
