@@ -33,10 +33,8 @@ const contactSchema = z.object({
     .trim()
     .min(1, 'お問い合わせ内容は必須です')
     .max(5000, 'お問い合わせ内容が長すぎます'),
-  estimatePrice: optionalShortText,
-  estimateDetails: z.string().trim().max(5000).optional().or(z.literal('')),
   // ハニーポット：人間には見えないフィールド。値が入っていたらボットとみなす
-  website: z.string().optional(),
+  website: z.string().max(200).optional(),
 });
 
 // 簡易レート制限（インスタンス単位のベストエフォート。
@@ -110,8 +108,6 @@ export async function POST(request: Request) {
     projectType,
     budget,
     message,
-    estimatePrice,
-    estimateDetails,
     website,
   } = parsed.data;
 
@@ -145,15 +141,6 @@ export async function POST(request: Request) {
             <p><strong>種類:</strong> ${sanitize(projectType || 'なし')}</p>
             <p><strong>予算:</strong> ${sanitize(budget || 'なし')}</p>
           </div>
-
-          ${estimatePrice ? `
-            <div style="background: #fff5f5; padding: 20px; margin: 20px 0; border-left: 4px solid #FF6B6B;">
-              <h3>お見積もり内容</h3>
-              <p><strong>金額:</strong> ${sanitize(estimatePrice)}</p>
-              <p><strong>詳細:</strong></p>
-              <pre style="white-space: pre-wrap;">${sanitize(estimateDetails || '')}</pre>
-            </div>
-          ` : ''}
 
           <div style="background: #f5f5f5; padding: 20px; margin: 20px 0;">
             <h3>お問い合わせ内容</h3>

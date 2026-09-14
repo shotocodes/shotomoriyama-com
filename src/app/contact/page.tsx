@@ -2,8 +2,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import PageHero from '@/components/sections/PageHero';
@@ -27,8 +26,7 @@ import {
   User,
   Building,
   FileText,
-  DollarSign,
-  Calculator
+  DollarSign
 } from 'lucide-react';
 
 const InstagramIcon = ({ size = 24, style }: { size?: number; style?: React.CSSProperties }) => (
@@ -51,15 +49,7 @@ const LineIcon = ({ size = 24, style }: { size?: number; style?: React.CSSProper
 
 // 見積もりカード + フォームコンポーネント
 function ContactPageContent() {
-  const searchParams = useSearchParams();
   const router = useRouter();
-
-// URL パラメータから見積もり情報を取得
-  const projectName = searchParams.get('projectName') || '';
-  const scaleName = searchParams.get('scaleName') || '';
-  const options = searchParams.get('options')?.split(',').filter(Boolean) || [];
-  const deliveryName = searchParams.get('deliveryName') || '';
-  const totalPrice = searchParams.get('totalPrice') || '';
 
   // フォームデータの初期値を設定
   const [formData, setFormData] = useState({
@@ -76,41 +66,16 @@ function ContactPageContent() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
 
-  // 初回のみプロジェクトタイプを設定
-  useEffect(() => {
-    if (projectName && !formData.projectType) { // ← 空の場合のみ設定
-      setFormData(prev => ({
-        ...prev,
-        projectType: projectName
-      }));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectName]);
-
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   setIsSubmitting(true);
   setSubmitError('');
 
   try {
-    // 見積もり情報を含めるペイロード
-    const payload = {
-      ...formData,
-      ...(totalPrice && {
-        estimatePrice: `¥${parseInt(totalPrice).toLocaleString()}〜`,
-        estimateDetails: [
-          `プロジェクト: ${projectName}`,
-          scaleName ? `規模: ${scaleName}` : '',
-          options.length > 0 ? `オプション: ${options.join(', ')}` : '',
-          deliveryName ? `納期: ${deliveryName}` : ''
-        ].filter(Boolean).join('\n')
-      })
-    };
-
     const response = await fetch('/api/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(formData)
     });
 
     const data = await response.json();
@@ -139,100 +104,6 @@ const handleSubmit = async (e: React.FormEvent) => {
         accentColor="#FF6B6B"
         marginBottom="4rem"
       />
-
-      {/* 見積もりカード */}
-      {projectName && totalPrice && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="bg-background-alt border-2 border-border"
-          style={{ padding: '2rem', marginBottom: '3rem' }}
-          whileHover={{
-            boxShadow: '0 0 40px rgba(255, 107, 107, 0.2)'
-          }}
-        >
-          <div className="flex items-center gap-3" style={{ marginBottom: '1.5rem' }}>
-            <Calculator size={24} style={{ color: '#FF6B6B' }} />
-            <h3 className="text-xl font-bold text-primary">
-              お見積もり内容
-            </h3>
-          </div>
-
-          <div style={{ marginBottom: '1.5rem' }}>
-            {/* プロジェクト */}
-            <div style={{
-              paddingBottom: '1rem',
-              borderBottom: '1px solid var(--color-border)',
-              marginBottom: '1rem'
-            }}>
-              <p className="text-sm text-text-secondary" style={{ marginBottom: '0.25rem' }}>
-                プロジェクト
-              </p>
-              <p className="font-semibold text-primary">{projectName}</p>
-            </div>
-
-            {/* 規模 */}
-            {scaleName && (
-              <div style={{
-                paddingBottom: '1rem',
-                borderBottom: '1px solid var(--color-border)',
-                marginBottom: '1rem'
-              }}>
-                <p className="text-sm text-text-secondary" style={{ marginBottom: '0.25rem' }}>
-                  規模
-                </p>
-                <p className="font-semibold text-primary">{scaleName}</p>
-              </div>
-            )}
-
-            {/* オプション */}
-{options.length > 0 && (
-  <div style={{
-    paddingBottom: '1rem',
-    borderBottom: '1px solid var(--color-border)',
-    marginBottom: '1rem'
-  }}>
-    <p className="text-sm text-text-secondary" style={{ marginBottom: '0.5rem' }}>
-      オプション
-    </p>
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-      {options.map((opt, i) => (
-        <span key={i} className="font-semibold text-primary">{opt}</span>
-      ))}
-    </div>
-  </div>
-)}
-
-            {/* 納期 */}
-            {deliveryName && (
-              <div style={{
-                paddingBottom: '1rem',
-                borderBottom: '1px solid var(--color-border)',
-                marginBottom: '1rem'
-              }}>
-                <p className="text-sm text-text-secondary" style={{ marginBottom: '0.25rem' }}>
-                  納期
-                </p>
-                <p className="font-semibold text-primary">{deliveryName}</p>
-              </div>
-            )}
-          </div>
-
-          {/* 合計 */}
-          <div style={{ paddingTop: '1.5rem', borderTop: '2px solid var(--color-border)' }}>
-            <div className="flex items-center justify-between">
-              <span className="text-lg font-bold text-primary">合計</span>
-              <span className="text-2xl font-bold text-primary">
-                ¥{parseInt(totalPrice).toLocaleString()}〜
-              </span>
-            </div>
-            <p className="text-xs text-text-secondary" style={{ marginTop: '0.5rem' }}>
-              ※こちらは概算です。詳細はお問い合わせください
-            </p>
-          </div>
-        </motion.div>
-      )}
 
       {/* フォーム */}
       <motion.div
@@ -364,95 +235,39 @@ const handleSubmit = async (e: React.FormEvent) => {
               </div>
             </motion.div>
 
-{/* ご予算セクション */}
+            {/* ご予算 */}
+            <motion.div whileFocus={{ scale: 1.01, y: -2 }} transition={{ duration: 0.2 }}>
+              <label className="block text-sm font-bold text-primary" style={{ marginBottom: '0.5rem' }}>
+                ご予算 <span style={{ color: '#FF6B6B' }}>*</span>
+              </label>
+              <div className="relative">
+                <DollarSign size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary pointer-events-none" />
+                <input
+                  type="text"
+                  required
+                  value={formData.budget}
+                  onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
+                  className="w-full border border-border bg-background text-primary py-3 focus:outline-none focus:border-[#FF6B6B] focus:shadow-lg transition-all duration-300"
+                  style={{ paddingLeft: '3rem', paddingRight: '2.5rem' }}
+                  placeholder="ご予算の目安（未定でもOK）"
+                />
+              </div>
+            </motion.div>
 
-{/* お見積もり金額（パラメータありの場合のみ表示、編集不可） */}
-{totalPrice && (
-  <motion.div whileFocus={{ scale: 1.01, y: -2 }} transition={{ duration: 0.2 }}>
-    <label className="block text-sm font-bold text-primary" style={{ marginBottom: '0.5rem' }}>
-      お見積もり金額
-    </label>
-    <div className="relative">
-      <Calculator size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary pointer-events-none" />
-      <input
-        type="text"
-        value={`¥${parseInt(totalPrice).toLocaleString()}〜`}
-        readOnly
-        className="w-full border border-border bg-background-alt text-primary py-3 cursor-not-allowed"
-        style={{ paddingLeft: '3rem', paddingRight: '2.5rem', opacity: 0.7 }}
-      />
-    </div>
-  </motion.div>
-)}
-
-{/* ご予算（常に表示、編集可） */}
-<motion.div whileFocus={{ scale: 1.01, y: -2 }} transition={{ duration: 0.2 }}>
-  <label className="block text-sm font-bold text-primary" style={{ marginBottom: '0.5rem' }}>
-    ご予算 {!totalPrice && <span style={{ color: '#FF6B6B' }}>*</span>}
-  </label>
-  <div className="relative">
-    <DollarSign size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary pointer-events-none" />
-    <input
-      type="text"
-      required={!totalPrice} // ← 見積もりがない場合は必須
-      value={formData.budget}
-      onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-      className="w-full border border-border bg-background text-primary py-3 focus:outline-none focus:border-[#FF6B6B] focus:shadow-lg transition-all duration-300"
-      style={{ paddingLeft: '3rem', paddingRight: '2.5rem' }}
-      placeholder="ご予算の目安（未定でもOK）"
-    />
-  </div>
-  {totalPrice && (
-    <p className="text-xs text-text-secondary" style={{ marginTop: '0.5rem' }}>
-      ※お見積もり金額と異なる場合は、こちらにご希望をご記入ください
-    </p>
-  )}
-</motion.div>
-
-{/* メッセージセクション */}
-
-{/* お見積もり内容（パラメータありの場合のみ表示、編集不可） */}
-{projectName && (
-  <motion.div whileFocus={{ scale: 1.01, y: -2 }} transition={{ duration: 0.2 }}>
-    <label className="block text-sm font-bold text-primary" style={{ marginBottom: '0.5rem' }}>
-      お見積もり内容
-    </label>
-    <textarea
-      value={[
-        `【お見積もり内容】`,
-        `プロジェクト: ${projectName}`,
-        scaleName ? `規模: ${scaleName}` : '',
-        options.length > 0 ? `オプション: ${options.join(', ')}` : '',
-        deliveryName ? `納期: ${deliveryName}` : '',
-        totalPrice ? `概算金額: ¥${parseInt(totalPrice).toLocaleString()}〜` : ''
-      ].filter(Boolean).join('\n')}
-      readOnly
-      className="w-full border border-border bg-background-alt text-primary px-4 py-3 cursor-not-allowed"
-      rows={6}
-      style={{ opacity: 0.7 }}
-    />
-  </motion.div>
-)}
-
-{/* お問い合わせ内容（常に表示、編集可） */}
-<motion.div whileFocus={{ scale: 1.01, y: -2 }} transition={{ duration: 0.2 }}>
-  <label className="block text-sm font-bold text-primary" style={{ marginBottom: '0.5rem' }}>
-    お問い合わせ内容 <span style={{ color: '#FF6B6B' }}>*</span>
-  </label>
-  <textarea
-    required
-    value={formData.message}
-    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-    className="w-full border border-border bg-background text-primary px-4 py-3 focus:outline-none focus:border-[#FF6B6B] focus:shadow-lg transition-all duration-300"
-    rows={8}
-    placeholder="プロジェクトの詳細、希望納期、その他ご要望などをご記入ください"
-  />
-  {projectName && (
-    <p className="text-xs text-text-secondary" style={{ marginTop: '0.5rem' }}>
-      ※お見積もり内容に追加でお伝えしたいことがあればご記入ください
-    </p>
-  )}
-</motion.div>
+            {/* お問い合わせ内容 */}
+            <motion.div whileFocus={{ scale: 1.01, y: -2 }} transition={{ duration: 0.2 }}>
+              <label className="block text-sm font-bold text-primary" style={{ marginBottom: '0.5rem' }}>
+                お問い合わせ内容 <span style={{ color: '#FF6B6B' }}>*</span>
+              </label>
+              <textarea
+                required
+                value={formData.message}
+                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                className="w-full border border-border bg-background text-primary px-4 py-3 focus:outline-none focus:border-[#FF6B6B] focus:shadow-lg transition-all duration-300"
+                rows={8}
+                placeholder="プロジェクトの詳細、希望納期、その他ご要望などをご記入ください"
+              />
+            </motion.div>
             {/* 送信ボタン */}
 <div className="text-center" style={{ marginTop: '1rem' }}>
   <motion.button
@@ -958,9 +773,7 @@ export default function ContactPage() {
 
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div style={{ maxWidth: '48rem', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-              <Suspense fallback={<div>読み込み中...</div>}>
-                <ContactPageContent />
-              </Suspense>
+              <ContactPageContent />
             </div>
           </div>
         </section>
