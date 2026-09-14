@@ -335,7 +335,7 @@ export default function ContactSection() {
 
                   <div className="flex-1 min-w-0 w-full">
                     {/* ヘッダー */}
-                    <div style={{ marginBottom: '2.5rem' }}>
+                    <div style={{ marginBottom: '1.5rem' }}>
                       <p className="text-2xl text-text-secondary leading-relaxed font-light relative pb-2 inline-block">
                         まずはお気軽にご相談ください
                         <span
@@ -354,14 +354,14 @@ export default function ContactSection() {
                     <div className="max-w-5xl mx-auto">
 
                       {/* 上段: まずはお気軽に */}
-                      <div style={{ marginBottom: '2.5rem' }}>
+                      <div style={{ marginBottom: '1.5rem' }}>
                         <motion.h3
                           transition={{ duration: 0.6 }}
                           className="text-xl font-bold text-primary"
                           style={{
                             opacity: scrollProgress > 0.2 ? 1 : 0,
                             y: scrollProgress > 0.2 ? 0 : 20,
-                            marginBottom: '1.5rem'
+                            marginBottom: '1rem'
                           }}
                         >
                           まずはお気軽に
@@ -383,11 +383,11 @@ export default function ContactSection() {
                                 <a href={option.link} target="_blank" rel="noopener noreferrer">
                                   <div
                                     className="group border-2 border-border hover:border-primary transition-all hover:scale-105 cursor-pointer bg-background rounded-lg"
-                                    style={{ padding: '2.5rem 2rem', minHeight: '220px' }}
+                                    style={{ padding: '1.5rem 2rem', minHeight: '200px' }}
                                   >
                                     <div className="flex flex-col items-center text-center">
                                       {/* アイコン + バッジ */}
-                                      <div style={{ position: 'relative', display: 'inline-block', marginBottom: '1.5rem' }}>
+                                      <div style={{ position: 'relative', display: 'inline-block', marginBottom: '1rem' }}>
                                         <div
                                           className="text-xs font-bold"
                                           style={{
@@ -437,14 +437,14 @@ export default function ContactSection() {
                       </div>
 
                       {/* 下段: 詳しく知りたい方 */}
-                      <div style={{ marginBottom: '2rem' }}>
+                      <div style={{ marginBottom: '1.5rem' }}>
                         <motion.h3
                           transition={{ duration: 0.6 }}
                           className="text-xl font-bold text-primary"
                           style={{
                             opacity: scrollProgress > 0.45 ? 1 : 0,
                             y: scrollProgress > 0.45 ? 0 : 20,
-                            marginBottom: '1.5rem'
+                            marginBottom: '1rem'
                           }}
                         >
                           詳しく知りたい方
@@ -466,7 +466,7 @@ export default function ContactSection() {
                                 <Link href={option.href}>
                                   <div
                                     className="group border-2 border-border hover:border-primary transition-all hover:scale-105 cursor-pointer bg-background rounded-lg"
-                                    style={{ padding: '2.5rem 2rem', minHeight: '220px' }}
+                                    style={{ padding: '1.5rem 2rem', minHeight: '200px' }}
                                   >
                                     <div className="flex flex-col items-center text-center">
                                       <div
@@ -474,7 +474,7 @@ export default function ContactSection() {
                                         style={{
                                           backgroundColor: `${option.color}20`,
                                           padding: '1.25rem',
-                                          marginBottom: '1.5rem'
+                                          marginBottom: '1rem'
                                         }}
                                       >
                                         <Icon size={40} style={{ color: option.color }} />
@@ -497,7 +497,7 @@ export default function ContactSection() {
                         style={{
                           opacity: scrollProgress > 0.7 ? 1 : 0,
                           y: scrollProgress > 0.7 ? 0 : 20,
-                          paddingTop: '1.5rem'
+                          paddingTop: '1rem'
                         }}
                         transition={{ duration: 0.6 }}
                         className="text-center border-t-2 border-border"
@@ -514,8 +514,8 @@ export default function ContactSection() {
                     </div>
                   </div>
 
-                  {/* AnimatedText - PC右側 */}
-                  <div className="hidden lg:block">
+                  {/* AnimatedText - PC右側（ビューポート中央に縦位置を固定し、縦書きの見切れを防ぐ） */}
+                  <div className="hidden lg:flex self-stretch items-center">
                     <AnimatedText
                       text="CONTACT"
                       scrollProgress={scrollProgress}

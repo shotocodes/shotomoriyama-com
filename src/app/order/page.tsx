@@ -14,6 +14,7 @@ import StepTimeline from '@/components/graphics/StepTimeline';
 import WavePattern from '@/components/graphics/WavePattern';
 import RadialLines from '@/components/graphics/RadialLines';
 import { FREE_AUDIT_LABEL, FREE_AUDIT_MAILTO } from '@/lib/constants/site';
+import { productionPackage } from '@/data/pricing';
 import { useSearchParams } from 'next/navigation';
 import {
   Mail,
@@ -186,7 +187,7 @@ const steps = [
     number: 4,
     icon: Palette,
     title: '制作開始',
-    time: 'プロジェクトによる',
+    time: productionPackage.delivery,
     description: 'お見積もりにご了承いただいた後、制作を開始します。Figmaを使わず、Next.jsで直接コーディングしながらデザインを作り上げます。進捗は定期的にご報告し、仮サイトでリアルタイムに確認いただけます。',
     points: [
       '週次進捗報告',
@@ -258,8 +259,8 @@ const steps = [
       {
         subtitle: 'サポート内容',
         items: [
-          '納品後1ヶ月間の無料サポート',
-          '月2回までの修正対応',
+          '納品後1ヶ月間の無償サポート',
+          '以降は月額の保守・運用プランへ接続可能',
           '操作方法のご説明',
           '簡単な更新方法のレクチャー'
         ]
@@ -269,22 +270,19 @@ const steps = [
   }
 ];
 
-  // 納期データ
+  // 納期データ（確定: スコープ固定方式 — 期間・詳細は src/data/pricing.ts）
   const timeline = [
     {
-      category: 'Webサイト制作',
+      category: 'ホームページ制作パッケージ',
       items: [
-        { pages: '1-5ページ', duration: '2-3週間' },
-        { pages: '6-10ページ', duration: '4-6週間' },
-        { pages: '11-20ページ', duration: '6-8週間' }
+        { pages: 'ヒアリング〜構成確定', duration: '事前に実施' },
+        { pages: '制作（設計・デザイン・実装〜公開）', duration: productionPackage.delivery }
       ]
     },
     {
-      category: 'デザイン制作',
+      category: '保守・運用',
       items: [
-        { pages: 'ロゴ', duration: '1-2週間' },
-        { pages: 'バナー', duration: '3-5日' },
-        { pages: 'イラスト', duration: '1-2週間' }
+        { pages: '投稿・修正・レポート等', duration: '月額プランで継続対応' }
       ]
     }
   ];
@@ -317,11 +315,11 @@ const faqs = [
     questions: [
       {
         q: '料金はどのように決まりますか？',
-        a: '主に「ページ数」「必要な機能」「デザインの複雑さ」を基準にお見積もりします。ヒアリング後、制作範囲と金額を確定した固定価格のお見積もりを提示しますので、その時点で料金をご確認いただけます。予算に合わせた柔軟なプラン提案も可能です。'
+        a: `ホームページ制作は${productionPackage.priceLabel}の固定価格パッケージです。ヒアリングでページ構成・機能を確定してから制作するため、お見積もり後の追加費用はありません。公開後の保守・運用は月額プラン（詳細はサービスページ）をご用意しています。`
       },
       {
         q: '追加料金は発生しますか？',
-        a: '基本的に、お見積もり後の追加料金は一切ありません。ただし、制作途中で「ページを5ページ追加したい」「全く違うデザインにしたい」など、大幅な仕様変更があった場合のみ、事前にご相談の上で追加料金をいただく場合があります。小さな修正や調整は柔軟に対応しますので、ご安心ください。'
+        a: '基本的に、お見積もり後の追加料金は一切ありません。ただし、制作途中で「ページを5ページ追加したい」「全く違うデザインにしたい」など、事前に確定した制作範囲を超える変更があった場合のみ、事前にご相談の上でお見積もりいたします。'
       },
       {
         q: '分割払いは可能ですか？',
@@ -338,7 +336,7 @@ const faqs = [
     questions: [
       {
         q: '修正は何回までできますか？',
-        a: '制作期間中は、最初に確定した制作範囲の中で「この色を変えたい」「この文章を修正したい」といった調整に納得いただけるまで対応します。納品後は1ヶ月間、月2回まで無料で修正対応いたします。それ以上の修正が必要な場合は、保守・メンテナンスプラン（月額制）をご検討ください。'
+        a: 'デザインは2案までご提示し、確定後の修正は1回まで無料です（以降は都度お見積り）。納品後は1ヶ月間の無償サポートつきで、それ以降の投稿・修正は月額の保守・運用プラン（ライト / スタンダード / プレミアム / コンテンツ運用）で継続的に対応します。'
       },
       {
         q: '途中で仕様変更は可能ですか？',
@@ -381,6 +379,8 @@ const faqs = [
 ];
 
   // キャンセルポリシー
+  // ⚠️ 要確認: 支払条件（着手金30%等の支払いスケジュール）とあわせて、
+  // 固定価格パッケージ移行後の条件として正式確定したら見直す（2026-08 Phase C時点は現行維持）
   const cancellationPolicy = [
     { phase: 'ヒアリング前', fee: '無料' },
     { phase: 'ヒアリング後', fee: '20%' },
@@ -879,7 +879,7 @@ const faqs = [
           ※ 他の案件進行中は納期に余裕を持っていただく可能性がございます。
         </p>
         <p className="text-sm text-text-secondary leading-relaxed">
-          ※ お急ぎの場合は特急料金で対応可能です。お気軽にご相談ください。
+          ※ お急ぎの場合も、まずはお気軽にご相談ください。
         </p>
       </div>
     </motion.div>
