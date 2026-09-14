@@ -17,7 +17,6 @@ import WorkImage from '@/components/shared/WorkImage';
 import {
   ExternalLink,
   Calendar,
-  Tag,
   ArrowRight,
   CheckCircle,
   Clock
@@ -239,10 +238,6 @@ export default function WorksPage() {
                       <div className="flex items-center" style={{ gap: '0.5rem' }}>
                         <Clock size={14} />
                         <span>{work.duration}</span>
-                      </div>
-                      <div className="flex items-center" style={{ gap: '0.5rem' }}>
-                        <Tag size={14} />
-                        <span>{work.price}</span>
                       </div>
                     </div>
 

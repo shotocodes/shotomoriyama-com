@@ -398,7 +398,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
       className="w-full border border-border bg-background text-primary py-3 focus:outline-none focus:border-[#FF6B6B] focus:shadow-lg transition-all duration-300"
       style={{ paddingLeft: '3rem', paddingRight: '2.5rem' }}
-      placeholder="例: ¥300,000〜 または 未定"
+      placeholder="ご予算の目安（未定でもOK）"
     />
   </div>
   {totalPrice && (

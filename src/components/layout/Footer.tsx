@@ -43,7 +43,7 @@ export default function Footer({
   ];
 
   const pageLinks = [
-    { href: '/estimate', label: 'かんたん見積もり' },
+    { href: '/estimate', label: '無料診断' },
     { href: '/contact', label: 'お問い合わせ' },
     { href: '/service', label: 'サービス詳細' },
     { href: '/support', label: 'サポート情報' },
@@ -100,7 +100,7 @@ export default function Footer({
               style={{ gap: '1.25rem' }}
             >
               <AnimatedButton href="/estimate" icon={Calculator}>
-                かんたん見積もり
+                無料診断
               </AnimatedButton>
               <AnimatedButton href="/contact" icon={MessageCircle}>
                 お問い合わせ

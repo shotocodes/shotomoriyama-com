@@ -75,8 +75,8 @@ const detailOptions = [
   },
   {
     icon: Calculator,
-    title: 'かんたん見積もり',
-    description: '概算をすぐに確認',
+    title: '無料診断',
+    description: 'サイトの改善点を確認',
     href: '/estimate',
     color: '#10B981'
   },

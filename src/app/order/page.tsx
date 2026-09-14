@@ -31,7 +31,7 @@ import {
   Banknote
 } from 'lucide-react';
 
-type TabType = 'flow' | 'pricing' | 'timeline' | 'faq' | 'payment';
+type TabType = 'flow' | 'timeline' | 'faq' | 'payment';
 
 
 function OrderPageContent() {
@@ -81,7 +81,6 @@ function OrderPageContent() {
   // タブデータ
   const tabs = [
     { id: 'flow' as TabType, label: '制作の流れ', icon: ArrowRight, color: '#0066FF' },
-    { id: 'pricing' as TabType, label: '料金の目安', icon: DollarSign, color: '#4ECDC4' },
     { id: 'timeline' as TabType, label: '納期の目安', icon: Clock, color: '#FF8C42' },
     { id: 'faq' as TabType, label: 'よくある質問', icon: MessageCircle, color: '#9333EA' },
     { id: 'payment' as TabType, label: 'お支払い', icon: CheckCircle, color: '#10B981' }
@@ -203,7 +202,7 @@ const steps = [
     description: 'お見積もりにご了承いただいた後、制作を開始します。Figmaを使わず、Next.jsで直接コーディングしながらデザインを作り上げます。進捗は定期的にご報告し、仮サイトでリアルタイムに確認いただけます。',
     points: [
       '週次進捗報告',
-      '修正回数無制限',
+      '仮サイトで随時確認',
       'リアルタイム共有'
     ],
     details: [
@@ -282,51 +281,6 @@ const steps = [
   }
 ];
 
-  // 料金データ
-  const pricing = [
-    {
-      category: 'コーポレートサイト',
-      items: [
-        { name: '5ページ以下', price: '¥300,000〜' },
-        { name: '6-10ページ', price: '¥500,000〜' },
-        { name: '11-20ページ', price: '¥800,000〜' }
-      ]
-    },
-    {
-      category: 'ランディングページ',
-      items: [
-        { name: 'シンプル', price: '¥100,000〜' },
-        { name: '標準', price: '¥200,000〜' },
-        { name: 'リッチ', price: '¥300,000〜' }
-      ]
-    },
-    {
-      category: 'ECサイト',
-      items: [
-        { name: '小規模', price: '¥500,000〜' },
-        { name: '中規模', price: '¥1,000,000〜' },
-        { name: '大規模', price: '¥2,000,000〜' }
-      ]
-    },
-    {
-      category: 'ロゴ・グラフィック',
-      items: [
-        { name: 'ロゴデザイン', price: '¥50,000〜' },
-        { name: '名刺デザイン', price: '¥30,000〜' },
-        { name: 'バナー制作', price: '¥10,000〜' }
-      ]
-    }
-  ];
-
-  // オプション料金
-  const options = [
-    { name: 'CMS導入', price: '¥50,000〜' },
-    { name: 'お問い合わせフォーム', price: '¥30,000〜' },
-    { name: '多言語対応', price: '¥100,000〜' },
-    { name: 'SEO対策', price: '¥50,000〜' },
-    { name: 'アニメーション', price: '¥30,000〜' }
-  ];
-
   // 納期データ
   const timeline = [
     {
@@ -375,15 +329,15 @@ const faqs = [
     questions: [
       {
         q: '料金はどのように決まりますか？',
-        a: '主に「ページ数」「必要な機能」「デザインの複雑さ」を基準にお見積もりします。例えば、5ページのシンプルなコーポレートサイトなら30万円〜、ログイン機能やデータベースを使う複雑なサイトならそれ以上になります。ヒアリング後、詳細なお見積もりを提示しますので、その時点で料金をご確認いただけます。予算に合わせた柔軟なプラン提案も可能です。'
+        a: '主に「ページ数」「必要な機能」「デザインの複雑さ」を基準にお見積もりします。ヒアリング後、制作範囲と金額を確定した固定価格のお見積もりを提示しますので、その時点で料金をご確認いただけます。予算に合わせた柔軟なプラン提案も可能です。'
       },
       {
         q: '追加料金は発生しますか？',
-        a: '基本的に、お見積もり後の追加料金は一切ありません。ただし、制作途中で「ページを5ページ追加したい」「全く違うデザインにしたい」など、大幅な仕様変更があった場合のみ、事前にご相談の上で追加料金をいただく場合があります。小さな修正や調整は無制限で対応しますので、ご安心ください。'
+        a: '基本的に、お見積もり後の追加料金は一切ありません。ただし、制作途中で「ページを5ページ追加したい」「全く違うデザインにしたい」など、大幅な仕様変更があった場合のみ、事前にご相談の上で追加料金をいただく場合があります。小さな修正や調整は柔軟に対応しますので、ご安心ください。'
       },
       {
         q: '分割払いは可能ですか？',
-        a: 'はい、2〜3回の分割払いに対応しています。手数料は一切かかりません。例えば、総額60万円の場合、「着手金20万円 → デザイン確定後20万円 → 納品後20万円」といった形で分割できます。お支払いスケジュールはご相談の上で柔軟に調整いたします。'
+        a: 'はい、2〜3回の分割払いに対応しています。手数料は一切かかりません。お支払いスケジュールはご相談の上で柔軟に調整いたします。'
       },
       {
         q: '支払い方法は何がありますか？',
@@ -396,7 +350,7 @@ const faqs = [
     questions: [
       {
         q: '修正は何回までできますか？',
-        a: '制作期間中は無制限で修正対応いたします。「この色を変えたい」「この文章を修正したい」といった細かい調整も、納得いただけるまで何度でも対応します。納品後は1ヶ月間、月2回まで無料で修正対応いたします。それ以上の修正が必要な場合は、保守・メンテナンスプラン（月額制）をご検討ください。ちなみに、これまでのクライアント様は平均3〜5回の修正で満足いただいています。'
+        a: '制作期間中は、最初に確定した制作範囲の中で「この色を変えたい」「この文章を修正したい」といった調整に納得いただけるまで対応します。納品後は1ヶ月間、月2回まで無料で修正対応いたします。それ以上の修正が必要な場合は、保守・メンテナンスプラン（月額制）をご検討ください。'
       },
       {
         q: '途中で仕様変更は可能ですか？',
@@ -887,76 +841,6 @@ const faqs = [
     </motion.div>
   )}
 
-                {/* 料金の目安 */}
-                {activeTab === 'pricing' && (
-                  <motion.div
-                    key="pricing"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.4 }}
-                  >
-                    {/* 基本料金 */}
-                    <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: '1.5rem', marginBottom: '2rem' }}>
-                      {pricing.map((category, index) => (
-                        <motion.div
-                          key={index}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.4, delay: index * 0.1 }}
-                          className="bg-background border-2 border-border"
-                          style={{ padding: '2rem' }}
-                        >
-                          <h3 className="text-xl font-bold text-primary border-b-2 border-border" style={{ marginBottom: '1.5rem', paddingBottom: '0.75rem' }}>
-                            {category.category}
-                          </h3>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                            {category.items.map((item, i) => (
-                              <div key={i} className="flex justify-between items-center">
-                                <span className="text-text-secondary">{item.name}</span>
-                                <span className="font-bold text-primary">{item.price}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </motion.div>
-                      ))}
-                    </div>
-
-                    {/* オプション料金 */}
-<motion.div
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.4, delay: 0.4 }}
-  className="bg-background border-2 border-border"
-  style={{ padding: '2rem' }}
->
-  <h3 className="text-xl font-bold text-primary" style={{ marginBottom: '1.5rem' }}>
-    オプション料金
-  </h3>
-  <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: '1rem', marginBottom: '1.5rem' }}>
-    {options.map((option, index) => (
-      <div key={index} className="flex justify-between items-center bg-background-alt" style={{ padding: '1rem' }}>
-        <span className="text-text-secondary">{option.name}</span>
-        <span className="font-bold text-primary">{option.price}</span>
-      </div>
-    ))}
-  </div>
-
-  {/* 注意書き */}
-  <div
-    className="bg-background-alt border-l-4"
-    style={{
-      padding: '1rem 1.5rem',
-      borderColor: '#4ECDC4'
-    }}
-  >
-    <p className="text-sm text-text-secondary leading-relaxed">
-      ※ 目安の金額ですので参考程度にお受け止めください。お客様のご予算に合わせたサイト設計も可能です。お気軽にご相談ください。
-    </p>
-  </div>
-</motion.div>
-                  </motion.div>
-                )}
 {/* 納期の目安 */}
 {activeTab === 'timeline' && (
   <motion.div
@@ -1521,8 +1405,8 @@ const faqs = [
           {[
             {
               icon: Calculator,
-              title: 'かんたん見積もり',
-              description: '概算をすぐに確認',
+              title: '無料診断',
+              description: 'サイトの改善点を確認',
               href: '/estimate',
               color: '#10B981'
             },
