@@ -298,9 +298,13 @@ export default function ContactSection() {
   };
 
   return (
-    <>
+    // アンカー用の id はこの外側1つだけに持たせる。
+    // モバイル/PC の両方に id="contact" を付けると getElementById が
+    // 常に先頭（PCでは display:none のモバイル側）を返し、
+    // ヘッダー・フッター・Hero の「/#contact」がPCで効かなくなる。
+    <div id="contact">
       {/* ========== モバイル表示 ========== */}
-      <div className="lg:hidden" id="contact">
+      <div className="lg:hidden">
         <MobileContact />
       </div>
 
@@ -316,7 +320,7 @@ export default function ContactSection() {
         }}
       >
         <div className="sticky top-0 h-screen overflow-hidden">
-          <section id="contact" className="relative bg-background h-full">
+          <section className="relative bg-background h-full">
             <GridBackground show={true} />
 
             <SpeedMeter
@@ -531,6 +535,6 @@ export default function ContactSection() {
           </section>
         </div>
       </div>
-    </>
+    </div>
   );
 }
