@@ -74,12 +74,13 @@ function FloatingWorks({ works, scrollProgress }: { works: Work[]; scrollProgres
                 transition: { duration: 0.2 }
               }}
             >
+              {/* サムネイルは全件16:9のスクショなので枠も16:9に（4:3だと左右が切れてヘッダーのロゴが欠ける） */}
               <WorkImage
                 src={work.image}
                 alt={work.title}
                 width={256}
-                height={192}
-                className="w-full h-48 object-cover"
+                height={144}
+                className="w-full h-36 object-cover"
               />
               <div className="p-3 bg-background">
                 <p className="text-xs text-text-secondary mb-1">{work.category} • {work.year}</p>
@@ -136,8 +137,8 @@ function MobileWorks({ works }: { works: Work[] }) {
                   src={work.image}
                   alt={work.title}
                   width={400}
-                  height={256}
-                  className="w-full h-32 object-cover"
+                  height={225}
+                  className="w-full aspect-video object-cover"
                 />
                 <div className="p-2 bg-background">
                   <p className="text-[10px] text-text-secondary mb-1">{work.category} • {work.year}</p>
